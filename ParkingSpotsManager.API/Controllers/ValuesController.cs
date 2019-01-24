@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace ParkingSpotsManager.API.Controllers
 {
@@ -10,11 +11,18 @@ namespace ParkingSpotsManager.API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        // GET api/values
+        //// GET api/values
+        //[HttpGet]
+        //public ActionResult<IEnumerable<string>> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
+        
+        // GET api/testget
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<string>> TestGet()
         {
-            return new string[] { "value1", "value2" };
+            return new string[] { "value3", "value4" };
         }
 
         // GET api/values/5
@@ -40,6 +48,20 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        // POST api/login
+        [HttpPost]
+        public JsonResult TestLogin([FromBody]JObject data)
+        {
+            return new JsonResult("{\"authenticated\": true}");
+        }
+        
+        // POST api/test
+        [HttpPost]
+        public ActionResult<string> TestPost()
+        {
+            return "{\"authenticated\": true}";
         }
     }
 }
