@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ParkingSpotsManager.Shared.Libraries;
+using ParkingSpotsManager.Shared.Models;
 using ParkingSpotsManager.Shared.Services;
 
 namespace ParkingSpotsManager.API.Controllers
@@ -31,11 +33,29 @@ namespace ParkingSpotsManager.API.Controllers
                         return new OkObjectResult(user);
                     }
                 }
-            } catch (Exception) {
-                return new BadRequestResult();
+            } catch (Exception e) {
+                return new OkObjectResult(e.Message);
             }
 
             return new BadRequestResult();
+        }
+
+        [Route("[action]")]
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] User user)
+        {
+            try {
+                var userNameExists = await userModel.GetByLoginAsync(user.Username);
+                if (userNameExists != null) {
+                    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Username already exists.\"}");
+                }
+                var userEmailExists = await userModel.GetByEmailAsync(user.Email);
+                if (userEmailExists != null) {
+                    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Email already used.\"}");
+                }
+
+                return new OkObjectResult("ok");
+            } catch (Exception e) { return new OkObjectResult(e.Message); }
         }
     }
 }
