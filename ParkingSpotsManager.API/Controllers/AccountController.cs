@@ -19,39 +19,23 @@ namespace ParkingSpotsManager.API.Controllers
             userModel = new Shared.Models.User();
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] string test)
-        {
-            try {
-                var user = await userModel.GetByLogin("thebestjb");
-                if (user != null) {
-                    var passMatched = PasswordService.VerifyHashedPassword(user.Password, test);
-                    if (passMatched) {
-                        return new OkObjectResult(user);
-                    }
-                }
-
-                return new OkObjectResult(user);
-            } catch (Exception e) { return new OkObjectResult(e.Message); }
-        }
-
         [HttpPost]
-        public async Task<IActionResult> LoginAsync(Authenticator authenticator)
+        public async Task<IActionResult> LoginAsync([FromBody] Authenticator authenticator)
         {
             try {
-                var user = await userModel.GetByLogin(authenticator.Login);
+                var user = await userModel.GetByLoginAsync(authenticator.Login);
                 if (user != null) {
                     var passMatched = PasswordService.VerifyHashedPassword(user.Password, authenticator.Password);
                     if (passMatched) {
+                        user.Password = null;
                         return new OkObjectResult(user);
                     }
                 }
-            } catch (Exception e) {
-                //TODO badrequest
-                return new OkObjectResult(e.Message);
+            } catch (Exception) {
+                return new BadRequestResult();
             }
-            //TODO badrequest
-            return new OkObjectResult("no user");
+
+            return new BadRequestResult();
         }
     }
 }
