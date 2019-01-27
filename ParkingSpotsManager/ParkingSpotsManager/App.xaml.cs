@@ -10,6 +10,8 @@ namespace ParkingSpotsManager
 {
     public partial class App
     {
+        public bool IsUserAuthenticated { get; set; } = false;
+
         /* 
          * The Xamarin Forms XAML Previewer in Visual Studio uses System.Activator.CreateInstance.
          * This imposes a limitation in which the App class must have a default constructor. 
@@ -23,13 +25,18 @@ namespace ParkingSpotsManager
         {
             InitializeComponent();
 
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            if (!IsUserAuthenticated) {
+                await NavigationService.NavigateAsync("LoginPage");
+            } else {
+                await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            }
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
         }
     }
 }
