@@ -34,7 +34,8 @@ namespace ParkingSpotsManager.Shared.Models
                 var user = new User() {
                     Id = dataTable.Columns.Contains("Id") ? int.Parse(row["Id"].ToString()) : 0,
                     Email = dataTable.Columns.Contains("Email") ? row["Email"].ToString() : null,
-                    Password = dataTable.Columns.Contains("Password") ? row["Password"].ToString() : null
+                    Password = dataTable.Columns.Contains("Password") ? row["Password"].ToString() : null,
+                    Username = dataTable.Columns.Contains("Username") ? row["Username"].ToString() : null
                 };
                 return user;
             }
@@ -64,6 +65,26 @@ namespace ParkingSpotsManager.Shared.Models
             }
 
             return null;
+        }
+
+        public async Task<User> CreateAsync(User user)
+        {
+            //TODO query builder with bindings
+            var query = new StringBuilder("INSERT INTO ");
+            query.Append(TABLE);
+            query.Append(" (email, password, username) VALUES (");
+            query.Append("'");
+            query.Append(user.Email);
+            query.Append("', '");
+            query.Append(user.Password);
+            query.Append("', '");
+            query.Append(user.Username);
+            query.Append("'");
+            query.Append(")");
+
+            await ParkingSpotsManagerDatabase.GetDataTableAsync(query.ToString());
+
+            return await GetByLoginAsync(user.Username);
         }
     }
 }

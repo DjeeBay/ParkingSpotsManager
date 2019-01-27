@@ -6,7 +6,8 @@
 
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
         <Label Text="Welcome to Xamarin Forms and Prism!" />
-        <Button Text="Call Function" Clicked="Button_Clicked" />
+        <Button Text="New Account" Command="{Binding GoToCommand}" CommandParameter="CreateAccountPage" />
+        <Button Text="Log In" Command="{Binding GoToCommand}" CommandParameter="LoginPage" />
     </StackLayout>
 
 </ContentPage>

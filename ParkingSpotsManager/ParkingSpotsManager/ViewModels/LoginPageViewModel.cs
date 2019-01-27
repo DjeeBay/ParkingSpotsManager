@@ -39,7 +39,6 @@ namespace ParkingSpotsManager.ViewModels
         private void LogIn(object parameter)
         {
             Console.WriteLine(Username + Password);
-            ParkingSpotsManager.Shared.Database.ParkingSpotsManagerDatabase.LogIn(Username, Password);
         }
     }
 }

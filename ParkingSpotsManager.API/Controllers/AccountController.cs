@@ -49,12 +49,19 @@ namespace ParkingSpotsManager.API.Controllers
                 if (userNameExists != null) {
                     return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Username already exists.\"}");
                 }
+                //TODO verify email validity
                 var userEmailExists = await userModel.GetByEmailAsync(user.Email);
                 if (userEmailExists != null) {
                     return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Email already used.\"}");
                 }
+                if (user.Password == null || user.Password.Length < 5) {
+                    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Password is too small, 5 caracters min.\"}");
+                }
 
-                return new OkObjectResult("ok");
+                user.Password = PasswordService.HashPassword(user.Password);
+                var createdUser = await userModel.CreateAsync(user);
+
+                return new OkObjectResult(createdUser);
             } catch (Exception e) { return new OkObjectResult(e.Message); }
         }
     }
