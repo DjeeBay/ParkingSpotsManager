@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ParkingSpotsManager.Shared.Constants;
+using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -64,11 +66,11 @@ namespace ParkingSpotsManager.ViewModels
                     email = Email
                 });
                 var httpClient = new HttpClient();
-                //httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                Console.WriteLine(json.ToString());
                 try {
-                    var result = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
-                    Console.WriteLine(result);
+                    var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                    var content = await response.Content.ReadAsStringAsync();
+                    var createdUser = JsonConvert.DeserializeObject<User>(content);
+                    //TODO test createdUser
                 } catch (Exception) { }
             }
         }
