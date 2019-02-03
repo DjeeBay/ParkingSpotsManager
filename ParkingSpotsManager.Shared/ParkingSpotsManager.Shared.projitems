@@ -12,7 +12,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Constants\APIConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants\APIConstantsExample.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Database\ParkingSpotsManagerDatabase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Libraries\Authenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PasswordService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\TokenService.cs" />
   </ItemGroup>
 </Project>

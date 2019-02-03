@@ -18,15 +18,5 @@ namespace ParkingSpotsManager.Views
         {
             InitializeComponent();
         }
-
-        private async void Button_Clicked(object sender, EventArgs e)
-        {
-            var url = $"{APIConstants.AzureAPIFunction1Url}&name=test";
-            var httpClient = new HttpClient();
-            try {
-                var result = await httpClient.GetStringAsync(url);
-                Console.WriteLine(result);
-            } catch (Exception) { }
-        }
     }
 }
