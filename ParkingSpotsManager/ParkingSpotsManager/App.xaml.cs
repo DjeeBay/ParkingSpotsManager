@@ -4,6 +4,7 @@ using ParkingSpotsManager.ViewModels;
 using ParkingSpotsManager.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Microsoft.IdentityModel.Tokens;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace ParkingSpotsManager

@@ -4,6 +4,7 @@ using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ using System.Text;
 
 namespace ParkingSpotsManager.ViewModels
 {
-	public class CreateAccountPageViewModel : BindableBase
+	public class CreateAccountPageViewModel : ViewModelBase
 	{
         private string _username;
         public string Username
@@ -45,7 +46,7 @@ namespace ParkingSpotsManager.ViewModels
 
         public DelegateCommand<object> CreateAccountCommand { get; private set; }
 
-        public CreateAccountPageViewModel()
+        public CreateAccountPageViewModel(INavigationService navigationService) : base(navigationService)
         {
             CreateAccountCommand = new DelegateCommand<object>(CreateAccountAsync, CanCreateAccount);
         }
@@ -65,13 +66,18 @@ namespace ParkingSpotsManager.ViewModels
                     password = Password,
                     email = Email
                 });
-                var httpClient = new HttpClient();
-                try {
-                    var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
-                    var content = await response.Content.ReadAsStringAsync();
-                    var createdUser = JsonConvert.DeserializeObject<User>(content);
-                    //TODO test createdUser
-                } catch (Exception) { }
+                using (var httpClient = new HttpClient()) {
+                    try {
+                        var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                        response.EnsureSuccessStatusCode();
+                        var content = await response.Content.ReadAsStringAsync();
+                        var createdUser = JsonConvert.DeserializeObject<User>(content);
+                        //TODO test createdUser / notif
+                        if (createdUser.Username != null) {
+                            await NavigationService.NavigateAsync("MainPage");
+                        }
+                    } catch (Exception) { }
+                }
             }
         }
     }

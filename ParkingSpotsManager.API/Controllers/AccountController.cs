@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ParkingSpotsManager.Shared.Libraries;
@@ -10,36 +11,47 @@ using ParkingSpotsManager.Shared.Services;
 
 namespace ParkingSpotsManager.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private Shared.Models.User userModel;
+        private User userModel;
 
         public AccountController()
         {
-            userModel = new Shared.Models.User();
+            userModel = new User();
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> Get() {
+            return new OkObjectResult(User.Identity.Name);
         }
 
+        [AllowAnonymous]
+        [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> LoginAsync([FromBody] Authenticator authenticator)
+        public async Task<IActionResult> Login([FromBody] Authenticator authenticator)
         {
             try {
                 var user = await userModel.GetByLoginAsync(authenticator.Login);
-                if (user != null) {
+                if (user != null && user.Id != 0) {
                     var passMatched = PasswordService.VerifyHashedPassword(user.Password, authenticator.Password);
                     if (passMatched) {
                         user.Password = null;
-                        return new OkObjectResult(user);
+                        user.AuthToken = TokenService.Get(user);
+
+                        return user != null && user.Id != 0 ? new OkObjectResult(user) : new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, try later.\"}");
                     }
                 }
-            } catch (Exception e) {
-                return new OkObjectResult(e.Message);
-            }
 
-            return new BadRequestResult();
+                return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, bad credentials.\"}");
+            } catch (Exception) {
+                return new BadRequestResult();
+            }
         }
 
+        [AllowAnonymous]
         [Route("[action]")]
         [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] User user)
@@ -60,6 +72,8 @@ namespace ParkingSpotsManager.API.Controllers
 
                 user.Password = PasswordService.HashPassword(user.Password);
                 var createdUser = await userModel.CreateAsync(user);
+                createdUser.Password = null;
+                createdUser.AuthToken = TokenService.Get(createdUser);
 
                 return new OkObjectResult(createdUser);
             } catch (Exception e) { return new OkObjectResult(e.Message); }

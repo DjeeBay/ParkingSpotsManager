@@ -15,5 +15,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Libraries\Authenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PasswordService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\TokenService.cs" />
   </ItemGroup>
 </Project>
