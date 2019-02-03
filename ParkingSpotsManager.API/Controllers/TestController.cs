@@ -13,27 +13,5 @@ namespace ParkingSpotsManager.API.Controllers
     [ApiController]
     public class TestController : ControllerBase
     {
-        // POST api/test
-        [HttpPost]
-        public ActionResult<User> Post([FromBody] Authenticator authenticator)
-        {
-            if (authenticator != null && authenticator.Login != null) {
-                return new OkObjectResult(new User() { Name = "toto", Token = "token" });
-            }
-
-            return new BadRequestResult();
-        }
-    }
-
-    public class Authenticator
-    {
-        public string Login { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class User
-    {
-        public string Name { get; set; }
-        public string Token { get; set; }
     }
 }
