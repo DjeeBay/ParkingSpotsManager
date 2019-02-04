@@ -4,7 +4,6 @@ using ParkingSpotsManager.ViewModels;
 using ParkingSpotsManager.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Microsoft.IdentityModel.Tokens;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace ParkingSpotsManager
@@ -25,8 +24,12 @@ namespace ParkingSpotsManager
         protected override async void OnInitialized()
         {
             InitializeComponent();
-            
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+
+            if (PrismApplicationBase.Current.Properties.ContainsKey("authToken") && PrismApplicationBase.Current.Properties["authToken"] != null) {
+                await NavigationService.NavigateAsync("HomePage");
+            } else {
+                await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            }
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -35,6 +38,8 @@ namespace ParkingSpotsManager
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<LoginPage, LoginPageViewModel>();
             containerRegistry.RegisterForNavigation<CreateAccountPage, CreateAccountPageViewModel>();
+            containerRegistry.RegisterForNavigation<ParkingManagementPage, ParkingManagementPageViewModel>();
+            containerRegistry.RegisterForNavigation<HomePage, HomePageViewModel>();
         }
     }
 }

@@ -11,6 +11,13 @@ namespace ParkingSpotsManager.ViewModels
     {
         protected INavigationService NavigationService { get; private set; }
 
+        private bool _isAuth = false;
+        public bool IsAuth
+        {
+            get => _isAuth;
+            set { SetProperty(ref _isAuth, value); }
+        }
+
         private string _title;
         public string Title
         {

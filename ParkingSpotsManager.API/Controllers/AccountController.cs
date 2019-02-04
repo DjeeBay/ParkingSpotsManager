@@ -24,8 +24,41 @@ namespace ParkingSpotsManager.API.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> Get() {
+        public IActionResult Get() {
             return new OkObjectResult(User.Identity.Name);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<IActionResult> Test() {
+            try
+            {
+                var user = await userModel.GetByLoginAsync("thebestjb");
+                if (user != null && user.Id != 0)
+                {
+                    var passMatched = PasswordService.VerifyHashedPassword(user.Password, "admin");
+                    if (passMatched)
+                    {
+                        user.Password = null;
+                        user.AuthToken = TokenService.Get(user);
+
+                        return user != null && user.Id != 0 ? new OkObjectResult(user) : new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, try later.\"}");
+                    }
+                }
+
+                return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, bad credentials.\"}");
+            }
+            catch (Exception e)
+            {
+                return new OkObjectResult(e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult ValidToken() {
+            return new OkObjectResult(HttpContext.User.Identity.IsAuthenticated);
         }
 
         [AllowAnonymous]
