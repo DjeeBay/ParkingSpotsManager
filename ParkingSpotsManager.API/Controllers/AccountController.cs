@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ParkingSpotsManager.Shared.Database;
 using ParkingSpotsManager.Shared.Libraries;
 using ParkingSpotsManager.Shared.Models;
 using ParkingSpotsManager.Shared.Services;
@@ -16,10 +17,12 @@ namespace ParkingSpotsManager.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private DataContext _context;
         private User userModel;
 
-        public AccountController()
+        public AccountController(DataContext context)
         {
+            _context = context;
             userModel = new User();
         }
         
@@ -32,27 +35,28 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> Test() {
-            try
-            {
-                var user = await userModel.GetByLoginAsync("thebestjb");
-                if (user != null && user.Id != 0)
-                {
-                    var passMatched = PasswordService.VerifyHashedPassword(user.Password, "admin");
-                    if (passMatched)
-                    {
-                        user.Password = null;
-                        user.AuthToken = TokenService.Get(user);
+            return new OkObjectResult(_context.Users.ToList());
+            //try
+            //{
+            //    var user = await userModel.GetByLoginAsync("thebestjb");
+            //    if (user != null && user.Id != 0)
+            //    {
+            //        var passMatched = PasswordService.VerifyHashedPassword(user.Password, "admin");
+            //        if (passMatched)
+            //        {
+            //            user.Password = null;
+            //            user.AuthToken = TokenService.Get(user);
 
-                        return user != null && user.Id != 0 ? new OkObjectResult(user) : new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, try later.\"}");
-                    }
-                }
+            //            return user != null && user.Id != 0 ? new OkObjectResult(user) : new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, try later.\"}");
+            //        }
+            //    }
 
-                return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, bad credentials.\"}");
-            }
-            catch (Exception e)
-            {
-                return new OkObjectResult(e.Message);
-            }
+            //    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, bad credentials.\"}");
+            //}
+            //catch (Exception e)
+            //{
+            //    return new OkObjectResult(e.Message);
+            //}
         }
 
         [HttpGet]
