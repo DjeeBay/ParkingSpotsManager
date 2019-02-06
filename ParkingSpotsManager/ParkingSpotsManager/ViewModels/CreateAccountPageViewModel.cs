@@ -76,7 +76,9 @@ namespace ParkingSpotsManager.ViewModels
                         if (createdUser.Username != null) {
                             await NavigationService.NavigateAsync("MainPage");
                         }
-                    } catch (Exception) { }
+                    } catch (Exception e) {
+                        Console.WriteLine(e.Message);
+                    }
                 }
             }
         }
