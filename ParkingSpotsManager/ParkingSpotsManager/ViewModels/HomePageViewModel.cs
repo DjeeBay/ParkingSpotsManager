@@ -27,7 +27,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private bool CanExecuteLogoutCommand(string arg)
         {
-            return IsAuth;
+            return true;
         }
 
         private async void OnLogoutCommandExecuted(string obj)
@@ -53,7 +53,7 @@ namespace ParkingSpotsManager.ViewModels
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    var response = await httpClient.GetAsync(APIConstants.AzureAPIValidTokenUrl);
+                    var response = await httpClient.GetAsync(APIConstants.ValidTokenUrl);
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
                     var isValid = JsonConvert.DeserializeObject<string>(content) == "true";

@@ -3,32 +3,27 @@
                   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                   xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
                   prism:ViewModelLocator.AutowireViewModel="True"
+                  xmlns:local="clr-namespace:ParkingSpotsManager.Views"
                   x:Class="ParkingSpotsManager.Views.HomePage">
 
     <MasterDetailPage.Master>
-        <NavigationPage Title="Required Foo" Icon="hamburger.png" IsVisible="{Binding IsAuth}">
-            <x:Arguments>
-                <ContentPage Title="Menu">
-                    <StackLayout Padding="40">
-                        <Label Text="{Binding UserName,StringFormat='Hello, {0}'}" />
-                        <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="Navigation/ViewA?message=Did%20you%20see%20the%20secret%20sauce%3F" />
-                        <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="Navigation/ViewB?message=Told%20you%20Prism%20Rocks%21%21%21" />
-                        <Button Text="Logout" Command="{Binding LogoutCommand}" />
-                        <Button Text="Login" Command="{Binding NavigateCommand}" CommandParameter="LoginPage" />
-                    </StackLayout>
-                </ContentPage>
-            </x:Arguments>
-        </NavigationPage>
+        <ContentPage Title="Menu">
+            <StackLayout Padding="40">
+                <Label Text="{Binding UserName,StringFormat='Hello, {0}'}" />
+                <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" />
+                <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingManagementPage" />
+                <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="Navigation/ViewB?message=Told%20you%20Prism%20Rocks%21%21%21" />
+                <Button Text="Logout" Command="{Binding LogoutCommand}" />
+            </StackLayout>
+        </ContentPage>
     </MasterDetailPage.Master>
 
     <MasterDetailPage.Detail>
-        <ContentPage Padding="10">
-            <ContentPage.Content>
-                <StackLayout Margin="5,30,5,5">
-                    <Label Text="Parkings List"></Label>
-                </StackLayout>
-            </ContentPage.Content>
-        </ContentPage>
+        <NavigationPage Title="Required Foo" Icon="hamburger.png" IsVisible="{Binding IsAuth}">
+            <x:Arguments>
+                <local:ParkingListPage />
+            </x:Arguments>
+        </NavigationPage>
     </MasterDetailPage.Detail>
 
 </MasterDetailPage>

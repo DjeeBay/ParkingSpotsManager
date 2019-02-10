@@ -15,14 +15,13 @@ namespace ParkingSpotsManager.ViewModels
         public MainPageViewModel(INavigationService navigationService)
             : base(navigationService)
         {
-            Title = "Main Page";
+            Title = "Parking Spots Manager";
 
             GoToCommand = new DelegateCommand<string>(GoToPage, CanGoToPage);
         }
 
         private bool CanGoToPage(string arg)
         {
-            //TODO check if user is auth
             return true;
         }
 

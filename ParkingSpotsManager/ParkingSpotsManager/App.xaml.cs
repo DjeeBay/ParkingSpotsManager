@@ -40,6 +40,8 @@ namespace ParkingSpotsManager
             containerRegistry.RegisterForNavigation<CreateAccountPage, CreateAccountPageViewModel>();
             containerRegistry.RegisterForNavigation<ParkingManagementPage, ParkingManagementPageViewModel>();
             containerRegistry.RegisterForNavigation<HomePage, HomePageViewModel>();
+            containerRegistry.RegisterForNavigation<ParkingListPage, ParkingListPageViewModel>();
+            containerRegistry.RegisterForNavigation<CreateParkingPage, CreateParkingPageViewModel>();
         }
     }
 }

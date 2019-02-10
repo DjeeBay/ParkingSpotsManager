@@ -4,5 +4,6 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="ParkingSpotsManager.Views.ParkingManagementPage">
-  
+
+    <Label Text="Manage Parking"></Label>
 </ContentPage>

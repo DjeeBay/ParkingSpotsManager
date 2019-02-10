@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ParkingSpotsManager.Shared.Database;
 using ParkingSpotsManager.Shared.Libraries;
 using ParkingSpotsManager.Shared.Models;
@@ -17,13 +18,11 @@ namespace ParkingSpotsManager.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private DataContext _context;
-        private User userModel;
+        private readonly DataContext _context;
 
         public AccountController(DataContext context)
         {
             _context = context;
-            userModel = new User();
         }
         
         [HttpGet]
@@ -36,27 +35,6 @@ namespace ParkingSpotsManager.API.Controllers
         [Route("[action]")]
         public async Task<IActionResult> Test() {
             return new OkObjectResult(_context.Users.ToList());
-            //try
-            //{
-            //    var user = await userModel.GetByLoginAsync("thebestjb");
-            //    if (user != null && user.Id != 0)
-            //    {
-            //        var passMatched = PasswordService.VerifyHashedPassword(user.Password, "admin");
-            //        if (passMatched)
-            //        {
-            //            user.Password = null;
-            //            user.AuthToken = TokenService.Get(user);
-
-            //            return user != null && user.Id != 0 ? new OkObjectResult(user) : new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, try later.\"}");
-            //        }
-            //    }
-
-            //    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, bad credentials.\"}");
-            //}
-            //catch (Exception e)
-            //{
-            //    return new OkObjectResult(e.Message);
-            //}
         }
 
         [HttpGet]
@@ -71,7 +49,7 @@ namespace ParkingSpotsManager.API.Controllers
         public async Task<IActionResult> Login([FromBody] Authenticator authenticator)
         {
             try {
-                var user = await userModel.GetByLoginAsync(authenticator.Login);
+                var user = await _context.Users.Where(u => u.Username == authenticator.Login).FirstOrDefaultAsync();
                 if (user != null && user.Id != 0) {
                     var passMatched = PasswordService.VerifyHashedPassword(user.Password, authenticator.Password);
                     if (passMatched) {
@@ -111,27 +89,8 @@ namespace ParkingSpotsManager.API.Controllers
 
                 return new OkObjectResult(createdUser);
             } catch (Exception e) {
-                return new OkObjectResult(e.Message);
+                return new OkObjectResult(e.InnerException.Message);
             }
-
-            //try {
-            //    var userNameExists = await userModel.GetByLoginAsync(user.Username);
-            //    if (userNameExists != null) {
-            //        return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Username already exists.\"}");
-            //    }
-            //    //TODO verify email validity
-            //    var userEmailExists = await userModel.GetByEmailAsync(user.Email);
-            //    if (userEmailExists != null) {
-            //        return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Email already used.\"}");
-            //    }
-
-            //    user.Password = PasswordService.HashPassword(user.Password);
-            //    var createdUser = await userModel.CreateAsync(user);
-            //    createdUser.Password = null;
-            //    createdUser.AuthToken = TokenService.Get(createdUser);
-
-            //    return new OkObjectResult(createdUser);
-            //} catch (Exception e) { return new OkObjectResult(e.Message); }
         }
     }
 }

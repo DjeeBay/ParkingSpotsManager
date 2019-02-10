@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Database;
 using ParkingSpotsManager.Shared.Services;
 
@@ -30,7 +31,7 @@ namespace ParkingSpotsManager.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(options => options.UseSqlite("Filename=./psm.db"));
+            services.AddDbContext<DataContext>(options => options.UseSqlite(APIConstants.ConnectionString));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
