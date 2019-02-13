@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
+             x:Name="ParkingList"
              x:Class="ParkingSpotsManager.Views.ParkingListPage">
 
     <StackLayout>
@@ -12,6 +13,10 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Command="{Binding Path=BindingContext.ShowParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Show" />
+                            <MenuItem Command="{Binding Path=BindingContext.EditParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Edit" />
+                        </ViewCell.ContextActions>
                         <StackLayout Padding="5" HorizontalOptions="StartAndExpand">
                             <Label Text="{Binding Name}" />
                         </StackLayout>

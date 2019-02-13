@@ -11,7 +11,7 @@
             <StackLayout Padding="40">
                 <Label Text="{Binding UserName,StringFormat='Hello, {0}'}" />
                 <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" />
-                <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingManagementPage" />
+                <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/CreateParkingPage" />
                 <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="Navigation/ViewB?message=Told%20you%20Prism%20Rocks%21%21%21" />
                 <Button Text="Logout" Command="{Binding LogoutCommand}" />
             </StackLayout>

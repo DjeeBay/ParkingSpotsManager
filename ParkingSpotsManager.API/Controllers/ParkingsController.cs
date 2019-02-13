@@ -48,15 +48,13 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetParking([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
             var parking = await _context.Parkings.FindAsync(id);
 
-            if (parking == null)
-            {
+            if (parking == null) {
                 return NotFound();
             }
 
@@ -69,30 +67,24 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutParking([FromRoute] int id, [FromBody] Parking parking)
         {
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
-            if (id != parking.Id)
-            {
+            if (id != parking.Id) {
                 return BadRequest();
             }
 
             _context.Entry(parking).State = EntityState.Modified;
 
-            try
-            {
+            try {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ParkingExists(id))
-                {
+            catch (DbUpdateConcurrencyException) {
+                if (!ParkingExists(id)) {
                     return NotFound();
                 }
-                else
-                {
+                else {
                     throw;
                 }
             }
@@ -104,8 +96,7 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostParking([FromBody] Parking parking)
         {
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
@@ -122,14 +113,12 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteParking([FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
             var parking = await _context.Parkings.FindAsync(id);
-            if (parking == null)
-            {
+            if (parking == null) {
                 return NotFound();
             }
 

@@ -6,7 +6,7 @@
              x:Class="ParkingSpotsManager.Views.CreateParkingPage">
 
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-        <Label Text="Username" />
+        <Label Text="Parking Name" />
         <Entry Text="{Binding Name}" Placeholder="name" />
 
         <Button Text="Create A New Parking" Command="{Binding CreateParkingCommand}" />

@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
-             x:Class="ParkingSpotsManager.Views.ParkingManagementPage">
+             x:Class="ParkingSpotsManager.Views.ParkingEditPage">
 
     <StackLayout>
-        <Label Text="{Binding CurrentParking.Name, StringFormat=Manage Parking \{0\}}" />
+        <Label Text="{Binding CurrentParking.Name, StringFormat=Edit Parking \{0\}}" />
+        <Entry Text="{Binding CurrentParking.Name}" Placeholder="username" />
     </StackLayout>
 </ContentPage>

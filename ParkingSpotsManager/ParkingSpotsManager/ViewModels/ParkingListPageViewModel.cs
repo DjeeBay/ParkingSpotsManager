@@ -22,9 +22,39 @@ namespace ParkingSpotsManager.ViewModels
             set { SetProperty(ref _parkings, value); }
         }
 
+        public DelegateCommand<Parking> ShowParkingCommand { get; }
+        public DelegateCommand<Parking> EditParkingCommand { get; }
+
         public ParkingListPageViewModel(INavigationService navigationService) : base (navigationService)
         {
+            ShowParkingCommand = new DelegateCommand<Parking>(OnShowParkingClicked, CanShowParking);
+            EditParkingCommand = new DelegateCommand<Parking>(OnEditParkingClicked, CanEditParking);
             GetParkingList();
+        }
+
+        private bool CanEditParking(object arg)
+        {
+            //TODO check selected parking rights
+            return true;
+        }
+
+        private async void OnEditParkingClicked(Parking parking)
+        {
+            var navParams = new NavigationParameters();
+            navParams.Add("parking", parking);
+            await NavigationService.NavigateAsync("ParkingEditPage", navParams);
+        }
+
+        private bool CanShowParking(object arg)
+        {
+            return true;
+        }
+
+        private async void OnShowParkingClicked(Parking parking)
+        {
+            var navParams = new NavigationParameters();
+            navParams.Add("parking", parking);
+            await NavigationService.NavigateAsync("ParkingManagementPage", navParams);
         }
 
         private async void GetParkingList()
