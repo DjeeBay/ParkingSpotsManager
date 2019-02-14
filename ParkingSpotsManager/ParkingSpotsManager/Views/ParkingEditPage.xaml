@@ -7,6 +7,7 @@
 
     <StackLayout>
         <Label Text="{Binding CurrentParking.Name, StringFormat=Edit Parking \{0\}}" />
-        <Entry Text="{Binding CurrentParking.Name}" Placeholder="username" />
+        <Entry Text="{Binding CurrentParking.Name}" Placeholder="name" />
+        <Button Text="Save" Command="{Binding SaveParkingCommand}" />
     </StackLayout>
 </ContentPage>
