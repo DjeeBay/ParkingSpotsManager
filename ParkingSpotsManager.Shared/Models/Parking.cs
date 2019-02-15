@@ -16,6 +16,9 @@ namespace ParkingSpotsManager.Shared.Models
         public int Columns { get; set; }
         public int Rows { get; set; }
 
+        public List<Spot> Spots { get; set; }
+        public List<User> Users { get; set; }
+
         [NotMapped]
         public bool IsCurrentUserAdmin { get; set; }
     }

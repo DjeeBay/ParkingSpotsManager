@@ -9,5 +9,19 @@
         <Label Text="{Binding CurrentParking.Name, StringFormat=Edit Parking \{0\}}" />
         <Entry Text="{Binding CurrentParking.Name}" Placeholder="name" />
         <Button Text="Save" Command="{Binding SaveParkingCommand}" />
+        
+        <Button Text="Add a spot" Command="{Binding GoToAddSpotCommand}" />
+
+        <ListView ItemsSource="{Binding CurrentParking.Spots}" VerticalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="5" HorizontalOptions="StartAndExpand">
+                            <Label Text="{Binding Name}" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </StackLayout>
 </ContentPage>

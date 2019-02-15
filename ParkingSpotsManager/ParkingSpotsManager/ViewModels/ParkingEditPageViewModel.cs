@@ -25,10 +25,28 @@ namespace ParkingSpotsManager.ViewModels
         }
 
         public DelegateCommand<object> SaveParkingCommand { get; }
+        public DelegateCommand<object> GoToAddSpotCommand { get; }
 
         public ParkingEditPageViewModel(INavigationService navigationService) : base (navigationService)
         {
             SaveParkingCommand = new DelegateCommand<object>(OnSaveParkingCommandExecutedAsync, CanSaveParking);
+            GoToAddSpotCommand = new DelegateCommand<object>(OnGoToAddSpotCommandExecutedAsync, CanAddSpot);
+        }
+
+        private bool CanAddSpot(object arg)
+        {
+            return true;
+        }
+
+        private async void OnGoToAddSpotCommandExecutedAsync(object obj)
+        {
+            var navParams = new NavigationParameters();
+            navParams.Add("parking", CurrentParking);
+            try {
+                await NavigationService.NavigateAsync("CreateSpotPage", navParams);
+            } catch (Exception e) {
+                Console.WriteLine(e.Message);
+            }
         }
 
         private bool CanSaveParking(object arg)

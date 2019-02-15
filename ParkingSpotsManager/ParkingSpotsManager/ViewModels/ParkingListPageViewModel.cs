@@ -70,7 +70,7 @@ namespace ParkingSpotsManager.ViewModels
                     Console.WriteLine(Parkings.Count);
 
                 } catch (Exception) {
-                    await NavigationService.NavigateAsync("MainPage");
+                    await NavigationService.NavigateAsync("NavigationPage/MainPage");
                 }
             }
         }

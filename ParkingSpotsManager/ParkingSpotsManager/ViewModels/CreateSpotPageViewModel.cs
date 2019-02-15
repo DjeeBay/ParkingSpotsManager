@@ -13,45 +13,52 @@ using System.Text;
 
 namespace ParkingSpotsManager.ViewModels
 {
-	public class CreateParkingPageViewModel : ViewModelBase
+	public class CreateSpotPageViewModel : ViewModelBase, INavigationAware
 	{
-        private string _name;
-        public string Name
-        {
-            get => _name;
-            set { SetProperty(ref _name, value); }
+        private Spot _spot;
+        public Spot Spot {
+            get => _spot;
+            set { SetProperty(ref _spot, value); }
         }
 
-        public DelegateCommand<object> CreateParkingCommand { get; private set; }
+        public DelegateCommand<object> CreateSpotCommand { get; set; }
 
-        public CreateParkingPageViewModel(INavigationService navigationService) : base (navigationService)
+        public CreateSpotPageViewModel(INavigationService navigationService) : base (navigationService)
         {
-            CreateParkingCommand = new DelegateCommand<object>(CreateParkingAsync, CanCreateParking).ObservesProperty(() => IsAuth);
+            Spot = new Spot();
+            CreateSpotCommand = new DelegateCommand<object>(OnCreateSpotCommandExecutedAsync, CanCreateSpot);
         }
 
-        private bool CanCreateParking(object arg)
+        private bool CanCreateSpot(object arg)
         {
             return true;
         }
 
-        private async void CreateParkingAsync(object obj)
+        private async void OnCreateSpotCommandExecutedAsync(object obj)
         {
-            if (Name != null && Name.Length > 0) {
-                var url = APIConstants.ParkingREST;
+            if (Spot.Name != null && Spot.Name.Length > 0) {
+                var url = APIConstants.SpotREST;
                 var token = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
-                var json = JObject.FromObject(new Parking { Name = Name });
+                var json = JObject.FromObject(Spot);
                 using (var httpClient = new HttpClient()) {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     try {
                         var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                         response.EnsureSuccessStatusCode();
-                        //TODO notif
+                        //TODO notif & redirect to parking edit
                         await NavigationService.NavigateAsync("ParkingListPage");
                     } catch (Exception e) {
                         Console.WriteLine(e.Message);
                     }
                 }
             }
+        }
+
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+            var parking = parameters.GetValue<Parking>("parking");
+            Spot.ParkingId = parking.Id;
         }
     }
 }

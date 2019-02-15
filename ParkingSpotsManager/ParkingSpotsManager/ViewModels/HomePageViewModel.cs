@@ -34,7 +34,7 @@ namespace ParkingSpotsManager.ViewModels
         {
             IsAuth = false;
             PrismApplicationBase.Current.Properties["authToken"] = null;
-            await NavigationService.NavigateAsync("MainPage");
+            await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
 
         private bool CanExecuteNavigateCommand(string arg)
@@ -58,12 +58,12 @@ namespace ParkingSpotsManager.ViewModels
                     var content = await response.Content.ReadAsStringAsync();
                     var isValid = JsonConvert.DeserializeObject<string>(content) == "true";
                     if (!isValid) {
-                        await NavigationService.NavigateAsync("MainPage");
+                        await NavigationService.NavigateAsync("NavigationPage/MainPage");
                     } else {
                         IsAuth = true;
                     }
                 } catch (Exception) {
-                    await NavigationService.NavigateAsync("MainPage");
+                    await NavigationService.NavigateAsync("NavigationPage/MainPage");
                 }
             }
         }
