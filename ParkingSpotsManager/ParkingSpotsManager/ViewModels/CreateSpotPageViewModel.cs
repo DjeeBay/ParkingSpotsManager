@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
@@ -15,6 +16,13 @@ namespace ParkingSpotsManager.ViewModels
 {
 	public class CreateSpotPageViewModel : ViewModelBase, INavigationAware
 	{
+        private Parking _currentParking;
+        public Parking CurrentParking
+        {
+            get => _currentParking;
+            set { SetProperty(ref _currentParking, value); }
+        }
+
         private Spot _spot;
         public Spot Spot {
             get => _spot;
@@ -45,8 +53,13 @@ namespace ParkingSpotsManager.ViewModels
                     try {
                         var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                         response.EnsureSuccessStatusCode();
-                        //TODO notif & redirect to parking edit
-                        await NavigationService.NavigateAsync("ParkingListPage");
+                        var content = await response.Content.ReadAsStringAsync();
+                        var createdSpot = JsonConvert.DeserializeObject<Spot>(content);
+                        CurrentParking.Spots.Add(createdSpot);
+                        //TODO notif
+                        var navParams = new NavigationParameters();
+                        navParams.Add("parking", CurrentParking);
+                        await NavigationService.NavigateAsync("ParkingEditPage", navParams);
                     } catch (Exception e) {
                         Console.WriteLine(e.Message);
                     }
@@ -58,6 +71,7 @@ namespace ParkingSpotsManager.ViewModels
         {
             base.OnNavigatedTo(parameters);
             var parking = parameters.GetValue<Parking>("parking");
+            CurrentParking = parking;
             Spot.ParkingId = parking.Id;
         }
     }

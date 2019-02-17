@@ -9,7 +9,7 @@ using ParkingSpotsManager.Shared.Database;
 namespace ParkingSpotsManager.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190214234407_InitialMigration")]
+    [Migration("20190217002918_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,13 +23,13 @@ namespace ParkingSpotsManager.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Columns");
+                    b.Property<int?>("Columns");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255);
 
-                    b.Property<int>("Rows");
+                    b.Property<int?>("Rows");
 
                     b.HasKey("Id");
 
@@ -45,13 +45,13 @@ namespace ParkingSpotsManager.API.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
-                    b.Property<DateTime>("OccupiedAt");
+                    b.Property<DateTime?>("OccupiedAt");
 
-                    b.Property<int>("OccupiedBy");
+                    b.Property<int?>("OccupiedBy");
 
                     b.Property<int>("ParkingId");
 
-                    b.Property<DateTime>("ReleasedAt");
+                    b.Property<DateTime?>("ReleasedAt");
 
                     b.HasKey("Id");
 

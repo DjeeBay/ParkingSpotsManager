@@ -12,8 +12,6 @@ namespace ParkingSpotsManager.Views
 {
     public partial class MainPage : ContentPage
     {
-        private bool authenticated = false;
-
         public MainPage()
         {
             InitializeComponent();

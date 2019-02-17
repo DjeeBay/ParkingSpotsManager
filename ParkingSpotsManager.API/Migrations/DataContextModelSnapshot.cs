@@ -21,13 +21,13 @@ namespace ParkingSpotsManager.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Columns");
+                    b.Property<int?>("Columns");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255);
 
-                    b.Property<int>("Rows");
+                    b.Property<int?>("Rows");
 
                     b.HasKey("Id");
 
@@ -43,13 +43,13 @@ namespace ParkingSpotsManager.API.Migrations
                         .IsRequired()
                         .HasMaxLength(255);
 
-                    b.Property<DateTime>("OccupiedAt");
+                    b.Property<DateTime?>("OccupiedAt");
 
-                    b.Property<int>("OccupiedBy");
+                    b.Property<int?>("OccupiedBy");
 
                     b.Property<int>("ParkingId");
 
-                    b.Property<DateTime>("ReleasedAt");
+                    b.Property<DateTime?>("ReleasedAt");
 
                     b.HasKey("Id");
 

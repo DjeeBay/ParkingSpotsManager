@@ -33,7 +33,8 @@ namespace ParkingSpotsManager.API
         {
             services.AddDbContext<DataContext>(options => options.UseSqlite(APIConstants.ConnectionString));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
+            options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             var key = TokenService.GetKey();
             services.AddAuthentication(x => {

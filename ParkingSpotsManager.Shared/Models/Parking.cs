@@ -13,8 +13,8 @@ namespace ParkingSpotsManager.Shared.Models
         [Required]
         [StringLength(255, MinimumLength = 1)]
         public string Name { get; set; }
-        public int Columns { get; set; }
-        public int Rows { get; set; }
+        public int? Columns { get; set; }
+        public int? Rows { get; set; }
 
         public List<Spot> Spots { get; set; }
         public List<User> Users { get; set; }

@@ -37,7 +37,7 @@ namespace ParkingSpotsManager.API.Controllers
         {
             var userID = User.Identity.Name;
             var userParkingsList = _context.UsersParkings.Where(up => up.UserId == int.Parse(userID)).ToList();
-            var parkingsList = _context.Parkings.Where(p => userParkingsList.Any(up => up.ParkingId == p.Id)).ToList();
+            var parkingsList = _context.Parkings.Include(p => p.Spots).Where(p => userParkingsList.Any(up => up.ParkingId == p.Id)).ToList();
             parkingsList.ForEach(p => {
                 p.IsCurrentUserAdmin = userParkingsList.Where(up => up.ParkingId == p.Id).SingleOrDefault().IsAdmin == 1;
             });
@@ -52,10 +52,15 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var parking = await _context.Parkings.FindAsync(id);
+            var parkings = await _context.Parkings.Include(p => p.Spots).ToListAsync();
+            var parking = parkings.FirstOrDefault(p => p.Id == id);
 
             if (parking == null) {
                 return NotFound();
+            }
+
+            foreach (var spot in parking.Spots) {
+                spot.Occupier = _context.Users.Find(spot.OccupiedBy);
             }
 
             parking.IsCurrentUserAdmin = _context.UsersParkings.Where(up => up.ParkingId == parking.Id && up.UserId == int.Parse(User.Identity.Name)).SingleOrDefault().IsAdmin == 1;

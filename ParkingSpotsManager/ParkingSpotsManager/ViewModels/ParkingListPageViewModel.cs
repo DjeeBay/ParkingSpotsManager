@@ -67,8 +67,6 @@ namespace ParkingSpotsManager.ViewModels
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
                     Parkings = JsonConvert.DeserializeObject<ObservableCollection<Parking>>(content);
-                    Console.WriteLine(Parkings.Count);
-
                 } catch (Exception) {
                     await NavigationService.NavigateAsync("NavigationPage/MainPage");
                 }

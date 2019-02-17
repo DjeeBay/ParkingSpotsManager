@@ -2,10 +2,38 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:c="clr-namespace:ParkingSpotsManager.Converters"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="ParkingSpotsManager.Views.ParkingManagementPage">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <c:DisplayOccupiedByConverter x:Key="DisplayOccupiedBy" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <NavigationPage.TitleView>
+        <Label Text="{Binding CurrentParking.Name}" HorizontalOptions="Center" />
+    </NavigationPage.TitleView>
+    
     <StackLayout>
-        <Label Text="{Binding CurrentParking.Name, StringFormat=Manage Parking \{0\}}" />
+        <ListView ItemsSource="{Binding CurrentParking.Spots}" VerticalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="5" HorizontalOptions="StartAndExpand">
+                            <TableView>
+                                <TableRoot>
+                                    <TableSection>
+                                        <SwitchCell Text="{Binding Name}" On="True" />
+                                        <TextCell Detail="{Binding Occupier, Converter=DisplayOccupiedBy}" />
+                                    </TableSection>
+                                </TableRoot>
+                            </TableView>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </StackLayout>
 </ContentPage>

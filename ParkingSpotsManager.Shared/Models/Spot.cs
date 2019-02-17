@@ -17,8 +17,13 @@ namespace ParkingSpotsManager.Shared.Models
 
         [ForeignKey("ParkingId")]
         public Parking Parking { get; set; }
-        public int OccupiedBy { get; set; }
-        public DateTime OccupiedAt { get; set; }
-        public DateTime ReleasedAt { get; set; }
+        
+        public int? OccupiedBy { get; set; }
+
+        [ForeignKey("OccupiedBy")]
+        public User Occupier { get; set; }
+
+        public DateTime? OccupiedAt { get; set; }
+        public DateTime? ReleasedAt { get; set; }
     }
 }

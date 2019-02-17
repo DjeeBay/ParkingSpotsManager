@@ -14,8 +14,8 @@ namespace ParkingSpotsManager.API.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
-                    Columns = table.Column<int>(nullable: false),
-                    Rows = table.Column<int>(nullable: false)
+                    Columns = table.Column<int>(nullable: true),
+                    Rows = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -45,9 +45,9 @@ namespace ParkingSpotsManager.API.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
                     ParkingId = table.Column<int>(nullable: false),
-                    OccupiedBy = table.Column<int>(nullable: false),
-                    OccupiedAt = table.Column<DateTime>(nullable: false),
-                    ReleasedAt = table.Column<DateTime>(nullable: false)
+                    OccupiedBy = table.Column<int>(nullable: true),
+                    OccupiedAt = table.Column<DateTime>(nullable: true),
+                    ReleasedAt = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {

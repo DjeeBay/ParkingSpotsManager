@@ -42,11 +42,7 @@ namespace ParkingSpotsManager.ViewModels
         {
             var navParams = new NavigationParameters();
             navParams.Add("parking", CurrentParking);
-            try {
-                await NavigationService.NavigateAsync("CreateSpotPage", navParams);
-            } catch (Exception e) {
-                Console.WriteLine(e.Message);
-            }
+            await NavigationService.NavigateAsync("CreateSpotPage", navParams);
         }
 
         private bool CanSaveParking(object arg)
