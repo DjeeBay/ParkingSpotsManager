@@ -4,6 +4,7 @@ using ParkingSpotsManager.Shared.Models;
 using Prism;
 using Prism.Commands;
 using Prism.Navigation;
+using Prism.Services;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -14,6 +15,8 @@ namespace ParkingSpotsManager.ViewModels
 {
     public class SpotEditPageViewModel : ViewModelBase
     {
+        private IPageDialogService _dialogService;
+
         private Spot _currentSpot;
         public Spot CurrentSpot
         {
@@ -24,8 +27,9 @@ namespace ParkingSpotsManager.ViewModels
         public DelegateCommand<object> SaveSpotCommand { get; }
         public DelegateCommand<object> DeleteSpotCommand { get; }
 
-        public SpotEditPageViewModel(INavigationService navigationService) : base(navigationService)
+        public SpotEditPageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base(navigationService)
         {
+            _dialogService = dialogService;
             SaveSpotCommand = new DelegateCommand<object>(OnSaveSpotCommandExecutedAsync, CanSaveSpot);
             DeleteSpotCommand = new DelegateCommand<object>(OnDeleteSpotCommandExecutedAsync, CanDeleteSpot);
         }
@@ -37,6 +41,26 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void OnDeleteSpotCommandExecutedAsync(object obj)
         {
+            var confirmdelete = await _dialogService.DisplayAlertAsync("Delete the spot", "Are you sure ?", "Yes", "No");
+            if (confirmdelete) {
+                var url = new StringBuilder(APIConstants.SpotREST).Append("/").Append(CurrentSpot.Id).ToString();
+                var token = PrismApplicationBase.Current.Properties["authToken"].ToString();
+                using (var httpClient = new HttpClient())
+                {
+                    try
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                        var response = await httpClient.DeleteAsync(url);
+                        response.EnsureSuccessStatusCode();
+                        var content = await response.Content.ReadAsStringAsync();
+                        await NavigationService.NavigateAsync("ParkingListPage");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                }
+            }
         }
 
         private bool CanSaveSpot(object arg)
