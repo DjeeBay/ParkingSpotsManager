@@ -9,6 +9,8 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <c:DisplayOccupiedByConverter x:Key="DisplayOccupiedBy" />
+            <c:IsSpotOccupiedConverter x:Key="IsSpotOccupied" />
+            <c:CanUpdateSpotStatusConverter x:Key="CanUpdateSpotStatus" />
         </ResourceDictionary>
     </ContentPage.Resources>
     
@@ -17,11 +19,24 @@
     </NavigationPage.TitleView>
     
     <StackLayout>
-        <ListView ItemsSource="{Binding CurrentParking.Spots}" VerticalOptions="FillAndExpand">
+        <ListView ItemsSource="{Binding CurrentParking.Spots}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <StackLayout Padding="5" HorizontalOptions="StartAndExpand">
+                        <Grid Padding="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="7*" />
+                                <ColumnDefinition Width="3*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Label Text="{Binding Name}" Grid.Column="0" Grid.Row="0" />
+                            <Switch IsToggled="{Binding OccupiedBy, Converter={StaticResource IsSpotOccupied}}" IsEnabled="{Binding ., Converter={StaticResource CanUpdateSpotStatus}, ConverterParameter={Binding CurrentParking}}" Grid.Column="1" Grid.Row="0" />
+                            <Label Text="{Binding Occupier, Converter={StaticResource DisplayOccupiedBy}}" Grid.Row="1" Grid.ColumnSpan="2" />
+                        </Grid>
+                        <!--<StackLayout Padding="5" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                             <TableView>
                                 <TableRoot>
                                     <TableSection>
@@ -30,7 +45,7 @@
                                     </TableSection>
                                 </TableRoot>
                             </TableView>
-                        </StackLayout>
+                        </StackLayout>-->
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>

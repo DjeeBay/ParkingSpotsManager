@@ -25,5 +25,8 @@ namespace ParkingSpotsManager.Shared.Models
 
         public DateTime? OccupiedAt { get; set; }
         public DateTime? ReleasedAt { get; set; }
+
+        [NotMapped]
+        public bool IsCurrentUserAdmin { get; set; }
     }
 }

@@ -72,6 +72,10 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutParking([FromRoute] int id, [FromBody] Parking parking)
         {
+            if (!IsAdmin(parking)) {
+                return BadRequest();
+            }
+
             if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
@@ -123,7 +127,7 @@ namespace ParkingSpotsManager.API.Controllers
             }
 
             var parking = await _context.Parkings.FindAsync(id);
-            if (parking == null) {
+            if (parking == null || !IsAdmin(parking)) {
                 return NotFound();
             }
 
@@ -136,6 +140,14 @@ namespace ParkingSpotsManager.API.Controllers
         private bool ParkingExists(int id)
         {
             return _context.Parkings.Any(e => e.Id == id);
+        }
+
+        private bool IsAdmin(Parking parking)
+        {
+            var userID = User.Identity.Name;
+            var userParking = _context.UsersParkings.Where(up => up.ParkingId == parking.Id && up.UserId == int.Parse(userID) && up.IsAdmin == 1).FirstOrDefault();
+
+            return userParking != null;
         }
     }
 }
