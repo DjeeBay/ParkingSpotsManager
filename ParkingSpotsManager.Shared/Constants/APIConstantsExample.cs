@@ -17,5 +17,10 @@ namespace ParkingSpotsManager.Shared.Constants
         public const string ParkingREST = "";
         public const string SpotREST = "";
         public const string GetUserParkingsUrl = "";
+
+        public static string ChangeSpotStatus(int spotID)
+        {
+            return $"";
+        }
     }
 }

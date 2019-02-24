@@ -132,6 +132,51 @@ namespace ParkingSpotsManager.API.Controllers
             return Ok(spot);
         }
 
+        // PUT: api/Spots/5/ChangeStatus
+        [HttpPut]
+        [Route("{id}/[action]")]
+        public async Task<IActionResult> ChangeStatus([FromBody] Spot spot)
+        {
+            if (!IsParkingUser(spot)) {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            var storedSpot = _context.Spots.FirstOrDefault(s => s.Id == spot.Id);
+            if (storedSpot != null) {
+                try {
+                    if (spot.OccupiedAt == null) {
+                        if (storedSpot.OccupiedAt != null && storedSpot.OccupiedBy != null) {
+                            storedSpot.ReleasedAt = DateTime.Now;
+                        }
+                        storedSpot.OccupiedBy = null;
+                        storedSpot.OccupiedAt = null;
+                    } else {
+                        storedSpot.OccupiedBy = int.Parse(User.Identity.Name);
+                        storedSpot.OccupiedAt = DateTime.Now;
+                        storedSpot.ReleasedAt = null;
+                    }
+                    var entries = await _context.SaveChangesAsync();
+                    var spots = _context.Spots.Where(s => s.ParkingId == storedSpot.ParkingId).ToList();
+                    foreach (var singleSpot in spots) {
+                        singleSpot.Occupier = _context.Users.FirstOrDefault(u => u.Id == singleSpot.OccupiedBy);
+                    }
+                    return Ok(spots);
+                } catch (DbUpdateConcurrencyException) {
+                    if (!SpotExists(spot.Id)) {
+                        return NotFound();
+                    } else {
+                        throw;
+                    }
+                }
+            }
+
+            return NotFound();
+        }
+
         private bool SpotExists(int id)
         {
             return _context.Spots.Any(e => e.Id == id);
@@ -143,6 +188,15 @@ namespace ParkingSpotsManager.API.Controllers
             var storedSpot = _context.Spots.Find(spot.Id);
             var parking = _context.Parkings.Find(spot.ParkingId);
             var userParking = _context.UsersParkings.Where(up => up.ParkingId == parking.Id && up.UserId == int.Parse(userID) && up.IsAdmin == 1).FirstOrDefault();
+
+            return userParking != null;
+        }
+
+        private bool IsParkingUser(Spot spot)
+        {
+            var userID = User.Identity.Name;
+            var storedSpot = _context.Spots.Find(spot.Id);
+            var userParking = _context.UsersParkings.Where(up => up.ParkingId == spot.ParkingId && up.UserId == int.Parse(userID)).FirstOrDefault();
 
             return userParking != null;
         }

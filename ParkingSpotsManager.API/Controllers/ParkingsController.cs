@@ -40,6 +40,7 @@ namespace ParkingSpotsManager.API.Controllers
             var parkingsList = _context.Parkings.Include(p => p.Spots).Where(p => userParkingsList.Any(up => up.ParkingId == p.Id)).ToList();
             parkingsList.ForEach(p => {
                 p.IsCurrentUserAdmin = userParkingsList.Where(up => up.ParkingId == p.Id).SingleOrDefault().IsAdmin == 1;
+                p.Spots.ForEach(s => s.Occupier = _context.Users.Find(s.OccupiedBy));
             });
             return parkingsList;
         }
