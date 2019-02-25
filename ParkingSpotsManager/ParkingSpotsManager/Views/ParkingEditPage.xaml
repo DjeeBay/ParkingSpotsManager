@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Name="ParkingEdit"
+             x:Class="ParkingSpotsManager.Views.ParkingEditPage">
+
+    <StackLayout>
+        <Label Text="{Binding CurrentParking.Name, StringFormat=Edit Parking \{0\}}" />
+        <Entry Text="{Binding CurrentParking.Name}" Placeholder="name" />
+        <Button Text="Save" Command="{Binding SaveParkingCommand}" />
+        
+        <Button Text="Add a spot" Command="{Binding GoToAddSpotCommand}" />
+
+        <ListView ItemsSource="{Binding CurrentParking.Spots}" VerticalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Command="{Binding Path=BindingContext.EditSpotCommand, Source={x:Reference Name=ParkingEdit}}" CommandParameter="{Binding .}" Text="Edit" />
+                        </ViewCell.ContextActions>
+                        <StackLayout Padding="5" HorizontalOptions="StartAndExpand">
+                            <Label Text="{Binding Name}" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>

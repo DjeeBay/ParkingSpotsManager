@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,8 @@ namespace ParkingSpotsManager.Shared.Database
 {
     public static class ParkingSpotsManagerDatabase
     {
-        private static string ConnectionString = Environment.GetEnvironmentVariable("SQLCONNSTR_ParkingSpotsManagerConnectionString");
+        //private static string ConnectionString = Environment.GetEnvironmentVariable("SQLCONNSTR_ParkingSpotsManagerConnectionString");
+        private static string ConnectionString = APIConstants.ConnectionString;
 
         public static async Task<DataTable> GetDataTableAsync(string query)
         {

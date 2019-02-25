@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="ParkingSpotsManager.Views.CreateSpotPage">
+
+    <NavigationPage.TitleView>
+        <Label HorizontalOptions="Center" Text="{Binding CurrentParking.Name, StringFormat='Adding a spot to {0}'}" />
+    </NavigationPage.TitleView>
+    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
+        <Label Text="Spot Name" />
+        <Entry Text="{Binding Spot.Name}" Placeholder="name" />
+
+        <Button Text="Create A New Spot" Command="{Binding CreateSpotCommand}" />
+    </StackLayout>
+</ContentPage>

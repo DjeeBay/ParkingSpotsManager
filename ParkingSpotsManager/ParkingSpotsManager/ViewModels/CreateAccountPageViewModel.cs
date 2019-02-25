@@ -48,6 +48,7 @@ namespace ParkingSpotsManager.ViewModels
 
         public CreateAccountPageViewModel(INavigationService navigationService) : base(navigationService)
         {
+            Title = "New account";
             CreateAccountCommand = new DelegateCommand<object>(CreateAccountAsync, CanCreateAccount);
         }
 
@@ -60,7 +61,7 @@ namespace ParkingSpotsManager.ViewModels
         private async void CreateAccountAsync(object obj)
         {
             if (Username != null && Password != null && ConfirmedPassword != null && Email != null && Password == ConfirmedPassword) {
-                var url = $"{APIConstants.AzureAPICreateAccountUrl}";
+                var url = $"{APIConstants.CreateAccountUrl}";
                 var json = JObject.FromObject(new {
                     username = Username,
                     password = Password,
@@ -74,9 +75,11 @@ namespace ParkingSpotsManager.ViewModels
                         var createdUser = JsonConvert.DeserializeObject<User>(content);
                         //TODO test createdUser / notif
                         if (createdUser.Username != null) {
-                            await NavigationService.NavigateAsync("MainPage");
+                            await NavigationService.NavigateAsync("LoginPage");
                         }
-                    } catch (Exception) { }
+                    } catch (Exception e) {
+                        Console.WriteLine(e.Message);
+                    }
                 }
             }
         }
