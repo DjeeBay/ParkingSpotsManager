@@ -32,9 +32,9 @@ namespace ParkingSpotsManager.Behaviors
         {
             var stackLayout = sender as StackLayout;
             if (OccupiedBy != null) {
-                stackLayout.BackgroundColor = Color.Firebrick;
+                stackLayout.BackgroundColor = Color.FromHex("f8d7da");
             } else {
-                stackLayout.BackgroundColor = Color.Default;
+                stackLayout.BackgroundColor = Color.FromHex("d4edda");
             }
         }
     }
