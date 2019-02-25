@@ -34,19 +34,19 @@ namespace ParkingSpotsManager.ViewModels
 
         public LoginPageViewModel(INavigationService navigationService) : base (navigationService)
         {
+            Title = "Log in";
             LogInCommand = new DelegateCommand<object>(LogIn, CanLogIn);
         }
 
         private bool CanLogIn(object arg)
         {
-            //TODO check if user is already authenticated.
             return true;
         }
 
         private async void LogIn(object parameter)
         {
             if (Username != null && Password != null) {
-                var url = APIConstants.AzureAPILoginUrl;
+                var url = APIConstants.LoginUrl;
                 var json = JObject.FromObject(new {
                     login = Username,
                     password = Password
@@ -58,16 +58,19 @@ namespace ParkingSpotsManager.ViewModels
                         var content = await response.Content.ReadAsStringAsync();
                         var authUser = JsonConvert.DeserializeObject<User>(content);
                         if (authUser.Username != null && authUser.Id != 0 && authUser.AuthToken != null) {
+                            //TODO store user data
                             if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken")) {
                                 Prism.PrismApplicationBase.Current.Properties["authToken"] = authUser.AuthToken;
                             } else {
                                 Prism.PrismApplicationBase.Current.Properties.Add("authToken", authUser.AuthToken);
                             }
                             await Prism.PrismApplicationBase.Current.SavePropertiesAsync();
-                            await NavigationService.NavigateAsync("MaingePage");
+                            await NavigationService.NavigateAsync("HomePage");
                         }
                         //TODO else notify bad login
-                    } catch (Exception) { }
+                    } catch (Exception e) {
+                        Console.WriteLine(e.Message);
+                    }
                 }
             }
         }

@@ -9,9 +9,18 @@ namespace ParkingSpotsManager.Shared.Constants
     /// </summary>
     public static class APIConstantsExample
     {
-        public const string AzureAPIFunction1Url = "https://func1.url";
-        public const string AzureAPICreateAccountUrl = "";
-        public const string AzureAPILoginUrl = "";
+        public const string ConnectionString = @"";
+        public const string CreateAccountUrl = "";
+        public const string LoginUrl = "";
+        public const string ValidTokenUrl = "";
         public const string TokenSecretKey = "secret phrase";
+        public const string ParkingREST = "";
+        public const string SpotREST = "";
+        public const string GetUserParkingsUrl = "";
+
+        public static string ChangeSpotStatus(int spotID)
+        {
+            return $"";
+        }
     }
 }

@@ -11,9 +11,13 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Constants\APIConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants\APIConstantsExample.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Database\DataContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Database\ParkingSpotsManagerDatabase.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Libraries\Authenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Parking.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Spot.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UserParking.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PasswordService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\TokenService.cs" />
   </ItemGroup>

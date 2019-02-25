@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:bhv="clr-namespace:ParkingSpotsManager.Behaviors"
+             xmlns:c="clr-namespace:ParkingSpotsManager.Converters"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Name="SpotList"
+             x:Class="ParkingSpotsManager.Views.ParkingManagementPage">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <c:DisplayOccupiedByConverter x:Key="DisplayOccupiedBy" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <NavigationPage.TitleView>
+        <Label Text="{Binding CurrentParking.Name}" HorizontalOptions="Center" />
+    </NavigationPage.TitleView>
+    
+    <StackLayout>
+        <ListView ItemsSource="{Binding SpotList}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Command="{Binding Path=BindingContext.TakeSpotCommand, Source={x:Reference Name=SpotList}}" CommandParameter="{Binding .}" Text="Parked !" />
+                            <MenuItem Command="{Binding Path=BindingContext.ReleaseSpotCommand, Source={x:Reference Name=SpotList}}" CommandParameter="{Binding .}" Text="Release" />
+                        </ViewCell.ContextActions>
+                        <StackLayout BindingContext="{Binding .}" Padding="5" HorizontalOptions="Fill">
+                            <StackLayout.Behaviors>
+                                <bhv:OccupancyBackgroundBehavior OccupiedBy="{Binding OccupiedBy}" />
+                            </StackLayout.Behaviors>
+                            <Label Text="{Binding Name}" Font="18" />
+                            <Label Text="{Binding Occupier, Converter={StaticResource DisplayOccupiedBy}}" TextColor="Gray" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>
