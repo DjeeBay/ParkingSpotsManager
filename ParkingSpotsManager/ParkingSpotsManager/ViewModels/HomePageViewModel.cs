@@ -33,6 +33,7 @@ namespace ParkingSpotsManager.ViewModels
         private async void OnLogoutCommandExecuted(string obj)
         {
             IsAuth = false;
+            AuthToken = null;
             PrismApplicationBase.Current.Properties["authToken"] = null;
             await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
