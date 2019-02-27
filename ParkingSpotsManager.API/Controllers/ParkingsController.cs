@@ -138,6 +138,36 @@ namespace ParkingSpotsManager.API.Controllers
             return Ok(parking);
         }
 
+        [HttpGet]
+        [Route("[action]/{parkingID}/{userID}")]
+        public async Task<IActionResult> SendInvitation([FromRoute] int parkingID, [FromRoute] int userID)
+        {
+            var parking = _context.Parkings.FirstOrDefault(p => p.Id == parkingID);
+            var user = _context.Users.FirstOrDefault(u => u.Id == userID);
+            if (parking == null || user == null) {
+                return BadRequest();
+            }
+
+            var existingUserParking = _context.UsersParkings.Where(up => up.UserId == userID && up.ParkingId == parkingID).FirstOrDefault();
+            if (existingUserParking != null) {
+                return BadRequest();
+            }
+
+            try {
+                var userParking = new UserParking {
+                    UserId = userID,
+                    ParkingId = parkingID,
+                    IsAdmin = 0
+                };
+                _context.UsersParkings.Add(userParking);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            } catch (DbUpdateConcurrencyException) {
+                throw;
+            }
+        }
+
         private bool ParkingExists(int id)
         {
             return _context.Parkings.Any(e => e.Id == id);

@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="ParkingSpotsManager.Views.InvitePage">
+
+    <StackLayout HorizontalOptions="Center" VerticalOptions="Start">
+        <Label Text="Select a parking" />
+        <Picker ItemsSource="{Binding ParkingList}"
+                ItemDisplayBinding="{Binding Name}"
+                SelectedItem="{Binding SelectedParking}" />
+
+        <Label Text="Invite someone" />
+        <SearchBar Text="{Binding SearchText}" Placeholder="Search (3 char. min)" />
+
+        <ListView SelectedItem="{Binding UserSelected}" ItemsSource="{Binding UserList}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout BindingContext="{Binding .}" Padding="5" HorizontalOptions="Fill">
+                            <Label Text="{Binding Username}" />
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>

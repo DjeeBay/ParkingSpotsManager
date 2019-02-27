@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ParkingSpotsManager.ViewModels
 {
@@ -44,16 +45,29 @@ namespace ParkingSpotsManager.ViewModels
         public ViewModelBase(INavigationService navigationService)
         {
             NavigationService = navigationService;
-            AuthToken = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(AuthToken) as JwtSecurityToken;
-            var userIDFromToken = jsonToken.Claims.First(claim => claim.Type == "unique_name")?.Value;
-            var isUserIDParsed = int.TryParse(userIDFromToken, out int userID);
-            if (isUserIDParsed) {
-                CurrentUserID = userID;
+            if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken") && Prism.PrismApplicationBase.Current.Properties["authToken"] != null) {
+                AuthToken = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(AuthToken) as JwtSecurityToken;
+                var userIDFromToken = jsonToken.Claims.First(claim => claim.Type == "unique_name")?.Value;
+                var isUserIDParsed = int.TryParse(userIDFromToken, out int userID);
+                if (isUserIDParsed) {
+                    CurrentUserID = userID;
+                }
             }
 
             IsAuth = AuthToken != null;
+        }
+
+        public async Task Logout()
+        {
+            IsAuth = false;
+            AuthToken = null;
+            if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken")) {
+                Prism.PrismApplicationBase.Current.Properties["authToken"] = null;
+                await Prism.PrismApplicationBase.Current.SavePropertiesAsync();
+            }
+            await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
 
         public virtual void OnNavigatedFrom(INavigationParameters parameters)
