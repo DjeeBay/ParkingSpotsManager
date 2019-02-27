@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace ParkingSpotsManager.ViewModels
@@ -32,10 +33,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void OnLogoutCommandExecuted(string obj)
         {
-            IsAuth = false;
-            AuthToken = null;
-            PrismApplicationBase.Current.Properties["authToken"] = null;
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            await Logout();
         }
 
         private bool CanExecuteNavigateCommand(string arg)
@@ -50,21 +48,24 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void CheckToken()
         {
-            var token = PrismApplicationBase.Current.Properties["authToken"].ToString();
-            using (var httpClient = new HttpClient()) {
-                try {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    var response = await httpClient.GetAsync(APIConstants.ValidTokenUrl);
-                    response.EnsureSuccessStatusCode();
-                    var content = await response.Content.ReadAsStringAsync();
-                    var isValid = JsonConvert.DeserializeObject<string>(content) == "true";
-                    if (!isValid) {
-                        await NavigationService.NavigateAsync("NavigationPage/MainPage");
-                    } else {
-                        IsAuth = true;
+            if (!PrismApplicationBase.Current.Properties.ContainsKey("authToken")) {
+                await Logout();
+            } else {
+                using (var httpClient = new HttpClient()) {
+                    try {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
+                        var response = await httpClient.GetAsync(APIConstants.ValidTokenUrl);
+                        response.EnsureSuccessStatusCode();
+                        var content = await response.Content.ReadAsStringAsync();
+                        var isValid = JsonConvert.DeserializeObject<string>(content) == "true";
+                        if (!isValid) {
+                            await Logout();
+                        } else {
+                            IsAuth = true;
+                        }
+                    } catch (Exception) {
+                        await Logout();
                     }
-                } catch (Exception) {
-                    await NavigationService.NavigateAsync("NavigationPage/MainPage");
                 }
             }
         }

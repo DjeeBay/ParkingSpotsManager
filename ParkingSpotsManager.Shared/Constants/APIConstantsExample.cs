@@ -27,5 +27,10 @@ namespace ParkingSpotsManager.Shared.Constants
         {
             return $"";
         }
+
+        public static string SendInvitationUrl(int parkingID, int userID)
+        {
+            return $"";
+        }
     }
 }

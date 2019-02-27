@@ -38,10 +38,9 @@ namespace ParkingSpotsManager.ViewModels
         {
             if (Name != null && Name.Length > 0) {
                 var url = APIConstants.ParkingREST;
-                var token = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
                 var json = JObject.FromObject(new Parking { Name = Name });
                 using (var httpClient = new HttpClient()) {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
                     try {
                         var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                         response.EnsureSuccessStatusCode();

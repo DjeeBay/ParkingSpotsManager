@@ -14,7 +14,7 @@
         <Label Text="Invite someone" />
         <SearchBar Text="{Binding SearchText}" Placeholder="Search (3 char. min)" />
 
-        <ListView ItemsSource="{Binding UserList}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
+        <ListView SelectedItem="{Binding UserSelected}" ItemsSource="{Binding UserList}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

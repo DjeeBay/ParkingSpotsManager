@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,11 +25,11 @@ namespace ParkingSpotsManager.API.Controllers
         }
 
         // GET: api/Users
-        [HttpGet]
-        public IEnumerable<User> GetUsers()
-        {
-            return _context.Users;
-        }
+        //[HttpGet]
+        //public IEnumerable<User> GetUsers()
+        //{
+        //    return _context.Users;
+        //}
 
         // GET: api/Users/5
         [HttpGet("{id}")]
@@ -45,6 +46,7 @@ namespace ParkingSpotsManager.API.Controllers
             {
                 return NotFound();
             }
+            CleanUserPassword(ref user);
 
             return Ok(user);
         }
@@ -124,11 +126,15 @@ namespace ParkingSpotsManager.API.Controllers
         [Route("[action]/{parkingID}/{search}")]
         public async Task<IActionResult> GetInvitableUsers([FromRoute] int parkingID, [FromRoute] string search)
         {
-            var parking = _context.Parkings.FirstOrDefault(p => p.Id == parkingID);
-            if (parking != null) {
-                var userList = await _context.Users.Where(u => u.Username.Contains(search)).ToListAsync();
+            if (search != null && search.Length >= 3) {
+                var parking = _context.Parkings.FirstOrDefault(p => p.Id == parkingID);
+                if (parking != null) {
+                    var userList = await _context.Users.Where(u => u.Id != int.Parse(User.Identity.Name) && u.Username.Contains(search) ).ToListAsync();
+                    CleanUsersPassword(ref userList);
+                    //TODO do not return users already associated with the parking (use relationship to query it correctly)
 
-                return Ok(userList);
+                    return Ok(userList);
+                }
             }
 
             return BadRequest();
@@ -137,6 +143,19 @@ namespace ParkingSpotsManager.API.Controllers
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
+        }
+
+        private void CleanUsersPassword(ref List<User> users)
+        {
+            var nbUsers = users.Count;
+            for (var i = 0; i < nbUsers; i++) {
+                users[i].Password = null;
+            }
+        }
+
+        private void CleanUserPassword(ref User user)
+        {
+            user.Password = null;
         }
     }
 }
