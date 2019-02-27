@@ -22,5 +22,15 @@ namespace ParkingSpotsManager.Shared.Constants
         {
             return $"";
         }
+
+        public static string GetInvitableUsersUrl(int parkingID, string search)
+        {
+            return $"";
+        }
+
+        public static string SendInvitationUrl(int parkingID, int userID)
+        {
+            return $"";
+        }
     }
 }

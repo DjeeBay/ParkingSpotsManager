@@ -44,19 +44,14 @@ namespace ParkingSpotsManager.ViewModels
             var confirmdelete = await _dialogService.DisplayAlertAsync("Delete the spot", "Are you sure ?", "Yes", "No");
             if (confirmdelete) {
                 var url = new StringBuilder(APIConstants.SpotREST).Append("/").Append(CurrentSpot.Id).ToString();
-                var token = PrismApplicationBase.Current.Properties["authToken"].ToString();
-                using (var httpClient = new HttpClient())
-                {
-                    try
-                    {
-                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                using (var httpClient = new HttpClient()) {
+                    try {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
                         var response = await httpClient.DeleteAsync(url);
                         response.EnsureSuccessStatusCode();
                         var content = await response.Content.ReadAsStringAsync();
                         await NavigationService.NavigateAsync("ParkingListPage");
-                    }
-                    catch (Exception e)
-                    {
+                    } catch (Exception e) {
                         Console.WriteLine(e.Message);
                     }
                 }
@@ -72,19 +67,14 @@ namespace ParkingSpotsManager.ViewModels
         {
             var url = new StringBuilder(APIConstants.SpotREST).Append("/").Append(CurrentSpot.Id).ToString();
             var json = JObject.FromObject(CurrentSpot);
-            var token = PrismApplicationBase.Current.Properties["authToken"].ToString();
-            using (var httpClient = new HttpClient())
-            {
-                try
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            using (var httpClient = new HttpClient()) {
+                try {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
                     var response = await httpClient.PutAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
                     await NavigationService.NavigateAsync("ParkingListPage");
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     Console.WriteLine(e.Message);
                 }
             }

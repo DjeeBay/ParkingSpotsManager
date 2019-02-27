@@ -59,16 +59,16 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void GetParkingList()
         {
-            var token = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
+            //TODO: refac in a service
             using (var httpClient = new HttpClient()) {
                 try {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
                     var response = await httpClient.GetAsync(APIConstants.GetUserParkingsUrl);
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
                     Parkings = JsonConvert.DeserializeObject<ObservableCollection<Parking>>(content);
                 } catch (Exception) {
-                    await NavigationService.NavigateAsync("NavigationPage/MainPage");
+                    await Logout();
                 }
             }
         }

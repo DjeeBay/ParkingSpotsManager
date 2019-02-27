@@ -65,6 +65,7 @@ namespace ParkingSpotsManager.ViewModels
                                 Prism.PrismApplicationBase.Current.Properties.Add("authToken", authUser.AuthToken);
                             }
                             await Prism.PrismApplicationBase.Current.SavePropertiesAsync();
+                            AuthToken = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
                             await NavigationService.NavigateAsync("HomePage");
                         }
                         //TODO else notify bad login
