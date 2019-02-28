@@ -21,6 +21,8 @@ namespace ParkingSpotsManager.ViewModels
 
         public HomePageViewModel(INavigationService navigationService) : base (navigationService)
         {
+            //TODO find a way to await
+            GetCurrentUser();
             NavigateCommand = new DelegateCommand<string>(OnNavigateCommandExecuted, CanExecuteNavigateCommand).ObservesProperty(() => IsAuth);
             LogoutCommand = new DelegateCommand<string>(OnLogoutCommandExecuted, CanExecuteLogoutCommand).ObservesProperty(() => IsAuth);
             CheckToken();

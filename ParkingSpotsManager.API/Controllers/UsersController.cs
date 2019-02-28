@@ -140,6 +140,24 @@ namespace ParkingSpotsManager.API.Controllers
             return BadRequest();
         }
 
+        [HttpGet()]
+        [Route("[action]")]
+        public async Task<IActionResult> Me()
+        {
+            if (!ModelState.IsValid) {
+                return BadRequest(ModelState);
+            }
+
+            var user = await _context.Users.FindAsync(int.Parse(User.Identity.Name));
+
+            if (user == null) {
+                return NotFound();
+            }
+            CleanUserPassword(ref user);
+
+            return Ok(user);
+        }
+
         private bool UserExists(int id)
         {
             return _context.Users.Any(e => e.Id == id);
