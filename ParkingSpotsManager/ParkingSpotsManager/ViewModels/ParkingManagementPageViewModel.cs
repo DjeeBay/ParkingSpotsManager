@@ -53,7 +53,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void OnReleaseSpotCommandExecuted(Spot spot)
         {
-            if (spot != null || spot.IsCurrentUserAdmin || CurrentUserID == spot.OccupiedBy || spot.OccupiedBy == null) {
+            if (spot != null || spot.IsCurrentUserAdmin || CurrentUser.Id == spot.OccupiedBy || spot.OccupiedBy == null) {
                 spot.OccupiedAt = null;
                 ChangeSpotStatus(spot);
             } else {
@@ -68,7 +68,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void OnTakeSpotCommandExecuted(Spot spot)
         {
-            if (spot != null || spot.IsCurrentUserAdmin || CurrentUserID == spot.OccupiedBy || spot.OccupiedBy == null) {
+            if (spot != null || spot.IsCurrentUserAdmin || CurrentUser.Id == spot.OccupiedBy || spot.OccupiedBy == null) {
                 spot.OccupiedAt = DateTime.Now;
                 ChangeSpotStatus(spot);
             } else {

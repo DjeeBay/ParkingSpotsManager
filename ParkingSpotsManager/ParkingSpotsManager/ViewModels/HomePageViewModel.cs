@@ -23,7 +23,6 @@ namespace ParkingSpotsManager.ViewModels
         {
             NavigateCommand = new DelegateCommand<string>(OnNavigateCommandExecuted, CanExecuteNavigateCommand).ObservesProperty(() => IsAuth);
             LogoutCommand = new DelegateCommand<string>(OnLogoutCommandExecuted, CanExecuteLogoutCommand).ObservesProperty(() => IsAuth);
-            CheckToken();
         }
 
         private bool CanExecuteLogoutCommand(string arg)
@@ -33,7 +32,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void OnLogoutCommandExecuted(string obj)
         {
-            await Logout();
+            await LogoutAsync();
         }
 
         private bool CanExecuteNavigateCommand(string arg)
@@ -44,30 +43,6 @@ namespace ParkingSpotsManager.ViewModels
         private async void OnNavigateCommandExecuted(string page)
         {
             await NavigationService.NavigateAsync(page);
-        }
-
-        private async void CheckToken()
-        {
-            if (!PrismApplicationBase.Current.Properties.ContainsKey("authToken")) {
-                await Logout();
-            } else {
-                using (var httpClient = new HttpClient()) {
-                    try {
-                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
-                        var response = await httpClient.GetAsync(APIConstants.ValidTokenUrl);
-                        response.EnsureSuccessStatusCode();
-                        var content = await response.Content.ReadAsStringAsync();
-                        var isValid = JsonConvert.DeserializeObject<string>(content) == "true";
-                        if (!isValid) {
-                            await Logout();
-                        } else {
-                            IsAuth = true;
-                        }
-                    } catch (Exception) {
-                        await Logout();
-                    }
-                }
-            }
         }
     }
 }
