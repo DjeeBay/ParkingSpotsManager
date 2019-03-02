@@ -1,12 +1,21 @@
-﻿using Prism.Commands;
+﻿using Newtonsoft.Json;
+using ParkingSpotsManager.Services;
+using ParkingSpotsManager.Shared.Constants;
+using ParkingSpotsManager.Shared.Models;
+using Prism.Commands;
+using Prism.Common;
 using Prism.Mvvm;
 using Prism.Navigation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace ParkingSpotsManager.ViewModels
 {
@@ -21,11 +30,11 @@ namespace ParkingSpotsManager.ViewModels
             set { SetProperty(ref _authToken, value); }
         }
 
-        private int? _currentUserID;
-        public int? CurrentUserID
+        private User _currentUser;
+        public User CurrentUser
         {
-            get => _currentUserID;
-            set { SetProperty(ref _currentUserID, value); }
+            get => _currentUser;
+            set { SetProperty(ref _currentUser, value); }
         }
 
         private bool _isAuth = false;
@@ -45,29 +54,65 @@ namespace ParkingSpotsManager.ViewModels
         public ViewModelBase(INavigationService navigationService)
         {
             NavigationService = navigationService;
-            if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken") && Prism.PrismApplicationBase.Current.Properties["authToken"] != null) {
-                AuthToken = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
-                var handler = new JwtSecurityTokenHandler();
-                var jsonToken = handler.ReadToken(AuthToken) as JwtSecurityToken;
-                var userIDFromToken = jsonToken.Claims.First(claim => claim.Type == "unique_name")?.Value;
-                var isUserIDParsed = int.TryParse(userIDFromToken, out int userID);
-                if (isUserIDParsed) {
-                    CurrentUserID = userID;
+            AuthToken = GetToken();
+            new NotifyTaskCompletion<User>(GetCurrentUserAsync());
+        }
+
+        protected async Task<User> GetCurrentUserAsync()
+        {
+            var token = GetToken();
+            var currentVM = GetType().Name;
+            if (token != null) {
+                using (var httpClient = new HttpClient()) {
+                    try {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                        var response = await httpClient.GetAsync(APIConstants.GetCurrentUser);
+                        response.EnsureSuccessStatusCode();
+                        var content = await response.Content.ReadAsStringAsync();
+                        var user = JsonConvert.DeserializeObject<User>(content);
+
+                        if (user == null && currentVM != "MainPageViewModel" && currentVM != "LoginPageViewModel") {
+                            await LogoutAsync();
+                        } else {
+                            SetAuthUserProperties(user, token);
+
+                            return user;
+                        }
+                    } catch (Exception) {
+                        await LogoutAsync();
+                    }
                 }
             }
 
-            IsAuth = AuthToken != null;
+            return null;
         }
 
-        public async Task Logout()
+        protected async Task LogoutAsync()
         {
             IsAuth = false;
             AuthToken = null;
+            CurrentUser = null;
             if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken")) {
                 Prism.PrismApplicationBase.Current.Properties["authToken"] = null;
                 await Prism.PrismApplicationBase.Current.SavePropertiesAsync();
             }
             await NavigationService.NavigateAsync("NavigationPage/MainPage");
+        }
+
+        protected void SetAuthUserProperties(User user, string token)
+        {
+            IsAuth = user != null && token != null;
+            AuthToken = token;
+            CurrentUser = user;
+        }
+
+        protected string GetToken()
+        {
+            if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken") && Prism.PrismApplicationBase.Current.Properties["authToken"] != null) {
+                return Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
+            }
+
+            return null;
         }
 
         public virtual void OnNavigatedFrom(INavigationParameters parameters)
