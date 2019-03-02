@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
@@ -7,12 +8,14 @@ using Prism.Mvvm;
 using Prism.Navigation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace ParkingSpotsManager.ViewModels
 {
@@ -51,28 +54,32 @@ namespace ParkingSpotsManager.ViewModels
         public ViewModelBase(INavigationService navigationService)
         {
             NavigationService = navigationService;
+            AuthToken = GetToken();
+            new NotifyTaskCompletion<User>(GetCurrentUserAsync());
         }
 
-        public async Task<User> GetCurrentUser()
+        protected async Task<User> GetCurrentUserAsync()
         {
-            if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken") && Prism.PrismApplicationBase.Current.Properties["authToken"] != null) {
+            var token = GetToken();
+            var currentVM = GetType().Name;
+            if (token != null) {
                 using (var httpClient = new HttpClient()) {
                     try {
-                        var token = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                         var response = await httpClient.GetAsync(APIConstants.GetCurrentUser);
                         response.EnsureSuccessStatusCode();
                         var content = await response.Content.ReadAsStringAsync();
                         var user = JsonConvert.DeserializeObject<User>(content);
-                        if (user == null) {
-                            await Logout();
+
+                        if (user == null && currentVM != "MainPageViewModel" && currentVM != "LoginPageViewModel") {
+                            await LogoutAsync();
                         } else {
                             SetAuthUserProperties(user, token);
 
                             return user;
                         }
                     } catch (Exception) {
-                        await Logout();
+                        await LogoutAsync();
                     }
                 }
             }
@@ -80,7 +87,7 @@ namespace ParkingSpotsManager.ViewModels
             return null;
         }
 
-        public async Task Logout()
+        protected async Task LogoutAsync()
         {
             IsAuth = false;
             AuthToken = null;
@@ -92,11 +99,20 @@ namespace ParkingSpotsManager.ViewModels
             await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
 
-        public void SetAuthUserProperties(User user, string token)
+        protected void SetAuthUserProperties(User user, string token)
         {
-            IsAuth = true;
+            IsAuth = user != null && token != null;
             AuthToken = token;
             CurrentUser = user;
+        }
+
+        protected string GetToken()
+        {
+            if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken") && Prism.PrismApplicationBase.Current.Properties["authToken"] != null) {
+                return Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
+            }
+
+            return null;
         }
 
         public virtual void OnNavigatedFrom(INavigationParameters parameters)

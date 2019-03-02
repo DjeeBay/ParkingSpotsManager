@@ -69,10 +69,12 @@ namespace ParkingSpotsManager.ViewModels
                                 Prism.PrismApplicationBase.Current.Properties.Add("authToken", authUser.AuthToken);
                             }
                             await Prism.PrismApplicationBase.Current.SavePropertiesAsync();
+                            SetAuthUserProperties(authUser, authUser.AuthToken);
                             await NavigationService.NavigateAsync("HomePage");
+                        } else {
+                            await _dialogService.DisplayAlertAsync("Whoops !", "Bad credentials", "OK");
                         }
-                        //TODO else notify bad login
-                    } catch (Exception e) {
+                    } catch (Exception) {
                         await _dialogService.DisplayAlertAsync("Whoops !", "Bad credentials", "OK");
                     }
                 }

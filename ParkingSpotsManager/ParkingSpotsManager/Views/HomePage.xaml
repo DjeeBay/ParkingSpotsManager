@@ -4,6 +4,7 @@
                   xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
                   prism:ViewModelLocator.AutowireViewModel="True"
                   xmlns:local="clr-namespace:ParkingSpotsManager.Views"
+                  NavigationPage.HasNavigationBar="False"
                   x:Class="ParkingSpotsManager.Views.HomePage">
 
     <MasterDetailPage.Master>
