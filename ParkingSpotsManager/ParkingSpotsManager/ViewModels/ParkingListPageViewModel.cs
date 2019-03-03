@@ -87,5 +87,5 @@ namespace ParkingSpotsManager.ViewModels
 
             return null;
         }
-	}
+    }
 }

@@ -5,11 +5,14 @@ using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
+using Prism.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 
 namespace ParkingSpotsManager.ViewModels
@@ -44,10 +47,13 @@ namespace ParkingSpotsManager.ViewModels
             set { SetProperty(ref _email, value); }
         }
 
+        private IPageDialogService _dialogService;
+
         public DelegateCommand<object> CreateAccountCommand { get; private set; }
 
-        public CreateAccountPageViewModel(INavigationService navigationService) : base(navigationService)
+        public CreateAccountPageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base(navigationService)
         {
+            _dialogService = dialogService;
             Title = "New account";
             CreateAccountCommand = new DelegateCommand<object>(CreateAccountAsync, CanCreateAccount);
         }
@@ -70,12 +76,29 @@ namespace ParkingSpotsManager.ViewModels
                 using (var httpClient = new HttpClient()) {
                     try {
                         var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
-                        response.EnsureSuccessStatusCode();
-                        var content = await response.Content.ReadAsStringAsync();
-                        var createdUser = JsonConvert.DeserializeObject<User>(content);
-                        //TODO test createdUser / notif
-                        if (createdUser.Username != null) {
-                            await NavigationService.NavigateAsync("LoginPage");
+                        if (response.IsSuccessStatusCode) {
+                            var content = await response.Content.ReadAsStringAsync();
+                            var createdUser = JsonConvert.DeserializeObject<User>(content);
+                            if (createdUser.Username != null) {
+                                await NavigationService.NavigateAsync("LoginPage");
+                            }
+                        } else if (response.StatusCode == HttpStatusCode.BadRequest) {
+                            var content = await response.Content.ReadAsStringAsync();
+                            var error = JsonConvert.DeserializeObject<Dictionary<string, List<string>>>(content);
+                            //TODO make an exception class to catch API badrequest results
+                            if (error != null && error.Count > 0) {
+                                var errorMsg = new StringBuilder();
+                                var firstError = error.First();
+                                errorMsg.Append(firstError.Key).Append(" : ");
+                                if (firstError.Value != null && firstError.Value.Count > 0) {
+                                    errorMsg.Append(firstError.Value.First());
+                                } else {
+                                    errorMsg.Append("Incorrect value.");
+                                }
+                                await _dialogService.DisplayAlertAsync("Error", errorMsg.ToString(), "OK");
+                            } else {
+                                await _dialogService.DisplayAlertAsync("Error", "An error occured.", "OK");
+                            }
                         }
                     } catch (Exception e) {
                         Console.WriteLine(e.Message);

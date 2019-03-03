@@ -13,12 +13,18 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <ViewCell.ContextActions>
-                            <MenuItem Command="{Binding Path=BindingContext.ShowParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Show" />
-                            <MenuItem  Command="{Binding Path=BindingContext.EditParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Edit" />
-                        </ViewCell.ContextActions>
                         <StackLayout Padding="5" HorizontalOptions="StartAndExpand">
-                            <Label Text="{Binding Name}" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*" />
+                                    <ColumnDefinition Width="5*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding Name}" Grid.Column="0" VerticalTextAlignment="Center" />
+                                <StackLayout Orientation="Horizontal" Grid.Column="1">
+                                    <Button Command="{Binding Path=BindingContext.ShowParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" HorizontalOptions="End" Text="Show" StyleClass="Primary" FontSize="12" />
+                                    <Button IsVisible="{Binding IsCurrentUserAdmin}" Command="{Binding Path=BindingContext.EditParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" HorizontalOptions="End" Text="Edit" StyleClass="Warning" FontSize="12" />
+                                </StackLayout>
+                            </Grid>
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>
