@@ -7,17 +7,24 @@ using Xamarin.Forms;
 
 namespace ParkingSpotsManager.Converters
 {
-    public class DisplayOccupiedByConverter : IValueConverter
+    public class DisplayFreeSpotsNumber : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null) {
-                return "Free";
-            } else {
-                var occupier = value as User;
-
-                return occupier.Username;
+                return "0";
             }
+            var spots = value as IList<Spot>;
+            var nbOccupied = 0;
+            foreach (var spot in spots) {
+                if (spot.OccupiedBy != null) {
+                    nbOccupied++;
+                }
+            }
+
+            var nbAvailable = spots.Count - nbOccupied;
+
+            return new StringBuilder(nbAvailable.ToString()).Append(" / ").Append(spots.Count).ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -15,8 +15,8 @@ using System.Threading.Tasks;
 
 namespace ParkingSpotsManager.ViewModels
 {
-	public class ParkingListPageViewModel : ViewModelBase
-	{
+	public class ParkingListPageViewModel : ViewModelBase, INavigationAware
+    {
         private NotifyTaskCompletion<ObservableCollection<Parking>> _parkingsTC;
         public NotifyTaskCompletion<ObservableCollection<Parking>> ParkingsTC
         {
@@ -86,6 +86,17 @@ namespace ParkingSpotsManager.ViewModels
             }
 
             return null;
+        }
+
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+        }
+
+        public override void OnNavigatingTo(INavigationParameters parameters)
+        {
+            //TODO call API here instead of in constructor (need to fix this method not called with HomePage navigation)
+            base.OnNavigatingTo(parameters);
         }
     }
 }

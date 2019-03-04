@@ -33,5 +33,10 @@ namespace ParkingSpotsManager.Shared.Constants
         {
             return $"";
         }
+
+        public static string GetParkingSpotsUrl(int parkingID)
+        {
+            return $"";
+        }
     }
 }
