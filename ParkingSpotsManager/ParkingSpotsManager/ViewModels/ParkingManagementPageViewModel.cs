@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism;
@@ -29,11 +28,11 @@ namespace ParkingSpotsManager.ViewModels
             set { SetProperty(ref _currentParking, value); }
         }
 
-        private NotifyTaskCompletion<ObservableCollection<Spot>> _spotListNTC;
-        public NotifyTaskCompletion<ObservableCollection<Spot>> SpotListNTC
+        private ObservableCollection<Spot> _spotList;
+        public ObservableCollection<Spot> SpotList
         {
-            get => _spotListNTC;
-            set { SetProperty(ref _spotListNTC, value); }
+            get => _spotList;
+            set { SetProperty(ref _spotList, value); }
         }
 
         public DelegateCommand<Spot> TakeSpotCommand { get; set; }
@@ -56,7 +55,7 @@ namespace ParkingSpotsManager.ViewModels
         {
             if (spot != null && (spot.IsCurrentUserAdmin || CurrentUser.Id == spot.OccupiedBy || spot.OccupiedBy == null)) {
                 spot.OccupiedAt = null;
-                SpotListNTC = new NotifyTaskCompletion<ObservableCollection<Spot>>(ChangeSpotStatus(spot));
+                SpotList = new ObservableCollection<Spot>(await ChangeSpotStatus(spot).ConfigureAwait(false));
             } else {
                 await _dialogService.DisplayAlertAsync("Error", "You can't modify the status of this spot !", "Close");
             }
@@ -71,7 +70,7 @@ namespace ParkingSpotsManager.ViewModels
         {
             if (spot != null && (spot.IsCurrentUserAdmin || CurrentUser.Id == spot.OccupiedBy || spot.OccupiedBy == null)) {
                 spot.OccupiedAt = DateTime.Now;
-                SpotListNTC = new NotifyTaskCompletion<ObservableCollection<Spot>>(ChangeSpotStatus(spot));
+                SpotList = new ObservableCollection<Spot>(await ChangeSpotStatus(spot).ConfigureAwait(false));
             } else {
                 await _dialogService.DisplayAlertAsync("Error", "You can't modify the status of this spot !", "Close");
             }
@@ -101,8 +100,13 @@ namespace ParkingSpotsManager.ViewModels
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
+        }
+
+        public override async void OnNavigatingTo(INavigationParameters parameters)
+        {
+            base.OnNavigatingTo(parameters);
             CurrentParking = parameters.GetValue<Parking>("parking");
-            SpotListNTC = new NotifyTaskCompletion<ObservableCollection<Spot>>(GetSpotListAsync(CurrentParking.Id));
+            SpotList = await GetSpotListAsync(CurrentParking.Id).ConfigureAwait(false);
         }
 
         private async Task<ObservableCollection<Spot>> GetSpotListAsync(int parkingID)

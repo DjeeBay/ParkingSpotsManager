@@ -20,7 +20,7 @@
     </NavigationPage.TitleView>
     
     <StackLayout>
-        <ListView ItemsSource="{Binding SpotListNTC.Result}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
+        <ListView ItemsSource="{Binding SpotList}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

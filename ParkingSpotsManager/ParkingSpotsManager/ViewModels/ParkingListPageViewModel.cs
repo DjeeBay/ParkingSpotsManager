@@ -2,6 +2,7 @@
 using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
+using Prism.AppModel;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -15,13 +16,13 @@ using System.Threading.Tasks;
 
 namespace ParkingSpotsManager.ViewModels
 {
-	public class ParkingListPageViewModel : ViewModelBase, INavigationAware
+	public class ParkingListPageViewModel : ViewModelBase, INavigationAware, IPageLifecycleAware
     {
-        private NotifyTaskCompletion<ObservableCollection<Parking>> _parkingsTC;
-        public NotifyTaskCompletion<ObservableCollection<Parking>> ParkingsTC
+        private ObservableCollection<Parking> _parkingList;
+        public ObservableCollection<Parking> ParkingList
         {
-            get => _parkingsTC;
-            set { SetProperty(ref _parkingsTC, value); }
+            get => _parkingList;
+            set { SetProperty(ref _parkingList, value); }
         }
 
         private Parking _selectedParking;
@@ -36,7 +37,6 @@ namespace ParkingSpotsManager.ViewModels
 
         public ParkingListPageViewModel(INavigationService navigationService) : base (navigationService)
         {
-            ParkingsTC = new NotifyTaskCompletion<ObservableCollection<Parking>>(GetParkingList());
             ShowParkingCommand = new DelegateCommand<Parking>(OnShowParkingClicked, CanShowParking);
             EditParkingCommand = new DelegateCommand<Parking>(OnEditParkingClicked, CanEditParking);
         }
@@ -93,10 +93,20 @@ namespace ParkingSpotsManager.ViewModels
             base.OnNavigatedTo(parameters);
         }
 
-        public override void OnNavigatingTo(INavigationParameters parameters)
+        public override async void OnNavigatingTo(INavigationParameters parameters)
         {
-            //TODO call API here instead of in constructor (need to fix this method not called with HomePage navigation)
             base.OnNavigatingTo(parameters);
+            ParkingList = await GetParkingList().ConfigureAwait(false);
+        }
+
+        public void OnAppearing()
+        {
+            return;
+        }
+
+        public void OnDisappearing()
+        {
+            return;
         }
     }
 }

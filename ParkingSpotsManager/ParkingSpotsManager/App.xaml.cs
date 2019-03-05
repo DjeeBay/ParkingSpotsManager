@@ -26,7 +26,7 @@ namespace ParkingSpotsManager
             InitializeComponent();
 
             if (PrismApplicationBase.Current.Properties.ContainsKey("authToken") && PrismApplicationBase.Current.Properties["authToken"] != null) {
-                await NavigationService.NavigateAsync("NavigationPage/HomePage");
+                await NavigationService.NavigateAsync("HomePage/NavigationPage/ParkingListPage");
             } else {
                 await NavigationService.NavigateAsync("NavigationPage/MainPage");
             }

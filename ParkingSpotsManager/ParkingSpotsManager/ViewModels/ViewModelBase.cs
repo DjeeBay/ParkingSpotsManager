@@ -119,7 +119,7 @@ namespace ParkingSpotsManager.ViewModels
 
         public virtual void OnNavigatingTo(INavigationParameters parameters)
         {
-
+            //TODO call API here
         }
 
         public virtual void Destroy()

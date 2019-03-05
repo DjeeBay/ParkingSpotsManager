@@ -14,7 +14,7 @@ using Xamarin.Forms;
 
 namespace ParkingSpotsManager.ViewModels
 {
-	public class HomePageViewModel : ViewModelBase
+	public class HomePageViewModel : ViewModelBase, INavigationAware
 	{
         public DelegateCommand<string> NavigateCommand { get; }
         public DelegateCommand<string> LogoutCommand { get; }
@@ -43,6 +43,11 @@ namespace ParkingSpotsManager.ViewModels
         private async void OnNavigateCommandExecuted(string page)
         {
             await NavigationService.NavigateAsync(page);
+        }
+
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
         }
     }
 }
