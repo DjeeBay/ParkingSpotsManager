@@ -24,16 +24,24 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <ViewCell.ContextActions>
-                            <MenuItem Command="{Binding Path=BindingContext.TakeSpotCommand, Source={x:Reference Name=SpotList}}" CommandParameter="{Binding .}" Text="Parked !" />
-                            <MenuItem Command="{Binding Path=BindingContext.ReleaseSpotCommand, Source={x:Reference Name=SpotList}}" CommandParameter="{Binding .}" Text="Release" />
-                        </ViewCell.ContextActions>
                         <StackLayout BindingContext="{Binding .}" Padding="5" HorizontalOptions="Fill">
-                            <StackLayout.Behaviors>
-                                <bhv:OccupancyBackgroundBehavior OccupiedBy="{Binding OccupiedBy}" />
-                            </StackLayout.Behaviors>
-                            <Label Text="{Binding Name}" Font="18" />
-                            <Label Text="{Binding Occupier, Converter={StaticResource DisplayOccupiedBy}}" TextColor="Gray" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*" />
+                                    <ColumnDefinition Width="5*" />
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Column="0">
+                                    <StackLayout.Behaviors>
+                                        <bhv:OccupancyBackgroundBehavior OccupiedBy="{Binding OccupiedBy}" />
+                                    </StackLayout.Behaviors>
+                                    <Label Text="{Binding Name}" />
+                                    <Label Text="{Binding Occupier, Converter={StaticResource DisplayOccupiedBy}}" TextColor="Gray" FontSize="Small" />
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Grid.Column="1">
+                                    <Button Command="{Binding Path=BindingContext.TakeSpotCommand, Source={x:Reference Name=SpotList}}" CommandParameter="{Binding .}" Text="Parked !" StyleClass="Primary" FontSize="12" />
+                                    <Button Command="{Binding Path=BindingContext.ReleaseSpotCommand, Source={x:Reference Name=SpotList}}" CommandParameter="{Binding .}" Text="Release" StyleClass="Danger" FontSize="12" />
+                                </StackLayout>
+                            </Grid>
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>

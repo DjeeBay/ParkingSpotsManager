@@ -129,9 +129,13 @@ namespace ParkingSpotsManager.API.Controllers
             if (search != null && search.Length >= 3) {
                 var parking = _context.Parkings.FirstOrDefault(p => p.Id == parkingID);
                 if (parking != null) {
-                    var userList = await _context.Users.Where(u => u.Id != int.Parse(User.Identity.Name) && u.Username.Contains(search) ).ToListAsync();
+                    var userList = await _context.Users
+                        .Include(u => u.UserParkings)
+                        .Where(u => u.Id != int.Parse(User.Identity.Name) 
+                            && u.UserParkings.Where(up => up.ParkingId == parkingID && up.UserId == u.Id).FirstOrDefault() == null
+                            && u.Username.Contains(search))
+                        .ToListAsync();
                     CleanUsersPassword(ref userList);
-                    //TODO do not return users already associated with the parking (use relationship to query it correctly)
 
                     return Ok(userList);
                 }

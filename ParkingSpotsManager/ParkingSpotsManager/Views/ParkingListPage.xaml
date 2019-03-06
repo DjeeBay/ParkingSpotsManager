@@ -4,21 +4,37 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Name="ParkingList"
+             xmlns:c="clr-namespace:ParkingSpotsManager.Converters"
              x:Class="ParkingSpotsManager.Views.ParkingListPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <c:DisplayFreeSpotsNumber x:Key="DisplayFreeSpotsNumber" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <StackLayout>
         <Label HorizontalOptions="CenterAndExpand" Text="Parking List" Margin="5" />
 
-        <ListView SelectedItem="{Binding SelectedParking}" ItemsSource="{Binding ParkingsTC.Result}" VerticalOptions="FillAndExpand">
+        <ListView SelectedItem="{Binding SelectedParking}" ItemsSource="{Binding ParkingList}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <ViewCell.ContextActions>
-                            <MenuItem Command="{Binding Path=BindingContext.ShowParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Show" />
-                            <MenuItem  Command="{Binding Path=BindingContext.EditParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Edit" />
-                        </ViewCell.ContextActions>
-                        <StackLayout Padding="5" HorizontalOptions="StartAndExpand">
-                            <Label Text="{Binding Name}" />
+                        <StackLayout Padding="5" HorizontalOptions="Fill">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*" />
+                                    <ColumnDefinition Width="5*" />
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Column="0">
+                                    <Label Text="{Binding Name}" />
+                                    <Label Text="{Binding Spots, Converter={StaticResource DisplayFreeSpotsNumber}}" Grid.Column="0" FontSize="Small" />
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Grid.Column="1">
+                                    <Button Command="{Binding Path=BindingContext.ShowParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" HorizontalOptions="End" Text="Show" StyleClass="Primary" FontSize="12" />
+                                    <Button IsVisible="{Binding IsCurrentUserAdmin}" Command="{Binding Path=BindingContext.EditParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" HorizontalOptions="End" Text="Edit" StyleClass="Warning" FontSize="12" />
+                                </StackLayout>
+                            </Grid>
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>

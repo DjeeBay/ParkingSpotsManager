@@ -53,6 +53,8 @@ namespace ParkingSpotsManager.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OccupiedBy");
+
                     b.HasIndex("ParkingId");
 
                     b.ToTable("Spots");
@@ -72,8 +74,6 @@ namespace ParkingSpotsManager.API.Migrations
 
                     b.Property<string>("Lastname");
 
-                    b.Property<int?>("ParkingId");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(255);
@@ -83,8 +83,6 @@ namespace ParkingSpotsManager.API.Migrations
                         .HasMaxLength(255);
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParkingId");
 
                     b.ToTable("Users");
                 });
@@ -102,22 +100,36 @@ namespace ParkingSpotsManager.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ParkingId");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("UsersParkings");
                 });
 
             modelBuilder.Entity("ParkingSpotsManager.Shared.Models.Spot", b =>
                 {
+                    b.HasOne("ParkingSpotsManager.Shared.Models.User", "Occupier")
+                        .WithMany()
+                        .HasForeignKey("OccupiedBy");
+
                     b.HasOne("ParkingSpotsManager.Shared.Models.Parking", "Parking")
                         .WithMany("Spots")
                         .HasForeignKey("ParkingId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("ParkingSpotsManager.Shared.Models.User", b =>
+            modelBuilder.Entity("ParkingSpotsManager.Shared.Models.UserParking", b =>
                 {
-                    b.HasOne("ParkingSpotsManager.Shared.Models.Parking")
-                        .WithMany("Users")
-                        .HasForeignKey("ParkingId");
+                    b.HasOne("ParkingSpotsManager.Shared.Models.Parking", "Parking")
+                        .WithMany("UserParkings")
+                        .HasForeignKey("ParkingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ParkingSpotsManager.Shared.Models.User", "User")
+                        .WithMany("UserParkings")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

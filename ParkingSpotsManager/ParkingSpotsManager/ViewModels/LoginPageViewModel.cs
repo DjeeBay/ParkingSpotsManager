@@ -70,7 +70,7 @@ namespace ParkingSpotsManager.ViewModels
                             }
                             await Prism.PrismApplicationBase.Current.SavePropertiesAsync();
                             SetAuthUserProperties(authUser, authUser.AuthToken);
-                            await NavigationService.NavigateAsync("HomePage");
+                            await NavigationService.NavigateAsync("HomePage/NavigationPage/ParkingListPage");
                         } else {
                             await _dialogService.DisplayAlertAsync("Whoops !", "Bad credentials", "OK");
                         }

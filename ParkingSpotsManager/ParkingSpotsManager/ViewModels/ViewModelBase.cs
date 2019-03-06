@@ -2,20 +2,12 @@
 using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
-using Prism.Commands;
-using Prism.Common;
 using Prism.Mvvm;
 using Prism.Navigation;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace ParkingSpotsManager.ViewModels
 {
@@ -127,7 +119,7 @@ namespace ParkingSpotsManager.ViewModels
 
         public virtual void OnNavigatingTo(INavigationParameters parameters)
         {
-
+            //TODO call API here
         }
 
         public virtual void Destroy()

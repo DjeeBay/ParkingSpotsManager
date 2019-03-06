@@ -72,12 +72,10 @@ namespace ParkingSpotsManager.API.Controllers
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
             try {
-                if (user.Password == null || user.Password.Length < 5) {
-                    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Password is too small, 5 caracters min.\"}");
-                } else if (_context.Users.Where(u => u.Username == user.Username).FirstOrDefault() != null) {
-                    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Username already exists.\"}");
+                if (_context.Users.Where(u => u.Username == user.Username).FirstOrDefault() != null) {
+                    return BadRequest(new { Username = new string[] { "Username already exists." } });
                 } else if (_context.Users.Where(u => u.Email == user.Email).FirstOrDefault() != null) {
-                    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Email already used.\"}");
+                    return BadRequest(new { Email = new string[] { "Email already used." } });
                 }
 
                 user.Password = PasswordService.HashPassword(user.Password);
@@ -89,7 +87,7 @@ namespace ParkingSpotsManager.API.Controllers
 
                 return new OkObjectResult(createdUser);
             } catch (Exception e) {
-                return new OkObjectResult(e.InnerException.Message);
+                return NotFound(e.InnerException.Message);
             }
         }
     }
