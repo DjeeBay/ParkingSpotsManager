@@ -23,5 +23,7 @@ namespace ParkingSpotsManager.Shared.Models
         public string AuthToken { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
+
+        public List<UserParking> UserParkings { get; set; }
     }
 }

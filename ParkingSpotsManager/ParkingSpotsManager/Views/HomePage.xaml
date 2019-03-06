@@ -10,7 +10,7 @@
     <MasterDetailPage.Master>
         <ContentPage Title="Menu">
             <StackLayout Padding="40">
-                <Label Text="{Binding UserName,StringFormat='Hello, {0}'}" />
+                <Label Text="{Binding CurrentUser.Username, StringFormat='Hello {0} !'}" />
                 <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" />
                 <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/CreateParkingPage" />
                 <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/InvitePage" />
