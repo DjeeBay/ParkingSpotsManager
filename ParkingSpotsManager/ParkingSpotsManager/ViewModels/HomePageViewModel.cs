@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ParkingSpotsManager.Shared.Constants;
 using Prism;
+using Prism.AppModel;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -14,7 +15,7 @@ using Xamarin.Forms;
 
 namespace ParkingSpotsManager.ViewModels
 {
-	public class HomePageViewModel : ViewModelBase, INavigationAware
+	public class HomePageViewModel : ViewModelBase, INavigationAware, IPageLifecycleAware
 	{
         public DelegateCommand<string> NavigateCommand { get; }
         public DelegateCommand<string> LogoutCommand { get; }
@@ -48,6 +49,16 @@ namespace ParkingSpotsManager.ViewModels
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
+        }
+
+        public void OnAppearing()
+        {
+            return;
+        }
+
+        public void OnDisappearing()
+        {
+            return;
         }
     }
 }

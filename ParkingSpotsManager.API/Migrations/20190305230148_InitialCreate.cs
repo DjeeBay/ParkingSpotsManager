@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ParkingSpotsManager.API.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,18 +23,21 @@ namespace ParkingSpotsManager.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsersParkings",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<int>(nullable: false),
-                    ParkingId = table.Column<int>(nullable: false),
-                    IsAdmin = table.Column<int>(nullable: false)
+                    Email = table.Column<string>(nullable: false),
+                    Username = table.Column<string>(maxLength: 255, nullable: false),
+                    Password = table.Column<string>(maxLength: 255, nullable: false),
+                    AuthToken = table.Column<string>(nullable: true),
+                    Firstname = table.Column<string>(nullable: true),
+                    Lastname = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersParkings", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -53,6 +56,12 @@ namespace ParkingSpotsManager.API.Migrations
                 {
                     table.PrimaryKey("PK_Spots", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Spots_Users_OccupiedBy",
+                        column: x => x.OccupiedBy,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_Spots_Parkings_ParkingId",
                         column: x => x.ParkingId,
                         principalTable: "Parkings",
@@ -61,29 +70,36 @@ namespace ParkingSpotsManager.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "UsersParkings",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Email = table.Column<string>(nullable: false),
-                    Username = table.Column<string>(maxLength: 255, nullable: false),
-                    Password = table.Column<string>(maxLength: 255, nullable: false),
-                    AuthToken = table.Column<string>(nullable: true),
-                    Firstname = table.Column<string>(nullable: true),
-                    Lastname = table.Column<string>(nullable: true),
-                    ParkingId = table.Column<int>(nullable: true)
+                    UserId = table.Column<int>(nullable: false),
+                    ParkingId = table.Column<int>(nullable: false),
+                    IsAdmin = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_UsersParkings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Parkings_ParkingId",
+                        name: "FK_UsersParkings_Parkings_ParkingId",
                         column: x => x.ParkingId,
                         principalTable: "Parkings",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UsersParkings_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Spots_OccupiedBy",
+                table: "Spots",
+                column: "OccupiedBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Spots_ParkingId",
@@ -91,9 +107,14 @@ namespace ParkingSpotsManager.API.Migrations
                 column: "ParkingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_ParkingId",
-                table: "Users",
+                name: "IX_UsersParkings_ParkingId",
+                table: "UsersParkings",
                 column: "ParkingId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersParkings_UserId",
+                table: "UsersParkings",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -102,13 +123,13 @@ namespace ParkingSpotsManager.API.Migrations
                 name: "Spots");
 
             migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
                 name: "UsersParkings");
 
             migrationBuilder.DropTable(
                 name: "Parkings");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }
