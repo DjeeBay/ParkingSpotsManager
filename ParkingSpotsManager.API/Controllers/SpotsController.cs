@@ -55,6 +55,7 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSpot([FromRoute] int id)
         {
+            //TODO if user is linked
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

@@ -43,8 +43,10 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void EditSpotCommandExecutedAsync(Spot spot)
         {
-            var navParams = new NavigationParameters();
-            navParams.Add("spot", spot);
+            var navParams = new NavigationParameters {
+                { "spot", spot },
+                { "parking", CurrentParking }
+            };
             await NavigationService.NavigateAsync("SpotEditPage", navParams);
         }
 
@@ -55,8 +57,9 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void OnGoToAddSpotCommandExecutedAsync(object obj)
         {
-            var navParams = new NavigationParameters();
-            navParams.Add("parking", CurrentParking);
+            var navParams = new NavigationParameters {
+                { "parking", CurrentParking }
+            };
             await NavigationService.NavigateAsync("CreateSpotPage", navParams);
         }
 
@@ -74,7 +77,7 @@ namespace ParkingSpotsManager.ViewModels
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
                     var response = await httpClient.PutAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json")).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
-                    await NavigationService.NavigateAsync("HomePage/NavigationPage/ParkingListPage");
+                    await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
                 } catch (Exception e) {
                     Console.WriteLine(e.Message);
                 }
@@ -91,6 +94,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private async Task<Parking> GetParking(int parkingID)
         {
+            //TODO service
             var url = new StringBuilder(APIConstants.ParkingREST).Append("/").Append(parkingID).ToString();
             using (var httpClient = new HttpClient()) {
                 try {
