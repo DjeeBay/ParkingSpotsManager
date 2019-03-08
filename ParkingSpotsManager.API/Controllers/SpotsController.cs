@@ -114,7 +114,7 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostSpot([FromBody] Spot spot)
         {
-            if (!IsParkingAdmin(spot)) {
+            if (!IsParkingAdmin(spot.ParkingId)) {
                 return BadRequest();
             }
 
@@ -209,8 +209,8 @@ namespace ParkingSpotsManager.API.Controllers
         private bool IsParkingAdmin(Spot spot)
         {
             var userID = User.Identity.Name;
-            var storedSpot = _context.Spots.Find(spot.Id);
-            var parking = _context.Parkings.Find(spot.ParkingId);
+            var storedSpot = _context.Spots.AsNoTracking().Where(s => s.Id == spot.Id).FirstOrDefault();
+            var parking = _context.Parkings.Where(p => p.Id == storedSpot.ParkingId).FirstOrDefault();
             var userParking = _context.UsersParkings.Where(up => up.ParkingId == parking.Id && up.UserId == int.Parse(userID) && up.IsAdmin == 1).FirstOrDefault();
 
             return userParking != null;
@@ -223,6 +223,16 @@ namespace ParkingSpotsManager.API.Controllers
             var userParking = _context.UsersParkings.Where(up => up.ParkingId == storedParking.Id && up.UserId == int.Parse(userID) && up.IsAdmin == 1).FirstOrDefault();
 
             return userParking != null;
+        }
+
+        private bool IsParkingAdmin(int parkingID)
+        {
+            var storedParking = _context.Parkings.Find(parkingID);
+            if (storedParking != null) {
+                return IsParkingAdmin(storedParking);
+            }
+
+            return false;
         }
 
         private bool IsParkingUser(Spot spot)
@@ -245,7 +255,7 @@ namespace ParkingSpotsManager.API.Controllers
 
         private bool CanChangeStatus(Spot spot)
         {
-            var storedSpot = _context.Spots.Where(s => s.Id == spot.Id).FirstOrDefault();
+            var storedSpot = _context.Spots.AsNoTracking().Where(s => s.Id == spot.Id).FirstOrDefault();
             if (storedSpot != null) {
                 if (IsParkingAdmin(storedSpot) || (IsParkingUser(storedSpot) && storedSpot.OccupiedBy == null)) {
                     return true;
