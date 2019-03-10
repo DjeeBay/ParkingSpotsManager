@@ -186,6 +186,7 @@ namespace ParkingSpotsManager.API.Controllers
                         var spots = _context.Spots.Where(s => s.ParkingId == storedSpot.ParkingId).ToList();
                         foreach (var singleSpot in spots) {
                             singleSpot.Occupier = _context.Users.FirstOrDefault(u => u.Id == singleSpot.OccupiedBy);
+                            singleSpot.IsCurrentUserAdmin = IsParkingAdmin(singleSpot);
                         }
                         return Ok(spots);
                     } catch (DbUpdateConcurrencyException) {
@@ -239,7 +240,7 @@ namespace ParkingSpotsManager.API.Controllers
         {
             var userID = User.Identity.Name;
             var storedSpot = _context.Spots.Find(spot.Id);
-            var userParking = _context.UsersParkings.Where(up => up.ParkingId == spot.ParkingId && up.UserId == int.Parse(userID)).FirstOrDefault();
+            var userParking = _context.UsersParkings.Where(up => up.ParkingId == storedSpot.ParkingId && up.UserId == int.Parse(userID)).FirstOrDefault();
 
             return userParking != null;
         }
@@ -261,7 +262,8 @@ namespace ParkingSpotsManager.API.Controllers
                     return true;
                 }
 
-                if (storedSpot.OccupiedBy == null && IsParkingUser(storedSpot)) {
+                var userID = User.Identity.Name;
+                if (storedSpot.OccupiedBy == int.Parse(userID) && IsParkingUser(storedSpot)) {
                     return true;
                 }
             }
