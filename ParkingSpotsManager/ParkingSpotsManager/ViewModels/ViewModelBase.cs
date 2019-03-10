@@ -69,8 +69,7 @@ namespace ParkingSpotsManager.ViewModels
 
                             return user;
                         }
-                    } catch (Exception e) {
-                        Console.WriteLine(e.Message);
+                    } catch (Exception) {
                         await LogoutAsync();
                     }
                 }
@@ -86,9 +85,9 @@ namespace ParkingSpotsManager.ViewModels
             CurrentUser = null;
             if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken")) {
                 Prism.PrismApplicationBase.Current.Properties["authToken"] = null;
-                await Prism.PrismApplicationBase.Current.SavePropertiesAsync().ConfigureAwait(false);
+                await Prism.PrismApplicationBase.Current.SavePropertiesAsync();
             }
-            await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            await NavigationService.NavigateAsync("/NavigationPage/MainPage");
         }
 
         protected void SetAuthUserProperties(User user, string token)
