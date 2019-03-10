@@ -53,7 +53,7 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var parkings = await _context.Parkings.Include(p => p.Spots).ToListAsync();
+            var parkings = await _context.Parkings.Include(p => p.Spots).Include(p => p.UserParkings).ThenInclude(up => up.User).ToListAsync();
             var parking = parkings.FirstOrDefault(p => p.Id == id);
 
             if (parking == null) {

@@ -25,15 +25,34 @@ namespace ParkingSpotsManager.ViewModels
             set { SetProperty(ref _currentParking, value); }
         }
 
+        private bool _isSpotListVisible = true;
+        public bool IsSpotListVisible
+        {
+            get => _isSpotListVisible;
+            set { SetProperty(ref _isSpotListVisible, value); }
+        }
+
         public DelegateCommand<object> SaveParkingCommand { get; }
         public DelegateCommand<object> GoToAddSpotCommand { get; }
         public DelegateCommand<Spot> EditSpotCommand { get; }
+        public DelegateCommand<string> DisplayListCommand { get; }
 
         public ParkingEditPageViewModel(INavigationService navigationService) : base (navigationService)
         {
             SaveParkingCommand = new DelegateCommand<object>(OnSaveParkingCommandExecutedAsync, CanSaveParking);
             GoToAddSpotCommand = new DelegateCommand<object>(OnGoToAddSpotCommandExecutedAsync, CanAddSpot);
             EditSpotCommand = new DelegateCommand<Spot>(EditSpotCommandExecutedAsync, CanEditSpot);
+            DisplayListCommand = new DelegateCommand<string>(OnDisplayListExecuted, CanDisplayList);
+        }
+
+        private bool CanDisplayList(string arg)
+        {
+            return true;
+        }
+
+        private void OnDisplayListExecuted(string obj)
+        {
+            IsSpotListVisible = obj != null && obj == "spots";
         }
 
         private bool CanEditSpot(Spot spot)
