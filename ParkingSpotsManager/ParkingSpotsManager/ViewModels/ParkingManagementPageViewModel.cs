@@ -35,8 +35,16 @@ namespace ParkingSpotsManager.ViewModels
             set { SetProperty(ref _spotList, value); }
         }
 
+        private bool _isRefreshingSpotList = false;
+        public bool IsRefreshingSpotList
+        {
+            get => _isRefreshingSpotList;
+            set { SetProperty(ref _isRefreshingSpotList, value); }
+        }
+
         public DelegateCommand<Spot> TakeSpotCommand { get; set; }
         public DelegateCommand<Spot> ReleaseSpotCommand { get; set; }
+        public DelegateCommand<object> RefreshSpotListCommand { get; set; }
 
         public ParkingManagementPageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base (navigationService)
         {
@@ -44,6 +52,19 @@ namespace ParkingSpotsManager.ViewModels
             Title = "Parking Management";
             TakeSpotCommand = new DelegateCommand<Spot>(OnTakeSpotCommandExecuted, CanTakeSpot);
             ReleaseSpotCommand = new DelegateCommand<Spot>(OnReleaseSpotCommandExecuted, CanReleaseSpot);
+            RefreshSpotListCommand = new DelegateCommand<object>(OnRefreshSpotList, CanRefreshSpotList).ObservesProperty(() => CurrentParking);
+        }
+
+        private bool CanRefreshSpotList(object arg)
+        {
+            return CurrentParking != null;
+        }
+
+        private async void OnRefreshSpotList(object obj)
+        {
+            IsRefreshingSpotList = true;
+            SpotList = await GetSpotListAsync(CurrentParking.Id).ConfigureAwait(false);
+            IsRefreshingSpotList = false;
         }
 
         private bool CanReleaseSpot(Spot spot)
