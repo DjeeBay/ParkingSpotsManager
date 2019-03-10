@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ParkingSpotsManager.ViewModels
 {
-	public class InvitePageViewModel : ViewModelBase
+	public class InvitePageViewModel : ViewModelBase, INavigationAware
 	{
         private List<Parking> _parkingList;
         public List<Parking> ParkingList
@@ -67,7 +67,12 @@ namespace ParkingSpotsManager.ViewModels
         public InvitePageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base (navigationService)
         {
             _dialogService = dialogService;
-            GetParkingList();
+        }
+
+        public override async void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+            ParkingList = await GetParkingList().ConfigureAwait(false);
         }
 
         private async void OnTextChanged(string search)
@@ -139,19 +144,23 @@ namespace ParkingSpotsManager.ViewModels
             return null;
         }
 
-        private async void GetParkingList()
+        private async Task<List<Parking>> GetParkingList()
         {
             //TODO: refac in a service
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
-                    var response = await httpClient.GetAsync(APIConstants.GetUserParkingsUrl);
+                    var response = await httpClient.GetAsync(APIConstants.GetUserParkingsUrl).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
-                    ParkingList = JsonConvert.DeserializeObject<List<Parking>>(content);
+                    var parkingList = JsonConvert.DeserializeObject<List<Parking>>(content);
+
+                    return parkingList;
                 } catch (Exception) {
                     await NavigationService.NavigateAsync("HomePage");
                 }
+
+                return null;
             }
         }
     }

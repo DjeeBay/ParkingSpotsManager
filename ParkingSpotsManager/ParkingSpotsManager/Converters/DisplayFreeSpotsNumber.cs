@@ -24,7 +24,7 @@ namespace ParkingSpotsManager.Converters
 
             var nbAvailable = spots.Count - nbOccupied;
 
-            return new StringBuilder(nbAvailable.ToString()).Append(" / ").Append(spots.Count).ToString();
+            return new StringBuilder(nbAvailable.ToString()).Append(" free on ").Append(spots.Count).ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
