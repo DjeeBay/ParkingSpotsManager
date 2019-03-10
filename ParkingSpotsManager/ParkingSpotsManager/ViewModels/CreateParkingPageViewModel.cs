@@ -45,7 +45,7 @@ namespace ParkingSpotsManager.ViewModels
                         var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                         response.EnsureSuccessStatusCode();
                         //TODO notif
-                        await NavigationService.NavigateAsync("ParkingListPage");
+                        await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
                     } catch (Exception e) {
                         Console.WriteLine(e.Message);
                     }

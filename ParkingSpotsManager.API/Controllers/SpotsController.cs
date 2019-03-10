@@ -55,6 +55,7 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetSpot([FromRoute] int id)
         {
+            //TODO if user is linked
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -113,7 +114,7 @@ namespace ParkingSpotsManager.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostSpot([FromBody] Spot spot)
         {
-            if (!IsParkingAdmin(spot)) {
+            if (!IsParkingAdmin(spot.ParkingId)) {
                 return BadRequest();
             }
 
@@ -185,6 +186,7 @@ namespace ParkingSpotsManager.API.Controllers
                         var spots = _context.Spots.Where(s => s.ParkingId == storedSpot.ParkingId).ToList();
                         foreach (var singleSpot in spots) {
                             singleSpot.Occupier = _context.Users.FirstOrDefault(u => u.Id == singleSpot.OccupiedBy);
+                            singleSpot.IsCurrentUserAdmin = IsParkingAdmin(singleSpot);
                         }
                         return Ok(spots);
                     } catch (DbUpdateConcurrencyException) {
@@ -208,8 +210,8 @@ namespace ParkingSpotsManager.API.Controllers
         private bool IsParkingAdmin(Spot spot)
         {
             var userID = User.Identity.Name;
-            var storedSpot = _context.Spots.Find(spot.Id);
-            var parking = _context.Parkings.Find(spot.ParkingId);
+            var storedSpot = _context.Spots.AsNoTracking().Where(s => s.Id == spot.Id).FirstOrDefault();
+            var parking = _context.Parkings.Where(p => p.Id == storedSpot.ParkingId).FirstOrDefault();
             var userParking = _context.UsersParkings.Where(up => up.ParkingId == parking.Id && up.UserId == int.Parse(userID) && up.IsAdmin == 1).FirstOrDefault();
 
             return userParking != null;
@@ -224,11 +226,21 @@ namespace ParkingSpotsManager.API.Controllers
             return userParking != null;
         }
 
+        private bool IsParkingAdmin(int parkingID)
+        {
+            var storedParking = _context.Parkings.Find(parkingID);
+            if (storedParking != null) {
+                return IsParkingAdmin(storedParking);
+            }
+
+            return false;
+        }
+
         private bool IsParkingUser(Spot spot)
         {
             var userID = User.Identity.Name;
             var storedSpot = _context.Spots.Find(spot.Id);
-            var userParking = _context.UsersParkings.Where(up => up.ParkingId == spot.ParkingId && up.UserId == int.Parse(userID)).FirstOrDefault();
+            var userParking = _context.UsersParkings.Where(up => up.ParkingId == storedSpot.ParkingId && up.UserId == int.Parse(userID)).FirstOrDefault();
 
             return userParking != null;
         }
@@ -244,13 +256,14 @@ namespace ParkingSpotsManager.API.Controllers
 
         private bool CanChangeStatus(Spot spot)
         {
-            var storedSpot = _context.Spots.Where(s => s.Id == spot.Id).FirstOrDefault();
+            var storedSpot = _context.Spots.AsNoTracking().Where(s => s.Id == spot.Id).FirstOrDefault();
             if (storedSpot != null) {
                 if (IsParkingAdmin(storedSpot) || (IsParkingUser(storedSpot) && storedSpot.OccupiedBy == null)) {
                     return true;
                 }
 
-                if (storedSpot.OccupiedBy == null && IsParkingUser(storedSpot)) {
+                var userID = User.Identity.Name;
+                if (storedSpot.OccupiedBy == int.Parse(userID) && IsParkingUser(storedSpot)) {
                     return true;
                 }
             }

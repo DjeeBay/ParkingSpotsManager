@@ -17,11 +17,19 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <ViewCell.ContextActions>
-                            <MenuItem Command="{Binding Path=BindingContext.EditSpotCommand, Source={x:Reference Name=ParkingEdit}}" CommandParameter="{Binding .}" Text="Edit" />
-                        </ViewCell.ContextActions>
-                        <StackLayout Padding="5" HorizontalOptions="StartAndExpand">
-                            <Label Text="{Binding Name}" />
+                        <StackLayout Padding="5" HorizontalOptions="Fill">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*" />
+                                    <ColumnDefinition Width="5*" />
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Column="0">
+                                    <Label Text="{Binding Name}" />
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Grid.Column="1" HorizontalOptions="End">
+                                    <Button Command="{Binding Path=BindingContext.EditSpotCommand, Source={x:Reference Name=ParkingEdit}}" CommandParameter="{Binding .}" Text="Edit" HorizontalOptions="End" StyleClass="Warning" FontSize="12" />
+                                </StackLayout>
+                            </Grid>
                         </StackLayout>
                     </ViewCell>
                 </DataTemplate>
