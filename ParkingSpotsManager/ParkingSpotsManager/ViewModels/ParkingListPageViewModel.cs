@@ -32,13 +32,34 @@ namespace ParkingSpotsManager.ViewModels
             set { SetProperty(ref _selectedParking, value); }
         }
 
+        private bool _isRefreshingParkingList = false;
+        public bool IsRefreshingParkingList
+        {
+            get => _isRefreshingParkingList;
+            set { SetProperty(ref _isRefreshingParkingList, value); }
+        }
+
         public DelegateCommand<Parking> ShowParkingCommand { get; }
         public DelegateCommand<Parking> EditParkingCommand { get; }
+        public DelegateCommand<object> RefreshParkingListCommand { get; }
 
         public ParkingListPageViewModel(INavigationService navigationService) : base (navigationService)
         {
             ShowParkingCommand = new DelegateCommand<Parking>(OnShowParkingClicked, CanShowParking);
             EditParkingCommand = new DelegateCommand<Parking>(OnEditParkingClicked, CanEditParking);
+            RefreshParkingListCommand = new DelegateCommand<object>(OnRefreshParkingList, CanRefreshParkingList);
+        }
+
+        private bool CanRefreshParkingList(object arg)
+        {
+            return true;
+        }
+
+        private async void OnRefreshParkingList(object obj)
+        {
+            IsRefreshingParkingList = true;
+            ParkingList = await GetParkingList().ConfigureAwait(false);
+            IsRefreshingParkingList = false;
         }
 
         private bool CanEditParking(object arg)
@@ -65,7 +86,7 @@ namespace ParkingSpotsManager.ViewModels
             var navParams = new NavigationParameters {
                 {"parking", parking }
             };
-            await NavigationService.NavigateAsync("ParkingManagementPage", navParams);
+            await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingManagementPage", navParams);
         }
 
         private async Task<ObservableCollection<Parking>> GetParkingList()

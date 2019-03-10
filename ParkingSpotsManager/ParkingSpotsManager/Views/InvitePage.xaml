@@ -5,7 +5,7 @@
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="ParkingSpotsManager.Views.InvitePage">
 
-    <StackLayout HorizontalOptions="Center" VerticalOptions="Start">
+    <StackLayout Padding="5" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
         <Label Text="Select a parking" />
         <Picker ItemsSource="{Binding ParkingList}"
                 ItemDisplayBinding="{Binding Name}"

@@ -15,12 +15,9 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     
-    <NavigationPage.TitleView>
-        <Label Text="{Binding CurrentParking.Name}" HorizontalOptions="Center" />
-    </NavigationPage.TitleView>
-    
     <StackLayout>
-        <ListView ItemsSource="{Binding SpotList}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
+        <Label HorizontalOptions="CenterAndExpand" Text="{Binding CurrentParking.Name}" Margin="5" />
+        <ListView ItemsSource="{Binding SpotList}" IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshingSpotList}" RefreshCommand="{Binding RefreshSpotListCommand}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

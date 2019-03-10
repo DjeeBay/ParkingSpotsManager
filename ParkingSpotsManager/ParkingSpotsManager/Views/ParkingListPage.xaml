@@ -16,7 +16,7 @@
     <StackLayout>
         <Label HorizontalOptions="CenterAndExpand" Text="Parking List" Margin="5" />
 
-        <ListView SelectedItem="{Binding SelectedParking}" ItemsSource="{Binding ParkingList}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
+        <ListView SelectedItem="{Binding SelectedParking}" ItemsSource="{Binding ParkingList}" IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshingParkingList}" RefreshCommand="{Binding RefreshParkingListCommand}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

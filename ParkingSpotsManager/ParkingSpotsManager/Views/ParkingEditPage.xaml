@@ -6,8 +6,8 @@
              x:Name="ParkingEdit"
              x:Class="ParkingSpotsManager.Views.ParkingEditPage">
 
-    <StackLayout>
-        <Label Text="{Binding CurrentParking.Name, StringFormat=Edit Parking \{0\}}" />
+    <StackLayout Padding="5">
+        <Label Text="{Binding CurrentParking.Name, StringFormat=Edit Parking \{0\}}" HorizontalOptions="CenterAndExpand" />
         <Entry Text="{Binding CurrentParking.Name}" Placeholder="name" />
         <Button Text="Save" Command="{Binding SaveParkingCommand}" />
         
