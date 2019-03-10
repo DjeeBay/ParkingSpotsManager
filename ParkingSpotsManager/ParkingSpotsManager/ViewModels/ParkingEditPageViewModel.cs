@@ -84,7 +84,7 @@ namespace ParkingSpotsManager.ViewModels
             }
         }
 
-        public override async void OnNavigatingTo(INavigationParameters parameters)
+        public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
             var parking = parameters.GetValue<Parking>("parking");

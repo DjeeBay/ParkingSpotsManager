@@ -69,7 +69,8 @@ namespace ParkingSpotsManager.ViewModels
 
                             return user;
                         }
-                    } catch (Exception) {
+                    } catch (Exception e) {
+                        Console.WriteLine(e.Message);
                         await LogoutAsync();
                     }
                 }

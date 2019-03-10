@@ -49,13 +49,10 @@ namespace ParkingSpotsManager.ViewModels
                 var url = APIConstants.SpotREST;
                 var json = JObject.FromObject(Spot);
                 using (var httpClient = new HttpClient()) {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
                     try {
                         var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json")).ConfigureAwait(false);
                         response.EnsureSuccessStatusCode();
-                        var content = await response.Content.ReadAsStringAsync();
-                        var createdSpot = JsonConvert.DeserializeObject<Spot>(content);
-                        CurrentParking.Spots.Add(createdSpot);
                         //TODO notif
                         var navParams = new NavigationParameters {
                             { "parking", CurrentParking }
@@ -68,7 +65,7 @@ namespace ParkingSpotsManager.ViewModels
             }
         }
 
-        public override async void OnNavigatingTo(INavigationParameters parameters)
+        public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
             var parking = parameters.GetValue<Parking>("parking");

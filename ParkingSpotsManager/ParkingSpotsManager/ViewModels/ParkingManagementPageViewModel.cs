@@ -97,14 +97,9 @@ namespace ParkingSpotsManager.ViewModels
             return null;
         }
 
-        public override void OnNavigatedTo(INavigationParameters parameters)
+        public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
-        }
-
-        public override async void OnNavigatingTo(INavigationParameters parameters)
-        {
-            base.OnNavigatingTo(parameters);
             CurrentParking = parameters.GetValue<Parking>("parking");
             SpotList = await GetSpotListAsync(CurrentParking.Id).ConfigureAwait(false);
         }

@@ -58,8 +58,10 @@ namespace ParkingSpotsManager.ViewModels
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
                         var response = await httpClient.DeleteAsync(url);
                         response.EnsureSuccessStatusCode();
-                        var content = await response.Content.ReadAsStringAsync();
-                        await NavigationService.NavigateAsync("ParkingListPage");
+                        var navParams = new NavigationParameters {
+                        { "parking", CurrentParking }
+                    };
+                        await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingEditPage", navParams);
                     } catch (Exception e) {
                         Console.WriteLine(e.Message);
                     }
@@ -92,7 +94,7 @@ namespace ParkingSpotsManager.ViewModels
             }
         }
 
-        public override async void OnNavigatingTo(INavigationParameters parameters)
+        public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
             var spot = parameters.GetValue<Spot>("spot");
