@@ -4,6 +4,9 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              xmlns:c="clr-namespace:ParkingSpotsManager.Converters"
+             xmlns:ctrl="clr-namespace:ParkingSpotsManager.Controls"
+             xmlns:bhv="clr-namespace:ParkingSpotsManager.Behaviors"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
              x:Name="ParkingEdit"
              x:Class="ParkingSpotsManager.Views.ParkingEditPage">
 
@@ -54,7 +57,7 @@
             </ListView.ItemTemplate>
         </ListView>
         
-        <ListView ItemsSource="{Binding CurrentParking.UserParkings}" IsVisible="{Binding IsSpotListVisible, Converter={StaticResource InverseBoolConverter}}" VerticalOptions="FillAndExpand">
+        <ListView ItemsSource="{Binding UserParkings}" IsVisible="{Binding IsSpotListVisible, Converter={StaticResource InverseBoolConverter}}" VerticalOptions="FillAndExpand">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
@@ -64,10 +67,20 @@
                                     <ColumnDefinition Width="5*" />
                                     <ColumnDefinition Width="5*" />
                                 </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
                                 <StackLayout Grid.Column="0">
                                     <Label Text="{Binding User.Username}" />
                                 </StackLayout>
                                 <StackLayout Orientation="Horizontal" Grid.Column="1" HorizontalOptions="End">
+                                    <ctrl:ToggleButton IsToggled="{Binding IsAdmin}" Text="Admin">
+                                        <ctrl:ToggleButton.Behaviors>
+                                            <bhv:IsAdminToggleButtonBehavior IsAdmin="{Binding IsAdmin}" />
+                                            <b:EventToCommandBehavior EventName="Toggled" Command="{Binding Path=BindingContext.ChangeUserStatusCommand, Source={x:Reference Name=ParkingEdit}}" CommandParameter="{Binding .}" />
+                                        </ctrl:ToggleButton.Behaviors>
+                                        
+                                    </ctrl:ToggleButton>
                                 </StackLayout>
                             </Grid>
                         </StackLayout>

@@ -8,6 +8,7 @@ using Prism.Mvvm;
 using Prism.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -25,6 +26,13 @@ namespace ParkingSpotsManager.ViewModels
             set { SetProperty(ref _currentParking, value); }
         }
 
+        private ObservableCollection<UserParking> _userParkings;
+        public ObservableCollection<UserParking> UserParkings
+        {
+            get => _userParkings;
+            set { SetProperty(ref _userParkings, value); }
+        }
+
         private bool _isSpotListVisible = true;
         public bool IsSpotListVisible
         {
@@ -36,6 +44,7 @@ namespace ParkingSpotsManager.ViewModels
         public DelegateCommand<object> GoToAddSpotCommand { get; }
         public DelegateCommand<Spot> EditSpotCommand { get; }
         public DelegateCommand<string> DisplayListCommand { get; }
+        public DelegateCommand<UserParking> ChangeUserStatusCommand { get; }
 
         public ParkingEditPageViewModel(INavigationService navigationService) : base (navigationService)
         {
@@ -43,6 +52,22 @@ namespace ParkingSpotsManager.ViewModels
             GoToAddSpotCommand = new DelegateCommand<object>(OnGoToAddSpotCommandExecutedAsync, CanAddSpot);
             EditSpotCommand = new DelegateCommand<Spot>(EditSpotCommandExecutedAsync, CanEditSpot);
             DisplayListCommand = new DelegateCommand<string>(OnDisplayListExecuted, CanDisplayList);
+            ChangeUserStatusCommand = new DelegateCommand<UserParking>(OnChangeUserStatusExecuted, CanChangeUserStatus);
+        }
+
+        private bool CanChangeUserStatus(UserParking arg)
+        {
+            return true;
+        }
+
+        private void OnChangeUserStatusExecuted(UserParking obj)
+        {
+            //TODO call API
+            if (obj != null && typeof(UserParking) == obj.GetType()) {
+                obj.IsAdmin = 0;
+                UserParkings = new ObservableCollection<UserParking>(UserParkings.ToList());
+            }
+            Console.WriteLine(obj);
         }
 
         private bool CanDisplayList(string arg)
@@ -108,7 +133,12 @@ namespace ParkingSpotsManager.ViewModels
             base.OnNavigatedTo(parameters);
             var parking = parameters.GetValue<Parking>("parking");
 
-            CurrentParking = await GetParking(parking.Id).ConfigureAwait(false);
+            if (parking != null) {
+                CurrentParking = await GetParking(parking.Id).ConfigureAwait(false);
+                UserParkings = new ObservableCollection<UserParking>(CurrentParking.UserParkings);
+            } else {
+                await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
+            }
         }
 
         private async Task<Parking> GetParking(int parkingID)
