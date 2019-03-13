@@ -79,8 +79,8 @@
                                             <bhv:IsAdminToggleButtonBehavior IsAdmin="{Binding IsAdmin}" />
                                             <b:EventToCommandBehavior EventName="Toggled" Command="{Binding Path=BindingContext.ChangeUserStatusCommand, Source={x:Reference Name=ParkingEdit}}" CommandParameter="{Binding .}" />
                                         </ctrl:ToggleButton.Behaviors>
-                                        
                                     </ctrl:ToggleButton>
+                                    <Button Text="Remove" StyleClass="Danger" Command="{Binding Path=BindingContext.RemoveUserCommand, Source={x:Reference Name=ParkingEdit}}" CommandParameter="{Binding .}" />
                                 </StackLayout>
                             </Grid>
                         </StackLayout>

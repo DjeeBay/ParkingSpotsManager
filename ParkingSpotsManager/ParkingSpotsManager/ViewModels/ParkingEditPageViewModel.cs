@@ -6,6 +6,7 @@ using Prism;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
+using Prism.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -45,14 +46,37 @@ namespace ParkingSpotsManager.ViewModels
         public DelegateCommand<Spot> EditSpotCommand { get; }
         public DelegateCommand<string> DisplayListCommand { get; }
         public DelegateCommand<UserParking> ChangeUserStatusCommand { get; }
+        public DelegateCommand<UserParking> RemoveUserCommand { get; }
 
-        public ParkingEditPageViewModel(INavigationService navigationService) : base (navigationService)
+        private IPageDialogService _dialogService;
+
+        public ParkingEditPageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base (navigationService)
         {
+            _dialogService = dialogService;
             SaveParkingCommand = new DelegateCommand<object>(OnSaveParkingCommandExecutedAsync, CanSaveParking);
             GoToAddSpotCommand = new DelegateCommand<object>(OnGoToAddSpotCommandExecutedAsync, CanAddSpot);
             EditSpotCommand = new DelegateCommand<Spot>(EditSpotCommandExecutedAsync, CanEditSpot);
             DisplayListCommand = new DelegateCommand<string>(OnDisplayListExecuted, CanDisplayList);
             ChangeUserStatusCommand = new DelegateCommand<UserParking>(OnChangeUserStatusExecuted, CanChangeUserStatus);
+            RemoveUserCommand = new DelegateCommand<UserParking>(OnRemoveUserExecuted, CanRemoveUser);
+        }
+
+        private bool CanRemoveUser(UserParking arg)
+        {
+            return true;
+        }
+
+        private async void OnRemoveUserExecuted(UserParking obj)
+        {
+            if (obj != null && typeof(UserParking) == obj.GetType()) {
+                var answer = await _dialogService.DisplayAlertAsync("Confirm", $"Do you want to remove {obj.User.Username} from {CurrentParking.Name} ?", "Yes", "No");
+                if (answer) {
+                    var apiData = await RemoveUser(CurrentParking.Id, obj.UserId);
+                    if (apiData != null) {
+                        UserParkings = apiData;
+                    }
+                }
+            }
         }
 
         private bool CanChangeUserStatus(UserParking arg)
@@ -60,14 +84,15 @@ namespace ParkingSpotsManager.ViewModels
             return true;
         }
 
-        private void OnChangeUserStatusExecuted(UserParking obj)
+        private async void OnChangeUserStatusExecuted(UserParking obj)
         {
-            //TODO call API
             if (obj != null && typeof(UserParking) == obj.GetType()) {
-                obj.IsAdmin = 0;
-                UserParkings = new ObservableCollection<UserParking>(UserParkings.ToList());
+                obj.IsAdmin = obj.IsAdmin == 1 ? 0 : 1;
+                var apiData = await ChangeUserRole(CurrentParking.Id, obj).ConfigureAwait(false);
+                if (apiData != null) {
+                    UserParkings = apiData;
+                }
             }
-            Console.WriteLine(obj);
         }
 
         private bool CanDisplayList(string arg)
@@ -154,6 +179,49 @@ namespace ParkingSpotsManager.ViewModels
                     var parking = JsonConvert.DeserializeObject<Parking>(content);
 
                     return parking;
+                } catch (Exception e) {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            return null;
+        }
+
+        private async Task<ObservableCollection<UserParking>> ChangeUserRole(int parkingID, UserParking userParking)
+        {
+            //TODO service
+            var url = APIConstants.ChangeParkingUserRoleUrl(parkingID);
+            var json = JObject.FromObject(userParking);
+            using (var httpClient = new HttpClient()) {
+                try {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
+                    var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json")).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var userParkings = JsonConvert.DeserializeObject<ObservableCollection<UserParking>>(content);
+
+                    return userParkings;
+                } catch (Exception e) {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            return null;
+        }
+
+        private async Task<ObservableCollection<UserParking>> RemoveUser(int parkingID, int userID)
+        {
+            //TODO service
+            var url = APIConstants.RemoveParkingUserUrl(parkingID, userID);
+            using (var httpClient = new HttpClient()) {
+                try {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
+                    var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var userParkings = JsonConvert.DeserializeObject<ObservableCollection<UserParking>>(content);
+
+                    return userParkings;
                 } catch (Exception e) {
                     Console.WriteLine(e.Message);
                 }
