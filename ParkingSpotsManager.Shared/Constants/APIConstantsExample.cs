@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ParkingSpotsManager.Shared.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -35,6 +36,16 @@ namespace ParkingSpotsManager.Shared.Constants
         }
 
         public static string GetParkingSpotsUrl(int parkingID)
+        {
+            return $"";
+        }
+
+        public static string ChangeParkingUserRoleUrl(int parkingID)
+        {
+            return $"";
+        }
+
+        public static string RemoveParkingUserUrl(int parkingID, int userID)
         {
             return $"";
         }

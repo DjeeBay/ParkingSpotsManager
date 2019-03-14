@@ -9,7 +9,7 @@ using ParkingSpotsManager.Shared.Database;
 namespace ParkingSpotsManager.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190305230148_InitialCreate")]
+    [Migration("20190310232939_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

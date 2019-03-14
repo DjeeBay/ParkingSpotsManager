@@ -51,7 +51,7 @@ namespace ParkingSpotsManager.ViewModels
                 using (var httpClient = new HttpClient()) {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
                     try {
-                        var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json")).ConfigureAwait(false);
+                        var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                         response.EnsureSuccessStatusCode();
                         //TODO notif
                         var navParams = new NavigationParameters {
