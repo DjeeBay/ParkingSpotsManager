@@ -144,7 +144,7 @@ namespace ParkingSpotsManager.API.Controllers
         {
             var userID = User.Identity.Name;
             if (ParkingExists(parkingID) && IsAdmin(parkingID) && int.Parse(userID) != userParking.UserId) {
-                var storedUserParking = _context.UsersParkings.AsNoTracking().Where(up => up.Id == userParking.Id).FirstOrDefault();
+                var storedUserParking = _context.UsersParkings.FirstOrDefault(up => up.Id == userParking.Id);
                 if (storedUserParking != null) {
                     storedUserParking.IsAdmin = userParking.IsAdmin;
                     await _context.SaveChangesAsync();
@@ -162,7 +162,7 @@ namespace ParkingSpotsManager.API.Controllers
         {
             var senderID = User.Identity.Name;
             if (ParkingExists(parkingID) && IsAdmin(parkingID) && int.Parse(senderID) != userID) {
-                var storedUserParking = _context.UsersParkings.AsNoTracking().Where(up => up.UserId == userID && up.ParkingId == parkingID).FirstOrDefault();
+                var storedUserParking = _context.UsersParkings.FirstOrDefault(up => up.UserId == userID && up.ParkingId == parkingID);
                 if (storedUserParking != null) {
                     _context.UsersParkings.Remove(storedUserParking);
                     await _context.SaveChangesAsync();

@@ -144,7 +144,7 @@ namespace ParkingSpotsManager.ViewModels
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
-                    var response = await httpClient.PutAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json")).ConfigureAwait(false);
+                    var response = await httpClient.PutAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                     response.EnsureSuccessStatusCode();
                     await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
                 } catch (Exception e) {
