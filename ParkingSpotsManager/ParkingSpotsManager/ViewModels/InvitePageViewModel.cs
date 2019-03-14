@@ -119,7 +119,7 @@ namespace ParkingSpotsManager.ViewModels
 
                     return true;
                 } catch (Exception) {
-                    await NavigationService.NavigateAsync("HomePage");
+                    await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
                 }
             }
 
@@ -137,7 +137,7 @@ namespace ParkingSpotsManager.ViewModels
 
                     return JsonConvert.DeserializeObject<List<User>>(content);
                 } catch (Exception) {
-                    await NavigationService.NavigateAsync("HomePage");
+                    await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
                 }
             }
 
@@ -157,7 +157,7 @@ namespace ParkingSpotsManager.ViewModels
 
                     return parkingList;
                 } catch (Exception) {
-                    await NavigationService.NavigateAsync("HomePage");
+                    await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
                 }
 
                 return null;
