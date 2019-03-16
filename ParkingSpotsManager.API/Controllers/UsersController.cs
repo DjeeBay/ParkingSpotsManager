@@ -133,7 +133,7 @@ namespace ParkingSpotsManager.API.Controllers
                         .Include(u => u.UserParkings)
                         .Where(u => u.Id != int.Parse(User.Identity.Name) 
                             && u.UserParkings.Where(up => up.ParkingId == parkingID && up.UserId == u.Id).FirstOrDefault() == null
-                            && u.Username.Contains(search))
+                            && u.Username.Contains(search, StringComparison.InvariantCultureIgnoreCase))
                         .ToListAsync();
                     CleanUsersPassword(ref userList);
 

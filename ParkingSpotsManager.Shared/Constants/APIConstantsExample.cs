@@ -13,12 +13,12 @@ namespace ParkingSpotsManager.Shared.Constants
         public const string ConnectionString = @"";
         public const string CreateAccountUrl = "";
         public const string LoginUrl = "";
-        public const string ValidTokenUrl = "";
         public const string TokenSecretKey = "secret phrase";
         public const string ParkingREST = "";
         public const string SpotREST = "";
         public const string GetUserParkingsUrl = "";
         public const string GetCurrentUser = "";
+        public const string SaveUserAccountUrl = "";
 
         public static string ChangeSpotStatus(int spotID)
         {
