@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Class="ParkingSpotsManager.Views.AccountPage">
+
+    <StackLayout Padding="5">
+        <StackLayout HeightRequest="50" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Spacing="20">
+            <Label Text="{Binding User.Username}" FontSize="Large" HorizontalOptions="Center" VerticalOptions="Center" FontAttributes="Bold" />
+        </StackLayout>
+
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Firstname :" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="100" />
+            <Entry HorizontalOptions="FillAndExpand" Text="{Binding User.Firstname}" />
+        </StackLayout>
+        
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Lastname :" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="100" />
+            <Entry HorizontalOptions="FillAndExpand" Text="{Binding User.Lastname}" />
+        </StackLayout>
+        
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Email :" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="100" />
+            <Entry HorizontalOptions="FillAndExpand" Text="{Binding User.Email}" />
+        </StackLayout>
+
+        <StackLayout VerticalOptions="Start" HorizontalOptions="FillAndExpand" Spacing="20" Margin="0,30,0,15">
+            <Label Text="Change password" FontSize="Medium" HorizontalOptions="Start" VerticalOptions="Center" FontAttributes="Bold" />
+        </StackLayout>
+
+        <StackLayout Orientation="Horizontal">
+            <Label Text="New pass :" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="100" />
+            <Entry HorizontalOptions="FillAndExpand" Text="{Binding Password}" IsPassword="True" />
+        </StackLayout>
+        
+        <StackLayout Orientation="Horizontal">
+            <Label Text="Confirm :" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="100" />
+            <Entry HorizontalOptions="FillAndExpand" Text="{Binding ConfirmedPassword}" IsPassword="True" />
+        </StackLayout>
+
+        <Button Command="{Binding SaveCommand}" Text="Save" StyleClass="Primary" />
+    </StackLayout>
+</ContentPage>

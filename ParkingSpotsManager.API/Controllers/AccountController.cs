@@ -19,6 +19,7 @@ namespace ParkingSpotsManager.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly int _passwordMinLength = 5;
 
         public AccountController(DataContext context)
         {
@@ -31,25 +32,12 @@ namespace ParkingSpotsManager.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet]
-        [Route("[action]")]
-        public async Task<IActionResult> Test() {
-            return new OkObjectResult(_context.Users.ToList());
-        }
-
-        [HttpGet]
-        [Route("[action]")]
-        public IActionResult ValidToken() {
-            return new OkObjectResult(HttpContext.User.Identity.IsAuthenticated);
-        }
-
-        [AllowAnonymous]
         [Route("[action]")]
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] Authenticator authenticator)
         {
             try {
-                var user = await _context.Users.Where(u => u.Username == authenticator.Login).FirstOrDefaultAsync();
+                var user = await _context.Users.Where(u => u.Username.ToLowerInvariant() == authenticator.Login.ToLowerInvariant()).FirstOrDefaultAsync();
                 if (user != null && user.Id != 0) {
                     var passMatched = PasswordService.VerifyHashedPassword(user.Password, authenticator.Password);
                     if (passMatched) {
@@ -72,7 +60,7 @@ namespace ParkingSpotsManager.API.Controllers
         public async Task<IActionResult> CreateUser([FromBody] User user)
         {
             try {
-                if (_context.Users.Where(u => u.Username == user.Username).FirstOrDefault() != null) {
+                if (_context.Users.Where(u => u.Username.ToLowerInvariant() == user.Username.ToLowerInvariant()).FirstOrDefault() != null) {
                     return BadRequest(new { Username = new string[] { "Username already exists." } });
                 } else if (_context.Users.Where(u => u.Email == user.Email).FirstOrDefault() != null) {
                     return BadRequest(new { Email = new string[] { "Email already used." } });
@@ -89,6 +77,35 @@ namespace ParkingSpotsManager.API.Controllers
             } catch (Exception e) {
                 return NotFound(e.InnerException.Message);
             }
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserAccount user)
+        {
+            if (int.Parse(User.Identity.Name) == user.Id) {
+                if (_context.Users.Where(u => u.Email == user.Email && u.Id != user.Id).FirstOrDefault() != null) {
+                    return BadRequest(new { Email = new string[] { "Email already used." } });
+                }
+                if (user.IsPasswordSet && (string.IsNullOrEmpty(user.Password) || user.Password.Length < _passwordMinLength)) {
+                    return BadRequest(new { Password = new string[] { "Password length must be 5 min." } });
+                }
+                var storedUser = _context.Users.Where(u => u.Id == user.Id).FirstOrDefault();
+                storedUser.Firstname = user.Firstname;
+                storedUser.Lastname = user.Lastname;
+                storedUser.Email = user.Email;
+                if (!string.IsNullOrEmpty(user.Password)) {
+                    storedUser.Password = PasswordService.HashPassword(user.Password);
+                } else {
+                    storedUser.Password = storedUser.Password;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+
+            return NotFound();
         }
     }
 }
