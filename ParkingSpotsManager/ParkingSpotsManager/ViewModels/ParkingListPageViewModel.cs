@@ -6,6 +6,7 @@ using Prism.AppModel;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
+using Prism.Services;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -42,12 +43,30 @@ namespace ParkingSpotsManager.ViewModels
         public DelegateCommand<Parking> ShowParkingCommand { get; }
         public DelegateCommand<Parking> EditParkingCommand { get; }
         public DelegateCommand<object> RefreshParkingListCommand { get; }
+        public DelegateCommand<Parking> LeaveParkingCommand { get; }
 
-        public ParkingListPageViewModel(INavigationService navigationService) : base (navigationService)
+        private IPageDialogService _dialogService;
+
+        public ParkingListPageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base (navigationService)
         {
+            _dialogService = dialogService;
             ShowParkingCommand = new DelegateCommand<Parking>(OnShowParkingClicked, CanShowParking);
             EditParkingCommand = new DelegateCommand<Parking>(OnEditParkingClicked, CanEditParking);
             RefreshParkingListCommand = new DelegateCommand<object>(OnRefreshParkingList, CanRefreshParkingList);
+            LeaveParkingCommand = new DelegateCommand<Parking>(OnLeaveParkingClicked, CanLeaveParking);
+        }
+
+        private bool CanLeaveParking(object arg)
+        {
+            return true;
+        }
+
+        private async void OnLeaveParkingClicked(Parking parking)
+        {
+            var confirmdelete = await _dialogService.DisplayAlertAsync("Leave a parking", $"Do you want to leave {parking.Name} ?", "Yes", "No");
+            if (confirmdelete) {
+                ParkingList = await LeaveParkingAsync(parking).ConfigureAwait(false);
+            }
         }
 
         private bool CanRefreshParkingList(object arg)
@@ -96,6 +115,26 @@ namespace ParkingSpotsManager.ViewModels
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
                     var response = await httpClient.GetAsync(APIConstants.GetUserParkingsUrl).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var parkings = JsonConvert.DeserializeObject<ObservableCollection<Parking>>(content);
+
+                    return parkings;
+                } catch (Exception) {
+                    await LogoutAsync();
+                }
+            }
+
+            return null;
+        }
+
+        private async Task<ObservableCollection<Parking>> LeaveParkingAsync(Parking parking)
+        {
+            //TODO: refac in a service
+            using (var httpClient = new HttpClient()) {
+                try {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
+                    var response = await httpClient.GetAsync(APIConstants.LeaveParkingUrl(parking.Id)).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     var parkings = JsonConvert.DeserializeObject<ObservableCollection<Parking>>(content);
