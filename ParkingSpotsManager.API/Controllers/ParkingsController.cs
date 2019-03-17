@@ -204,6 +204,29 @@ namespace ParkingSpotsManager.API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("[action]/{parkingID}")]
+        public async Task<IActionResult> Leave([FromRoute] int parkingID)
+        {
+            if (IsUserParking(parkingID)) {
+                var userID = int.Parse(User.Identity.Name);
+                var userParking = _context.UsersParkings.Where(up => up.UserId == userID && up.ParkingId == parkingID).FirstOrDefault();
+                _context.UsersParkings.Remove(userParking);
+                await _context.SaveChangesAsync();
+
+                var userParkingsList = _context.UsersParkings.Where(up => up.UserId == userID).ToList();
+                var parkingsList = _context.Parkings.Include(p => p.Spots).Where(p => userParkingsList.Any(up => up.ParkingId == p.Id)).ToList();
+                parkingsList.ForEach(p => {
+                    p.IsCurrentUserAdmin = userParkingsList.Where(up => up.ParkingId == p.Id).SingleOrDefault().IsAdmin == 1;
+                    p.Spots.ForEach(s => s.Occupier = _context.Users.Find(s.OccupiedBy));
+                });
+
+                return Ok(parkingsList);
+            }
+
+            return BadRequest();
+        }
+
         private bool ParkingExists(int id)
         {
             return _context.Parkings.Any(e => e.Id == id);
@@ -223,6 +246,20 @@ namespace ParkingSpotsManager.API.Controllers
             var userParking = _context.UsersParkings.AsNoTracking().Where(up => up.ParkingId == parkingID && up.UserId == int.Parse(userID) && up.IsAdmin == 1).FirstOrDefault();
 
             return userParking != null;
+        }
+
+        private bool IsUserParking(int parkingID)
+        {
+            var parking = _context.Parkings.Where(p => p.Id == parkingID).AsNoTracking().FirstOrDefault();
+            if (parking != null) {
+                var userID = int.Parse(User.Identity.Name);
+                var userParking = _context.UsersParkings.Where(up => up.UserId == userID && up.ParkingId == parking.Id).AsNoTracking().FirstOrDefault();
+                if (userParking != null) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
