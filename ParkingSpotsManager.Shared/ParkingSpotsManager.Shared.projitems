@@ -9,7 +9,6 @@
     <Import_RootNamespace>ParkingSpotsManager.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Constants\APIConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants\APIConstantsExample.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Database\DataContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Database\ParkingSpotsManagerDatabase.cs" />
