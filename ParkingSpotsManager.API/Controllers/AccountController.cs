@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ParkingSpotsManager.API.Helpers;
 using ParkingSpotsManager.Shared.Database;
 using ParkingSpotsManager.Shared.Libraries;
 using ParkingSpotsManager.Shared.Models;
@@ -42,7 +43,7 @@ namespace ParkingSpotsManager.API.Controllers
                     var passMatched = PasswordService.VerifyHashedPassword(user.Password, authenticator.Password);
                     if (passMatched) {
                         user.Password = null;
-                        user.AuthToken = TokenService.Get(user);
+                        user.AuthToken = TokenService.Get(user, Secrets.TokenSecretKey);
 
                         return user != null && user.Id != 0 ? new OkObjectResult(user) : new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, try later.\"}");
                     }
@@ -71,7 +72,7 @@ namespace ParkingSpotsManager.API.Controllers
                 await _context.SaveChangesAsync();
                 var createdUser = entityEntry.Entity;
                 createdUser.Password = null;
-                createdUser.AuthToken = TokenService.Get(createdUser);
+                createdUser.AuthToken = TokenService.Get(createdUser, Secrets.TokenSecretKey);
 
                 return new OkObjectResult(createdUser);
             } catch (Exception e) {
