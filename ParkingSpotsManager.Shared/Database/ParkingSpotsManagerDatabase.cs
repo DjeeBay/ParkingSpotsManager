@@ -15,20 +15,7 @@ namespace ParkingSpotsManager.Shared.Database
     public static class ParkingSpotsManagerDatabase
     {
         //private static string ConnectionString = Environment.GetEnvironmentVariable("SQLCONNSTR_ParkingSpotsManagerConnectionString");
-        private static string ConnectionString = APIConstants.ConnectionString;
 
-        public static async Task<DataTable> GetDataTableAsync(string query)
-        {
-            using (SqlConnection connection = new SqlConnection(ConnectionString)) {
-                var sqlCmd = new SqlCommand(query, connection);
-
-                await connection.OpenAsync();
-                var dataReader = await sqlCmd.ExecuteReaderAsync();
-                var dataTable = new DataTable();
-                dataTable.Load(dataReader);
-
-                return dataTable;
-            }
-        }
+        
     }
 }

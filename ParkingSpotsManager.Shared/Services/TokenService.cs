@@ -1,4 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
+using ParkingSpotsManager.API.Helpers;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using System;
@@ -28,7 +29,7 @@ namespace ParkingSpotsManager.Shared.Services
 
         public static byte[] GetKey()
         {
-            return Encoding.ASCII.GetBytes(APIConstants.TokenSecretKey);
+            return Encoding.ASCII.GetBytes(Secrets.TokenSecretKey);
         }
     }
 }
