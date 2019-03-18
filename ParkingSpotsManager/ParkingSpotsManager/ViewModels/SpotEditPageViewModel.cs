@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism;
@@ -52,7 +53,7 @@ namespace ParkingSpotsManager.ViewModels
         {
             var confirmdelete = await _dialogService.DisplayAlertAsync("Delete the spot", "Are you sure ?", "Yes", "No");
             if (confirmdelete) {
-                var url = new StringBuilder(APIConstants.SpotREST).Append("/").Append(CurrentSpot.Id).ToString();
+                var url = new StringBuilder(API.SpotREST()).Append("/").Append(CurrentSpot.Id).ToString();
                 using (var httpClient = new HttpClient()) {
                     try {
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
@@ -76,7 +77,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void OnSaveSpotCommandExecutedAsync(object obj)
         {
-            var url = new StringBuilder(APIConstants.SpotREST).Append("/").Append(CurrentSpot.Id).ToString();
+            var url = new StringBuilder(API.SpotREST()).Append("/").Append(CurrentSpot.Id).ToString();
             var json = JObject.FromObject(CurrentSpot);
             using (var httpClient = new HttpClient()) {
                 try {
@@ -105,7 +106,7 @@ namespace ParkingSpotsManager.ViewModels
         private async Task<Spot> GetSpot(int spotID)
         {
             //TODO service
-            var url = new StringBuilder(APIConstants.SpotREST).Append("/").Append(spotID).ToString();
+            var url = new StringBuilder(API.SpotREST()).Append("/").Append(spotID).ToString();
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());

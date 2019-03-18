@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
@@ -46,7 +47,7 @@ namespace ParkingSpotsManager.ViewModels
         private async void OnCreateSpotCommandExecutedAsync(object obj)
         {
             if (Spot.Name != null && Spot.Name.Length > 0) {
-                var url = APIConstants.SpotREST;
+                var url = API.SpotREST();
                 var json = JObject.FromObject(Spot);
                 using (var httpClient = new HttpClient()) {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
@@ -76,7 +77,7 @@ namespace ParkingSpotsManager.ViewModels
         private async Task<Parking> GetParking(int parkingID)
         {
             //TODO service
-            var url = new StringBuilder(APIConstants.ParkingREST).Append("/").Append(parkingID).ToString();
+            var url = new StringBuilder(API.ParkingREST()).Append("/").Append(parkingID).ToString();
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());

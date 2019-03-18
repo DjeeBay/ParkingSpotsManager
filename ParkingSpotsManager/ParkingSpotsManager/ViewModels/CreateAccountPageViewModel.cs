@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
@@ -67,7 +68,7 @@ namespace ParkingSpotsManager.ViewModels
         private async void CreateAccountAsync(object obj)
         {
             if (Username != null && Password != null && ConfirmedPassword != null && Email != null && Password == ConfirmedPassword) {
-                var url = $"{APIConstants.CreateAccountUrl}";
+                var url = $"{API.CreateAccountUrl()}";
                 var json = JObject.FromObject(new {
                     username = Username,
                     password = Password,
