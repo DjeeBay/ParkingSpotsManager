@@ -10,10 +10,10 @@ namespace ParkingSpotsManager.Shared.Services
 {
     public static class TokenService
     {
-        public static string Get(User user)
+        public static string Get(User user, string secretKey)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = GetKey();
+            var key = GetKey(secretKey);
             var tokenDescriptor = new SecurityTokenDescriptor() {
                 Subject = new ClaimsIdentity(new Claim[] {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
@@ -26,9 +26,9 @@ namespace ParkingSpotsManager.Shared.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public static byte[] GetKey()
+        public static byte[] GetKey(string secretKey)
         {
-            return Encoding.ASCII.GetBytes(APIConstants.TokenSecretKey);
+            return Encoding.ASCII.GetBytes(secretKey);
         }
     }
 }

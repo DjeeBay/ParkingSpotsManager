@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism;
@@ -139,7 +140,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private async void OnSaveParkingCommandExecutedAsync(object obj)
         {
-            var url = new StringBuilder(APIConstants.ParkingREST).Append("/").Append(CurrentParking.Id).ToString();
+            var url = new StringBuilder(API.ParkingREST()).Append("/").Append(CurrentParking.Id).ToString();
             var json = JObject.FromObject(CurrentParking);
             using (var httpClient = new HttpClient()) {
                 try {
@@ -169,7 +170,7 @@ namespace ParkingSpotsManager.ViewModels
         private async Task<Parking> GetParking(int parkingID)
         {
             //TODO service
-            var url = new StringBuilder(APIConstants.ParkingREST).Append("/").Append(parkingID).ToString();
+            var url = new StringBuilder(API.ParkingREST()).Append("/").Append(parkingID).ToString();
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
@@ -190,7 +191,7 @@ namespace ParkingSpotsManager.ViewModels
         private async Task<ObservableCollection<UserParking>> ChangeUserRole(int parkingID, UserParking userParking)
         {
             //TODO service
-            var url = APIConstants.ChangeParkingUserRoleUrl(parkingID);
+            var url = API.ChangeParkingUserRoleUrl(parkingID);
             var json = JObject.FromObject(userParking);
             using (var httpClient = new HttpClient()) {
                 try {
@@ -212,7 +213,7 @@ namespace ParkingSpotsManager.ViewModels
         private async Task<ObservableCollection<UserParking>> RemoveUser(int parkingID, int userID)
         {
             //TODO service
-            var url = APIConstants.RemoveParkingUserUrl(parkingID, userID);
+            var url = API.RemoveParkingUserUrl(parkingID, userID);
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());

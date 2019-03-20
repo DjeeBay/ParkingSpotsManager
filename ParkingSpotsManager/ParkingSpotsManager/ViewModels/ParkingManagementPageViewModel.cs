@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism;
@@ -99,7 +100,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private async Task<ObservableCollection<Spot>> ChangeSpotStatus(Spot spot)
         {
-            var url = APIConstants.ChangeSpotStatus(spot.Id);
+            var url = API.ChangeSpotStatus(spot.Id);
             var json = JObject.FromObject(spot);
             using (var httpClient = new HttpClient()) {
                 try {
@@ -130,7 +131,7 @@ namespace ParkingSpotsManager.ViewModels
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
-                    var response = await httpClient.GetAsync(APIConstants.GetParkingSpotsUrl(parkingID)).ConfigureAwait(false);
+                    var response = await httpClient.GetAsync(API.GetParkingSpotsUrl(parkingID)).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     var spots = JsonConvert.DeserializeObject<ObservableCollection<Spot>>(content);
