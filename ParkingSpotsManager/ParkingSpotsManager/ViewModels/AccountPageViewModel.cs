@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ParkingSpotsManager.Helpers;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Libraries;
 using ParkingSpotsManager.Shared.Models;
@@ -82,7 +84,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private async Task SaveAsync()
         {
-            var url = $"{APIConstants.SaveUserAccountUrl}";
+            var url = $"{API.SaveUserAccountUrl()}";
             User.Password = Password;
             var userAccount = new UserAccount {
                 Id = User.Id,
@@ -118,7 +120,8 @@ namespace ParkingSpotsManager.ViewModels
                             await _dialogService.DisplayAlertAsync("Error", "An error occured.", "OK");
                         }
                     }
-                } catch (Exception e) {
+                } catch (Exception) {
+                    Console.WriteLine(Secrets.ApiHost);
                     await _dialogService.DisplayAlertAsync("Error", "An error occured.", "OK");
                 }
             }

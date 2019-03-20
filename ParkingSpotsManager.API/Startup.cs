@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using ParkingSpotsManager.API.Helpers;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Database;
 using ParkingSpotsManager.Shared.Services;
@@ -31,12 +32,12 @@ namespace ParkingSpotsManager.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(options => options.UseSqlite(APIConstants.ConnectionString));
+            services.AddDbContext<DataContext>(options => options.UseSqlite(@Secrets.ConnectionString));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
             options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            var key = TokenService.GetKey();
+            var key = TokenService.GetKey(Secrets.TokenSecretKey);
             services.AddAuthentication(x => {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

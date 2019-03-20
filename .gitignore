@@ -263,3 +263,4 @@ __pycache__/
 *.pubxml
 
 ParkingSpotsManager\.API/psm\.db
+secrets.json

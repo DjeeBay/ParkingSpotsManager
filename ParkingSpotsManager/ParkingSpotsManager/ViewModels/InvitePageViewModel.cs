@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
@@ -113,7 +114,7 @@ namespace ParkingSpotsManager.ViewModels
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
-                    var response = await httpClient.GetAsync(APIConstants.SendInvitationUrl(parking.Id, user.Id));
+                    var response = await httpClient.GetAsync(API.SendInvitationUrl(parking.Id, user.Id));
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
 
@@ -131,7 +132,7 @@ namespace ParkingSpotsManager.ViewModels
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
-                    var response = await httpClient.GetAsync(APIConstants.GetInvitableUsersUrl(SelectedParking.Id, search));
+                    var response = await httpClient.GetAsync(API.GetInvitableUsersUrl(SelectedParking.Id, search));
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
 
@@ -150,7 +151,7 @@ namespace ParkingSpotsManager.ViewModels
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
-                    var response = await httpClient.GetAsync(APIConstants.GetUserParkingsUrl).ConfigureAwait(false);
+                    var response = await httpClient.GetAsync(API.GetUserParkingsUrl()).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
                     var parkingList = JsonConvert.DeserializeObject<List<Parking>>(content);

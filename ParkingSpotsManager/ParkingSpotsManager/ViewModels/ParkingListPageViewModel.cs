@@ -114,7 +114,7 @@ namespace ParkingSpotsManager.ViewModels
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
-                    var response = await httpClient.GetAsync(APIConstants.GetUserParkingsUrl).ConfigureAwait(false);
+                    var response = await httpClient.GetAsync(API.GetUserParkingsUrl()).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     var parkings = JsonConvert.DeserializeObject<ObservableCollection<Parking>>(content);
@@ -134,7 +134,7 @@ namespace ParkingSpotsManager.ViewModels
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
-                    var response = await httpClient.GetAsync(APIConstants.LeaveParkingUrl(parking.Id)).ConfigureAwait(false);
+                    var response = await httpClient.GetAsync(API.LeaveParkingUrl(parking.Id)).ConfigureAwait(false);
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     var parkings = JsonConvert.DeserializeObject<ObservableCollection<Parking>>(content);

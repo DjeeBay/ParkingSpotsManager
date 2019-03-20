@@ -4,6 +4,7 @@
              x:Class="ParkingSpotsManager.Views.MainPage"
              Title="{Binding Title}"
              NavigationPage.HasNavigationBar="False" 
+             Visual="Material"
              NavigationPage.HasBackButton="False">
 
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">

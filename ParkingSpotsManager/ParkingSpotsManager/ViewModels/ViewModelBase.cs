@@ -57,7 +57,7 @@ namespace ParkingSpotsManager.ViewModels
                 using (var httpClient = new HttpClient()) {
                     try {
                         httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                        var response = await httpClient.GetAsync(APIConstants.GetCurrentUser).ConfigureAwait(false);
+                        var response = await httpClient.GetAsync(API.GetCurrentUser()).ConfigureAwait(false);
                         response.EnsureSuccessStatusCode();
                         var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                         var user = JsonConvert.DeserializeObject<User>(content);
