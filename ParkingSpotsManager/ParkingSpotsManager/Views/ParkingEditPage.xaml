@@ -8,6 +8,7 @@
              xmlns:bhv="clr-namespace:ParkingSpotsManager.Behaviors"
              xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
              x:Name="ParkingEdit"
+             Visual="Material"
              x:Class="ParkingSpotsManager.Views.ParkingEditPage">
 
     <ContentPage.Resources>
