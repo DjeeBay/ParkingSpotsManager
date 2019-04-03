@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using ParkingSpotsManager.Shared.Constants;
 
 namespace ParkingSpotsManager.Views
 {

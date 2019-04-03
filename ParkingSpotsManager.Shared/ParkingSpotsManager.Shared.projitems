@@ -9,7 +9,6 @@
     <Import_RootNamespace>ParkingSpotsManager.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)Constants\APIConstantsExample.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Database\DataContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Libraries\Authenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Libraries\UserAccount.cs" />
@@ -19,5 +18,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserParking.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PasswordService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\TokenService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Constants\" />
   </ItemGroup>
 </Project>

@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ParkingSpotsManager.Services;
-using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism;
 using Prism.Commands;
@@ -32,6 +31,24 @@ namespace ParkingSpotsManager.ViewModels
         {
             get => _currentParking;
             set { SetProperty(ref _currentParking, value); }
+        }
+
+        private List<User> _userList;
+        public List<User> UserList
+        {
+            get => _userList;
+            set { SetProperty(ref _userList, value); }
+        }
+
+        private bool _isOccupiedByDefault;
+        public bool IsOccupiedByDefault
+        {
+            get => _isOccupiedByDefault;
+            set
+            {
+                SetProperty(ref _isOccupiedByDefault, value);
+                CurrentSpot.IsOccupiedByDefault = _isOccupiedByDefault;
+            }
         }
 
         public DelegateCommand<object> SaveSpotCommand { get; }
@@ -93,6 +110,34 @@ namespace ParkingSpotsManager.ViewModels
                     Console.WriteLine(e.Message);
                 }
             }
+        }
+
+        private async void OnTextChanged(string search)
+        {
+            if (search != null && search.Length >= 3) {
+                UserList = await GetUserList(CurrentParking.Id, search);
+            } else {
+                UserList = new List<User>();
+            }
+        }
+
+        private async Task<List<User>> GetUserList(int parkingID, string search)
+        {
+            //TODO: refac in a service
+            using (var httpClient = new HttpClient()) {
+                try {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
+                    var response = await httpClient.GetAsync(API.GetParkingUserListUrl(parkingID, search));
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync();
+
+                    return JsonConvert.DeserializeObject<List<User>>(content);
+                } catch (Exception) {
+                    await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
+                }
+            }
+
+            return null;
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)

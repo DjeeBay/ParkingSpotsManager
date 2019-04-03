@@ -14,7 +14,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ParkingSpotsManager.API.Helpers;
-using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Database;
 using ParkingSpotsManager.Shared.Services;
 

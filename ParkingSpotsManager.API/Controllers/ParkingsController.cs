@@ -227,6 +227,35 @@ namespace ParkingSpotsManager.API.Controllers
             return BadRequest();
         }
 
+        [HttpGet]
+        [Route("[action]/{parkingID}/{search}")]
+        public async Task<IActionResult> GetUserList([FromRoute] int parkingID, [FromRoute] string search)
+        {
+            if (search != null && search.Length >= 3) {
+                var parking = _context.Parkings.FirstOrDefault(p => p.Id == parkingID);
+                if (parking != null) {
+                    var userList = await _context.Users
+                        .Include(u => u.UserParkings)
+                        .Where(u => u.UserParkings.Where(up => up.ParkingId == parkingID && up.UserId == u.Id).FirstOrDefault() != null
+                            && u.Username.Contains(search, StringComparison.InvariantCultureIgnoreCase))
+                        .ToListAsync();
+                    CleanUsersPassword(ref userList);
+
+                    return Ok(userList);
+                }
+            }
+
+            return BadRequest();
+        }
+
+        private void CleanUsersPassword(ref List<User> users)
+        {
+            var nbUsers = users.Count;
+            for (var i = 0; i < nbUsers; i++) {
+                users[i].Password = null;
+            }
+        }
+
         private bool ParkingExists(int id)
         {
             return _context.Parkings.Any(e => e.Id == id);

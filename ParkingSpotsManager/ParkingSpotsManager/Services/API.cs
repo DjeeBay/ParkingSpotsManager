@@ -27,6 +27,11 @@ namespace ParkingSpotsManager.Services
             return $"{_host}/api/users/GetInvitableUsers/{parkingID}/{search}";
         }
 
+        public static string GetParkingUserListUrl(int parkingID, string search)
+        {
+            return $"{_host}/api/parkings/GetUserList/{parkingID}/{search}";
+        }
+
         public static string SendInvitationUrl(int parkingID, int userID)
         {
             return $"{_host}/api/parkings/SendInvitation/{parkingID}/{userID}";

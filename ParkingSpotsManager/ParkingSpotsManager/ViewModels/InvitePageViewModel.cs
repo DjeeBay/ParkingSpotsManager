@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using ParkingSpotsManager.Services;
-using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -129,6 +128,7 @@ namespace ParkingSpotsManager.ViewModels
 
         private async Task<List<User>> GetUserList(string search)
         {
+            //TODO: refac in a service
             using (var httpClient = new HttpClient()) {
                 try {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);

@@ -6,11 +6,19 @@
              Visual="Material"
              x:Class="ParkingSpotsManager.Views.SpotEditPage">
 
-    <StackLayout>
+    <StackLayout Padding="10">
         <Label Text="{Binding CurrentSpot.Name, StringFormat='Edit Spot {0}'}" />
         <Entry Text="{Binding CurrentSpot.Name}" Placeholder="name" />
-        <Button Text="Save" Command="{Binding SaveSpotCommand}" />
 
+        <StackLayout Margin="10" Orientation="Horizontal" Spacing="10">
+            <Label Text="Occupied by default" />
+            <Switch IsToggled="{Binding IsOccupiedByDefault}" />
+        </StackLayout>
+
+        <Label Text="Default occupied" IsVisible="{Binding IsOccupiedByDefault}" />
+        <SearchBar Text="{Binding SearchText}" IsVisible="{Binding IsOccupiedByDefault}" Placeholder="Search (3 char. min)" />
+
+        <Button Text="Save" Command="{Binding SaveSpotCommand}" />
         <Button Text="Delete the spot" Command="{Binding DeleteSpotCommand}" BackgroundColor="IndianRed" />
 
     </StackLayout>
