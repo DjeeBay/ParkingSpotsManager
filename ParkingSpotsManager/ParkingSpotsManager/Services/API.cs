@@ -56,5 +56,10 @@ namespace ParkingSpotsManager.Services
         {
             return $"{_host}/api/parkings/Leave/{parkingID}";
         }
+
+        public static string SetDefaultOccupier(int spotID, int userID)
+        {
+            return $"{_host}/api/spots/SetDefaultOccupier/{spotID}/{userID}";
+        }
     }
 }

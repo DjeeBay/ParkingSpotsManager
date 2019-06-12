@@ -71,6 +71,25 @@ namespace ParkingSpotsManager.API.Controllers
             return Ok(spot);
         }
 
+        //GET: api/Spots/SetDefaultOccupier/5/2
+        [HttpGet("[action]/{spotID}/{userID}")]
+        public async Task<IActionResult> SetDefaultOccupier([FromRoute] int spotID, [FromRoute] int userID)
+        {
+            var spot = _context.Spots.Where(s => s.Id == spotID).FirstOrDefault();
+            var user = _context.Users.AsNoTracking().Where(u => u.Id == userID).FirstOrDefault();
+
+            if (spot != null && user != null) {
+                spot.OccupiedByDefaultBy = userID;
+                spot.OccupiedBy = userID;
+                await _context.SaveChangesAsync();
+                //TODO remove password
+
+                return Ok(_context.Spots.Include("Occupier").Include("OccupierByDefault").Where(s => s.Id == spot.Id).FirstOrDefault());
+            }
+
+            return BadRequest();
+        }
+
         // PUT: api/Spots/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSpot([FromRoute] int id, [FromBody] Spot spot)

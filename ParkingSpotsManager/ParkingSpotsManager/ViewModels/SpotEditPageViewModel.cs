@@ -51,6 +51,28 @@ namespace ParkingSpotsManager.ViewModels
             }
         }
 
+        private string _searchText;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                SetProperty(ref _searchText, value);
+                OnTextChanged(_searchText);
+            }
+        }
+
+        private User _userSelected;
+        public User UserSelected
+        {
+            get => _userSelected;
+            set
+            {
+                SetProperty(ref _userSelected, value);
+                OnUserSelected(_userSelected);
+            }
+        }
+
         public DelegateCommand<object> SaveSpotCommand { get; }
         public DelegateCommand<object> DeleteSpotCommand { get; }
 
@@ -110,6 +132,44 @@ namespace ParkingSpotsManager.ViewModels
                     Console.WriteLine(e.Message);
                 }
             }
+        }
+
+        private async void OnUserSelected(User user)
+        {
+            if (user != null) {
+                var answer = await _dialogService.DisplayAlertAsync("Occupier", $"Do you want to set {user.Username} as the default occupier ?", "Yes", "No");
+                if (answer) {
+                    var defaultOccupier = await SetDefaultOccupier(CurrentSpot, user);
+                    if (defaultOccupier != null) {
+                        await _dialogService.DisplayAlertAsync("Occupier", $"{user.Username} is the default occupier.", "OK");
+                    }
+                    else {
+                        await _dialogService.DisplayAlertAsync("Error", $"An error occured, please try later.", "OK");
+                    }
+                    UserList = null;
+                    SearchText = null;
+                }
+            }
+        }
+
+        private async Task<Spot> SetDefaultOccupier(Spot spot, User user)
+        {
+            using (var httpClient = new HttpClient()) {
+                try {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
+                    var response = await httpClient.GetAsync(API.SetDefaultOccupier(spot.Id, user.Id));
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync();
+                    Spot updatedSpot = JsonConvert.DeserializeObject<Spot>(content);
+
+                    return updatedSpot;
+                }
+                catch (Exception) {
+                    await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
+                }
+            }
+
+            return null;
         }
 
         private async void OnTextChanged(string search)
