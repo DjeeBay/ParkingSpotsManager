@@ -206,6 +206,7 @@ namespace ParkingSpotsManager.ViewModels
             var spot = parameters.GetValue<Spot>("spot");
             CurrentParking = parameters.GetValue<Parking>("parking");
             CurrentSpot = await GetSpot(spot.Id).ConfigureAwait(false);
+            IsOccupiedByDefault = CurrentSpot != null ? CurrentSpot.IsOccupiedByDefault : false;
         }
 
         private async Task<Spot> GetSpot(int spotID)

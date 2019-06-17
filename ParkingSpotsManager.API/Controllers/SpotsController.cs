@@ -108,6 +108,10 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest();
             }
 
+            if (!spot.IsOccupiedByDefault) {
+                spot.OccupierByDefault = null;
+            }
+
             _context.Entry(spot).State = EntityState.Modified;
 
             try
