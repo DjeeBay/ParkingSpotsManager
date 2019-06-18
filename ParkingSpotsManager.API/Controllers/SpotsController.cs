@@ -61,7 +61,7 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var spot = _context.Spots.Include("OccupierByDefault").Where(s => s.Id == id).FirstOrDefault());
+            var spot = _context.Spots.Include("OccupierByDefault").Where(s => s.Id == id).FirstOrDefault();
 
             if (spot == null)
             {

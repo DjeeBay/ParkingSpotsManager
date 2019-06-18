@@ -14,6 +14,11 @@
             <Label Text="Occupied by default" />
             <Switch IsToggled="{Binding IsOccupiedByDefault}" />
         </StackLayout>
+        
+        <StackLayout Margin="10" Orientation="Horizontal" Spacing="10" IsVisible="HasDefaultOccupier">
+            <Label Text="Default Occupier" />
+            <Label Text="{Binding CurrentSpot.OccupierByDefault.Username}" />
+        </StackLayout>
 
         <StackLayout Margin="10" HorizontalOptions="CenterAndExpand">
             <Label Text="Default occupier" IsVisible="{Binding IsOccupiedByDefault}" />
