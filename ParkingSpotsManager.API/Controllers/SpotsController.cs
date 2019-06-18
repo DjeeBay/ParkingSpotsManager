@@ -61,7 +61,7 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var spot = await _context.Spots.FindAsync(id);
+            var spot = _context.Spots.Include("OccupierByDefault").Where(s => s.Id == id).FirstOrDefault());
 
             if (spot == null)
             {
@@ -81,6 +81,7 @@ namespace ParkingSpotsManager.API.Controllers
             if (spot != null && user != null) {
                 spot.OccupiedByDefaultBy = userID;
                 spot.OccupiedBy = userID;
+                spot.IsOccupiedByDefault = true;
                 await _context.SaveChangesAsync();
                 //TODO remove password
 
@@ -110,6 +111,7 @@ namespace ParkingSpotsManager.API.Controllers
 
             if (!spot.IsOccupiedByDefault) {
                 spot.OccupierByDefault = null;
+                spot.IsOccupiedByDefault = false;
             }
 
             _context.Entry(spot).State = EntityState.Modified;
