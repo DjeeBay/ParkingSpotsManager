@@ -26,6 +26,13 @@ namespace ParkingSpotsManager.ViewModels
             set { SetProperty(ref _currentSpot, value); }
         }
 
+        private User _defaultOccupier;
+        public User DefaultOccupier
+        {
+            get => _defaultOccupier;
+            set { SetProperty(ref _defaultOccupier, value); }
+        }
+
         private Parking _currentParking;
         public Parking CurrentParking
         {
@@ -55,7 +62,7 @@ namespace ParkingSpotsManager.ViewModels
         public bool HasDefaultOccupier
         {
             get => _hasDefaultOccupier;
-            set => SetProperty(ref _hasDefaultOccupier, value);
+            set { SetProperty(ref _hasDefaultOccupier, value); }
         }
 
         private string _searchText;
@@ -168,7 +175,11 @@ namespace ParkingSpotsManager.ViewModels
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
                     Spot updatedSpot = JsonConvert.DeserializeObject<Spot>(content);
-                    HasDefaultOccupier = updatedSpot != null && updatedSpot.OccupierByDefault != null;
+                    HasDefaultOccupier = updatedSpot != null && updatedSpot.OccupiedByDefaultBy != null;
+                    if (HasDefaultOccupier) {
+                        DefaultOccupier = await GetDefaultOccupier(spot.Id);
+                        CurrentSpot.OccupiedByDefaultBy = DefaultOccupier.Id;
+                    }
 
                     return updatedSpot;
                 }
@@ -215,7 +226,11 @@ namespace ParkingSpotsManager.ViewModels
             CurrentParking = parameters.GetValue<Parking>("parking");
             CurrentSpot = await GetSpot(spot.Id).ConfigureAwait(false);
             IsOccupiedByDefault = CurrentSpot != null ? CurrentSpot.IsOccupiedByDefault : false;
-            HasDefaultOccupier = CurrentSpot != null && CurrentSpot.OccupierByDefault != null;
+            HasDefaultOccupier = CurrentSpot != null && CurrentSpot.OccupiedByDefaultBy != null;
+            if (HasDefaultOccupier) {
+                DefaultOccupier = await GetDefaultOccupier(spot.Id);
+                CurrentSpot.OccupiedByDefaultBy = DefaultOccupier.Id;
+            }
         }
 
         private async Task<Spot> GetSpot(int spotID)
@@ -231,6 +246,27 @@ namespace ParkingSpotsManager.ViewModels
                     var spot = JsonConvert.DeserializeObject<Spot>(content);
 
                     return spot;
+                } catch (Exception e) {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            return null;
+        }
+
+        private async Task<User> GetDefaultOccupier(int spotID)
+        {
+            //TODO service
+            var url = new StringBuilder(API.GetDefaultOccupierUrl(spotID)).ToString();
+            using (var httpClient = new HttpClient()) {
+                try {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
+                    var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var occupier = JsonConvert.DeserializeObject<User>(content);
+
+                    return occupier;
                 } catch (Exception e) {
                     Console.WriteLine(e.Message);
                 }

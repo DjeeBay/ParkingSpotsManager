@@ -42,6 +42,11 @@ namespace ParkingSpotsManager.Services
             return $"{_host}/api/spots/GetParkingSpots/{parkingID}";
         }
 
+        public static string GetDefaultOccupierUrl(int spotID)
+        {
+            return $"{_host}/api/spots/GetDefaultOccupier/{spotID}";
+        }
+
         public static string ChangeParkingUserRoleUrl(int parkingID)
         {
             return $"{_host}/api/parkings/ChangeUserRole/{parkingID}";

@@ -61,7 +61,7 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var spot = _context.Spots.Include("OccupierByDefault").Where(s => s.Id == id).FirstOrDefault();
+            var spot = _context.Spots.Where(s => s.Id == id).FirstOrDefault();
 
             if (spot == null)
             {
@@ -85,7 +85,24 @@ namespace ParkingSpotsManager.API.Controllers
                 await _context.SaveChangesAsync();
                 //TODO remove password
 
-                return Ok(_context.Spots.Include("Occupier").Include("OccupierByDefault").Where(s => s.Id == spot.Id).FirstOrDefault());
+                return Ok(_context.Spots.Include("Occupier").Where(s => s.Id == spot.Id).FirstOrDefault());
+            }
+
+            return BadRequest();
+        }
+        
+        //GET: api/Spots/GetDefaultOccupier/2
+        [HttpGet("[action]/{spotID}")]
+        public async Task<IActionResult> GetDefaultOccupier([FromRoute] int spotID)
+        {
+            var spot = _context.Spots.Where(s => s.Id == spotID).FirstOrDefault();
+            if (spot != null && spot.OccupiedByDefaultBy != null) {
+                var user = _context.Users.AsNoTracking().Where(u => u.Id == spot.OccupiedByDefaultBy).FirstOrDefault();
+                if (user != null) {
+                    user.Password = null;
+
+                    return Ok(user);
+                }
             }
 
             return BadRequest();
@@ -109,15 +126,13 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest();
             }
 
-            if (!spot.IsOccupiedByDefault) {
-                spot.OccupierByDefault = null;
-                spot.IsOccupiedByDefault = false;
-            }
-
             _context.Entry(spot).State = EntityState.Modified;
 
             try
             {
+                if (!spot.IsOccupiedByDefault) {
+                    spot.OccupiedByDefaultBy = null;
+                }
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

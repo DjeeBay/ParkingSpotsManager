@@ -25,9 +25,6 @@ namespace ParkingSpotsManager.Shared.Models
 
         public int? OccupiedByDefaultBy { get; set; }
 
-        [ForeignKey("OccupiedByDefaultBy")]
-        public User OccupierByDefault { get; set; }
-
         public bool IsOccupiedByDefault { get; set; } = false;
 
         public DateTime? OccupiedAt { get; set; }

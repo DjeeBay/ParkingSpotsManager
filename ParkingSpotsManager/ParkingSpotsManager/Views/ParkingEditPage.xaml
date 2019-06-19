@@ -9,6 +9,7 @@
              xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
              x:Name="ParkingEdit"
              Visual="Material"
+             Title="{Binding CurrentParking.Name, StringFormat='Edit Parking {0}'}"
              x:Class="ParkingSpotsManager.Views.ParkingEditPage">
 
     <ContentPage.Resources>
@@ -18,7 +19,6 @@
     </ContentPage.Resources>
 
     <StackLayout Padding="5">
-        <Label Text="{Binding CurrentParking.Name, StringFormat=Edit Parking \{0\}}" HorizontalOptions="CenterAndExpand" />
         <Entry Text="{Binding CurrentParking.Name}" Placeholder="name" />
         <Button Text="Save" Command="{Binding SaveParkingCommand}" />
 
