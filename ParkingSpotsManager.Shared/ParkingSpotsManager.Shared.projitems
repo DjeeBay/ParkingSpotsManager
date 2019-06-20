@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>389e9f8e-0386-47f3-a7d6-4d9e90ea484d</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>ParkingSpotsManager.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Constants\APIConstantsExample.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Database\DataContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Libraries\Authenticator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Libraries\UserAccount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Parking.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\Spot.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\User.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Models\UserParking.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\PasswordService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\TokenService.cs" />
+  </ItemGroup>
+</Project>

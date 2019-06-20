@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             xmlns:bhv="clr-namespace:ParkingSpotsManager.Behaviors"
+             xmlns:c="clr-namespace:ParkingSpotsManager.Converters"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Name="SpotList"
+             Visual="Material"
+             x:Class="ParkingSpotsManager.Views.ParkingManagementPage">
+    
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <c:DisplayOccupiedByConverter x:Key="DisplayOccupiedBy" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <StackLayout>
+        <Label HorizontalOptions="CenterAndExpand" Text="{Binding CurrentParking.Name}" Margin="5" />
+        <ListView ItemsSource="{Binding SpotList}" IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshingSpotList}" RefreshCommand="{Binding RefreshSpotListCommand}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout BindingContext="{Binding .}" Padding="5" HorizontalOptions="Fill">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*" />
+                                    <ColumnDefinition Width="5*" />
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Column="0">
+                                    <StackLayout.Behaviors>
+                                        <bhv:OccupancyBackgroundBehavior OccupiedBy="{Binding OccupiedBy}" />
+                                    </StackLayout.Behaviors>
+                                    <Label Text="{Binding Name}" />
+                                    <Label Text="{Binding Occupier, Converter={StaticResource DisplayOccupiedBy}}" TextColor="Gray" FontSize="Small" />
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Grid.Column="1">
+                                    <Button Command="{Binding Path=BindingContext.TakeSpotCommand, Source={x:Reference Name=SpotList}}" CommandParameter="{Binding .}" Text="Parked !" StyleClass="Primary" FontSize="12" />
+                                    <Button Command="{Binding Path=BindingContext.ReleaseSpotCommand, Source={x:Reference Name=SpotList}}" CommandParameter="{Binding .}" Text="Release" StyleClass="Danger" FontSize="12" />
+                                </StackLayout>
+                            </Grid>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>

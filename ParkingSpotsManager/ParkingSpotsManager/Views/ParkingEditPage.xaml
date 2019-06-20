@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:c="clr-namespace:ParkingSpotsManager.Converters"
+             xmlns:ctrl="clr-namespace:ParkingSpotsManager.Controls"
+             xmlns:bhv="clr-namespace:ParkingSpotsManager.Behaviors"
+             xmlns:b="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             x:Name="ParkingEdit"
+             Visual="Material"
+             x:Class="ParkingSpotsManager.Views.ParkingEditPage">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <c:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout Padding="5">
+        <Label Text="{Binding CurrentParking.Name, StringFormat=Edit Parking \{0\}}" HorizontalOptions="CenterAndExpand" />
+        <Entry Text="{Binding CurrentParking.Name}" Placeholder="name" />
+        <Button Text="Save" Command="{Binding SaveParkingCommand}" />
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*" />
+                <ColumnDefinition Width="5*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Button Text="Spots" Grid.Column="0" Command="{Binding DisplayListCommand}" CommandParameter="spots" StyleClass="Primary" />
+            <Button Text="Users" Grid.Column="1" Command="{Binding DisplayListCommand}" CommandParameter="users" StyleClass="Success" />
+        </Grid>
+        
+        <Button Text="Add a spot" Command="{Binding GoToAddSpotCommand}" IsVisible="{Binding IsSpotListVisible}" StyleClass="Primary" />
+        <ListView ItemsSource="{Binding CurrentParking.Spots}" IsVisible="{Binding IsSpotListVisible}" VerticalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="5" HorizontalOptions="Fill">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*" />
+                                    <ColumnDefinition Width="5*" />
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Column="0">
+                                    <Label Text="{Binding Name}" />
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Grid.Column="1" HorizontalOptions="End">
+                                    <Button Command="{Binding Path=BindingContext.EditSpotCommand, Source={x:Reference Name=ParkingEdit}}" CommandParameter="{Binding .}" Text="Edit" HorizontalOptions="End" StyleClass="Warning" FontSize="12" />
+                                </StackLayout>
+                            </Grid>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        
+        <ListView ItemsSource="{Binding UserParkings}" IsVisible="{Binding IsSpotListVisible, Converter={StaticResource InverseBoolConverter}}" VerticalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="5" HorizontalOptions="Fill">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*" />
+                                    <ColumnDefinition Width="5*" />
+                                </Grid.ColumnDefinitions>
+                                <StackLayout Grid.Column="0">
+                                    <Label Text="{Binding User.Username}" />
+                                </StackLayout>
+                                <StackLayout Orientation="Horizontal" Grid.Column="1">
+                                    <ctrl:ToggleButton IsToggled="{Binding IsAdmin}" Text="Admin" FontSize="12">
+                                        <ctrl:ToggleButton.Behaviors>
+                                            <bhv:IsAdminToggleButtonBehavior IsAdmin="{Binding IsAdmin}" />
+                                            <b:EventToCommandBehavior EventName="Clicked" Command="{Binding Path=BindingContext.ChangeUserStatusCommand, Source={x:Reference Name=ParkingEdit}}" CommandParameter="{Binding .}" />
+                                        </ctrl:ToggleButton.Behaviors>
+                                    </ctrl:ToggleButton>
+                                    <Button Text="Remove" StyleClass="Danger" Command="{Binding Path=BindingContext.RemoveUserCommand, Source={x:Reference Name=ParkingEdit}}" CommandParameter="{Binding .}" FontSize="12" />
+                                </StackLayout>
+                            </Grid>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>
