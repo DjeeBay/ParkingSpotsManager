@@ -264,3 +264,4 @@ __pycache__/
 
 ParkingSpotsManager\.API/psm\.db
 secrets.json
+*.DS_Store

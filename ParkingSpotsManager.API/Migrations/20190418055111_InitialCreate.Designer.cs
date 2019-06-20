@@ -9,7 +9,7 @@ using ParkingSpotsManager.Shared.Database;
 namespace ParkingSpotsManager.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190310232939_InitialCreate")]
+    [Migration("20190418055111_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,6 +41,8 @@ namespace ParkingSpotsManager.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<bool>("IsOccupiedByDefault");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255);
@@ -49,6 +51,8 @@ namespace ParkingSpotsManager.API.Migrations
 
                     b.Property<int?>("OccupiedBy");
 
+                    b.Property<int?>("OccupiedByDefaultBy");
+
                     b.Property<int>("ParkingId");
 
                     b.Property<DateTime?>("ReleasedAt");
@@ -56,6 +60,8 @@ namespace ParkingSpotsManager.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OccupiedBy");
+
+                    b.HasIndex("OccupiedByDefaultBy");
 
                     b.HasIndex("ParkingId");
 
@@ -114,6 +120,10 @@ namespace ParkingSpotsManager.API.Migrations
                     b.HasOne("ParkingSpotsManager.Shared.Models.User", "Occupier")
                         .WithMany()
                         .HasForeignKey("OccupiedBy");
+
+                    b.HasOne("ParkingSpotsManager.Shared.Models.User", "OccupierByDefault")
+                        .WithMany()
+                        .HasForeignKey("OccupiedByDefaultBy");
 
                     b.HasOne("ParkingSpotsManager.Shared.Models.Parking", "Parking")
                         .WithMany("Spots")

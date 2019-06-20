@@ -4,13 +4,42 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              Visual="Material"
+             Title="{Binding CurrentSpot.Name, StringFormat='Spot {0}'}"
              x:Class="ParkingSpotsManager.Views.SpotEditPage">
 
-    <StackLayout>
-        <Label Text="{Binding CurrentSpot.Name, StringFormat='Edit Spot {0}'}" />
-        <Entry Text="{Binding CurrentSpot.Name}" Placeholder="name" />
-        <Button Text="Save" Command="{Binding SaveSpotCommand}" />
+    <StackLayout Padding="10">
+        <Entry Text="{Binding CurrentSpot.Name}" Placeholder="Name" />
 
+        <StackLayout Margin="10" Orientation="Horizontal" Spacing="10">
+            <Label Text="Occupied by default" />
+            <Switch IsToggled="{Binding IsOccupiedByDefault}" />
+        </StackLayout>
+        
+        <StackLayout Margin="10" Orientation="Horizontal" Spacing="10" IsVisible="{Binding HasDefaultOccupier}">
+            <Label Text="Default Occupier : " />
+            <Label Text="{Binding DefaultOccupier.Username}" FontAttributes="Bold" TextColor="#008080" />
+        </StackLayout>
+
+        <StackLayout Margin="10" Orientation="Vertical" Spacing="10">
+            <Label Text="Search a default occupier" IsVisible="{Binding IsOccupiedByDefault}" />
+            <SearchBar Text="{Binding SearchText}" IsVisible="{Binding IsOccupiedByDefault}" Placeholder="Search (3 char. min)" />
+        </StackLayout>
+
+        <StackLayout Padding="10" HorizontalOptions="CenterAndExpand">
+            <ListView SelectedItem="{Binding UserSelected}" ItemsSource="{Binding UserList}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout BindingContext="{Binding .}" Padding="5" HorizontalOptions="Fill">
+                                <Label Text="{Binding Username}" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+
+        <Button Text="Save" Command="{Binding SaveSpotCommand}" />
         <Button Text="Delete the spot" Command="{Binding DeleteSpotCommand}" BackgroundColor="IndianRed" />
 
     </StackLayout>

@@ -27,6 +27,11 @@ namespace ParkingSpotsManager.Services
             return $"{_host}/api/users/GetInvitableUsers/{parkingID}/{search}";
         }
 
+        public static string GetParkingUserListUrl(int parkingID, string search)
+        {
+            return $"{_host}/api/parkings/GetUserList/{parkingID}/{search}";
+        }
+
         public static string SendInvitationUrl(int parkingID, int userID)
         {
             return $"{_host}/api/parkings/SendInvitation/{parkingID}/{userID}";
@@ -35,6 +40,11 @@ namespace ParkingSpotsManager.Services
         public static string GetParkingSpotsUrl(int parkingID)
         {
             return $"{_host}/api/spots/GetParkingSpots/{parkingID}";
+        }
+
+        public static string GetDefaultOccupierUrl(int spotID)
+        {
+            return $"{_host}/api/spots/GetDefaultOccupier/{spotID}";
         }
 
         public static string ChangeParkingUserRoleUrl(int parkingID)
@@ -50,6 +60,11 @@ namespace ParkingSpotsManager.Services
         public static string LeaveParkingUrl(int parkingID)
         {
             return $"{_host}/api/parkings/Leave/{parkingID}";
+        }
+
+        public static string SetDefaultOccupier(int spotID, int userID)
+        {
+            return $"{_host}/api/spots/SetDefaultOccupier/{spotID}/{userID}";
         }
     }
 }

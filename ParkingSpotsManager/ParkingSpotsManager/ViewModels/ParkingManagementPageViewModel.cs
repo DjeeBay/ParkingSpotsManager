@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ParkingSpotsManager.Services;
-using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism;
 using Prism.Commands;

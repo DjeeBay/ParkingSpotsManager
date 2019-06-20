@@ -1,5 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using System;
 using System.IdentityModel.Tokens.Jwt;
