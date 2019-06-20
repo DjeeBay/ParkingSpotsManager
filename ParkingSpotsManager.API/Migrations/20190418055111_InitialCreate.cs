@@ -49,6 +49,8 @@ namespace ParkingSpotsManager.API.Migrations
                     Name = table.Column<string>(maxLength: 255, nullable: false),
                     ParkingId = table.Column<int>(nullable: false),
                     OccupiedBy = table.Column<int>(nullable: true),
+                    OccupiedByDefaultBy = table.Column<int>(nullable: true),
+                    IsOccupiedByDefault = table.Column<bool>(nullable: false),
                     OccupiedAt = table.Column<DateTime>(nullable: true),
                     ReleasedAt = table.Column<DateTime>(nullable: true)
                 },
@@ -58,6 +60,12 @@ namespace ParkingSpotsManager.API.Migrations
                     table.ForeignKey(
                         name: "FK_Spots_Users_OccupiedBy",
                         column: x => x.OccupiedBy,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Spots_Users_OccupiedByDefaultBy",
+                        column: x => x.OccupiedByDefaultBy,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -100,6 +108,11 @@ namespace ParkingSpotsManager.API.Migrations
                 name: "IX_Spots_OccupiedBy",
                 table: "Spots",
                 column: "OccupiedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Spots_OccupiedByDefaultBy",
+                table: "Spots",
+                column: "OccupiedByDefaultBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Spots_ParkingId",

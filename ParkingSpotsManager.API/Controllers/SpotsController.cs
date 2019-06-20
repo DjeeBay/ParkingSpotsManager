@@ -61,7 +61,7 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var spot = await _context.Spots.FindAsync(id);
+            var spot = _context.Spots.Where(s => s.Id == id).FirstOrDefault();
 
             if (spot == null)
             {
@@ -69,6 +69,43 @@ namespace ParkingSpotsManager.API.Controllers
             }
 
             return Ok(spot);
+        }
+
+        //GET: api/Spots/SetDefaultOccupier/5/2
+        [HttpGet("[action]/{spotID}/{userID}")]
+        public async Task<IActionResult> SetDefaultOccupier([FromRoute] int spotID, [FromRoute] int userID)
+        {
+            var spot = _context.Spots.Where(s => s.Id == spotID).FirstOrDefault();
+            var user = _context.Users.AsNoTracking().Where(u => u.Id == userID).FirstOrDefault();
+
+            if (spot != null && user != null) {
+                spot.OccupiedByDefaultBy = userID;
+                spot.OccupiedBy = userID;
+                spot.IsOccupiedByDefault = true;
+                await _context.SaveChangesAsync();
+                //TODO remove password
+
+                return Ok(_context.Spots.Include("Occupier").Where(s => s.Id == spot.Id).FirstOrDefault());
+            }
+
+            return BadRequest();
+        }
+        
+        //GET: api/Spots/GetDefaultOccupier/2
+        [HttpGet("[action]/{spotID}")]
+        public async Task<IActionResult> GetDefaultOccupier([FromRoute] int spotID)
+        {
+            var spot = _context.Spots.Where(s => s.Id == spotID).FirstOrDefault();
+            if (spot != null && spot.OccupiedByDefaultBy != null) {
+                var user = _context.Users.AsNoTracking().Where(u => u.Id == spot.OccupiedByDefaultBy).FirstOrDefault();
+                if (user != null) {
+                    user.Password = null;
+
+                    return Ok(user);
+                }
+            }
+
+            return BadRequest();
         }
 
         // PUT: api/Spots/5
@@ -93,6 +130,9 @@ namespace ParkingSpotsManager.API.Controllers
 
             try
             {
+                if (!spot.IsOccupiedByDefault) {
+                    spot.OccupiedByDefaultBy = null;
+                }
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

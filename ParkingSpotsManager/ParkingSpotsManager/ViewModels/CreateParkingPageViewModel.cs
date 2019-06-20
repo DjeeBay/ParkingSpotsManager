@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using ParkingSpotsManager.Services;
-using ParkingSpotsManager.Shared.Constants;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
 using Prism.Mvvm;

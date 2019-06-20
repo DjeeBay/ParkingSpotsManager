@@ -8,6 +8,7 @@
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Name="SpotList"
              Visual="Material"
+             Title="{Binding CurrentParking.Name, StringFormat='{0} Spots'}"
              x:Class="ParkingSpotsManager.Views.ParkingManagementPage">
     
     <ContentPage.Resources>
@@ -17,7 +18,6 @@
     </ContentPage.Resources>
     
     <StackLayout>
-        <Label HorizontalOptions="CenterAndExpand" Text="{Binding CurrentParking.Name}" Margin="5" />
         <ListView ItemsSource="{Binding SpotList}" IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshingSpotList}" RefreshCommand="{Binding RefreshSpotListCommand}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
             <ListView.ItemTemplate>
                 <DataTemplate>
