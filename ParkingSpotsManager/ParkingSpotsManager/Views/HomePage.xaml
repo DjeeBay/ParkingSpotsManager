@@ -8,15 +8,23 @@
                   x:Class="ParkingSpotsManager.Views.HomePage">
 
     <MasterDetailPage.Master>
-        <ContentPage Title="Menu">
-            <StackLayout Padding="40">
-                <Label Text="{Binding CurrentUser.Username, StringFormat='Hello {0} !'}" Margin="10" />
-                <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" />
-                <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/CreateParkingPage" />
-                <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/InvitePage" />
-                <Button Text="Account" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/AccountPage" />
-                <Button Text="Logout" Command="{Binding LogoutCommand}" />
-            </StackLayout>
+        <ContentPage Title="Menu" >
+            <RelativeLayout Padding="0">
+                <Image Source="menu_bg.jpg"
+                       Aspect="AspectFill"
+                       RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                       RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}" />
+                <StackLayout Padding="40"
+                             RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}" 
+                             RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}">
+                    <Label TextColor="WhiteSmoke" Text="{Binding CurrentUser.Username, StringFormat='Hello {0} !'}" Margin="10" />
+                    <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" />
+                    <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/CreateParkingPage" />
+                    <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/InvitePage" />
+                    <Button Text="Account" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/AccountPage" />
+                    <Button Text="Logout" Command="{Binding LogoutCommand}" />
+                </StackLayout>
+            </RelativeLayout>
         </ContentPage>
     </MasterDetailPage.Master>
 
