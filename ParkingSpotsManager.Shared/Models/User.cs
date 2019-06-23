@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -19,6 +20,7 @@ namespace ParkingSpotsManager.Shared.Models
 
         [Required]
         [StringLength(255, MinimumLength = 5)]
+        [JsonIgnore]
         public string Password { get; set; }
         public string AuthToken { get; set; }
         public string Firstname { get; set; }

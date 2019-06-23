@@ -4,12 +4,13 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              Visual="Material"
+             Title="New parking"
              x:Class="ParkingSpotsManager.Views.CreateParkingPage">
 
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
         <Label Text="Parking Name" />
         <Entry Text="{Binding Name}" Placeholder="name" />
 
-        <Button Text="Create A New Parking" Command="{Binding CreateParkingCommand}" />
+        <Button Text="Create A New Parking" Command="{Binding CreateParkingCommand}" StyleClass="Primary" />
     </StackLayout>
 </ContentPage>
