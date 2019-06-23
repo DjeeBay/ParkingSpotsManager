@@ -39,7 +39,7 @@
             </ListView>
         </StackLayout>
 
-        <Button Text="Save" Command="{Binding SaveSpotCommand}" />
+        <Button Text="Save" Command="{Binding SaveSpotCommand}" StyleClass="Primary" />
         <Button Text="Delete the spot" Command="{Binding DeleteSpotCommand}" BackgroundColor="IndianRed" />
 
     </StackLayout>

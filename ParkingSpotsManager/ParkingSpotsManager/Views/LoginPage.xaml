@@ -10,6 +10,6 @@
     <StackLayout Padding="15,10" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
         <Entry Text="{Binding Username}" Placeholder="username" />
         <Entry Text="{Binding Password}" IsPassword="True" Placeholder="password" />
-        <Button Text="Log In" Command="{Binding LogInCommand}" />
+        <Button Text="Log In" Command="{Binding LogInCommand}" StyleClass="Primary" />
     </StackLayout>
 </ContentPage>

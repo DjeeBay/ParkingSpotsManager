@@ -13,6 +13,6 @@
         <Entry Text="{Binding Password}" IsPassword="True" Placeholder="password" />
         <Entry Text="{Binding ConfirmedPassword}" IsPassword="True" Placeholder="password" />
 
-        <Button Text="Create Account" Command="{Binding CreateAccountCommand}" />
+        <Button Text="Create Account" Command="{Binding CreateAccountCommand}" StyleClass="Primary" />
     </StackLayout>
 </ContentPage>
