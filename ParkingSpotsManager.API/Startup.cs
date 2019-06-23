@@ -6,9 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Hangfire;
+using Hangfire.SQLite;
 using ParkingSpotsManager.API.Helpers;
 using ParkingSpotsManager.Shared.Database;
 using ParkingSpotsManager.Shared.Services;
+using System;
+using Hangfire.Dashboard;
 
 namespace ParkingSpotsManager.API
 {
@@ -43,10 +47,18 @@ namespace ParkingSpotsManager.API
                     ValidateAudience = false
                 };
             });
+
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSQLiteStorage(@Secrets.ConnectionString+";")
+            );
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IBackgroundJobClient backgroundJobs)
         {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
@@ -56,7 +68,21 @@ namespace ParkingSpotsManager.API
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
+
+            var option = new BackgroundJobServerOptions { WorkerCount = 1 };
+            app.UseHangfireServer(option);
+            app.UseHangfireDashboard("/tasks", new DashboardOptions() { DisplayStorageConnectionString = false, IsReadOnlyFunc = (DashboardContext context) => true }); ;
+
+            RecurringJob.AddOrUpdate(() => RunDailyJobs(), Cron.Daily());
+
             app.UseMvc();
+        }
+
+        public void RunDailyJobs() {
+            var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
+            optionsBuilder.UseSqlite(@Secrets.ConnectionString);
+            Extensions.SpotsExtension.RestoreDefaultOccupiers(new DataContext(optionsBuilder.Options));
+            Extensions.SpotsExtension.ResetOccupiers(new DataContext(optionsBuilder.Options));
         }
     }
 }
