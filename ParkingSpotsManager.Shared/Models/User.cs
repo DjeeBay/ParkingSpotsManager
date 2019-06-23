@@ -18,7 +18,6 @@ namespace ParkingSpotsManager.Shared.Models
         [StringLength(255, MinimumLength = 3)]
         public string Username { get; set; }
 
-        [Required]
         [StringLength(255, MinimumLength = 5)]
         [JsonIgnore]
         public string Password { get; set; }
