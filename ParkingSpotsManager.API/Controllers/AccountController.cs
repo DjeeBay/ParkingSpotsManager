@@ -58,7 +58,7 @@ namespace ParkingSpotsManager.API.Controllers
         [AllowAnonymous]
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] UserAccount user)
         {
             try {
                 if (_context.Users.Where(u => u.Username.ToLowerInvariant() == user.Username.ToLowerInvariant()).FirstOrDefault() != null) {
@@ -68,7 +68,14 @@ namespace ParkingSpotsManager.API.Controllers
                 }
 
                 user.Password = PasswordService.HashPassword(user.Password);
-                var entityEntry = await _context.Users.AddAsync(user);
+                var userToAdd = new User() {
+                    Email = user.Email,
+                    Username = user.Username,
+                    Password = user.Password,
+                    Firstname = user.Firstname,
+                    Lastname = user.Lastname
+                };
+                var entityEntry = await _context.Users.AddAsync(userToAdd);
                 await _context.SaveChangesAsync();
                 var createdUser = entityEntry.Entity;
                 createdUser.Password = null;
@@ -76,7 +83,7 @@ namespace ParkingSpotsManager.API.Controllers
 
                 return new OkObjectResult(createdUser);
             } catch (Exception e) {
-                return NotFound(e.InnerException.Message);
+                return NotFound(e.InnerException != null ? e.InnerException.Message : e.Message);
             }
         }
 

@@ -16,7 +16,7 @@
     </ContentPage.Resources>
 
     <StackLayout HorizontalOptions="FillAndExpand">
-        <ListView SelectedItem="{Binding SelectedParking}" ItemsSource="{Binding ParkingList}" IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshingParkingList}" RefreshCommand="{Binding RefreshParkingListCommand}" VerticalOptions="Fill" HasUnevenRows="True" SelectionMode="None">
+        <ListView SelectedItem="{Binding SelectedParking}" ItemsSource="{Binding ParkingList}" IsPullToRefreshEnabled="True" IsRefreshing="{Binding IsRefreshingParkingList}" RefreshCommand="{Binding RefreshParkingListCommand}" VerticalOptions="Start" HasUnevenRows="True" SelectionMode="None">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
@@ -30,11 +30,11 @@
                                     <Label Text="{Binding Name}" />
                                     <Label Text="{Binding Spots, Converter={StaticResource DisplayFreeSpotsNumber}}" Grid.Column="0" FontSize="Small" />
                                 </StackLayout>
-                                <FlexLayout Grid.Column="1" HorizontalOptions="FillAndExpand">
-                                    <Button Command="{Binding Path=BindingContext.ShowParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" HorizontalOptions="End" Text="Show" StyleClass="Primary" FontSize="10" Margin="2" />
-                                    <Button IsVisible="{Binding IsCurrentUserAdmin}" Command="{Binding Path=BindingContext.EditParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" HorizontalOptions="End" Text="Edit" StyleClass="Warning" FontSize="10" Margin="2" />
-                                    <Button Command="{Binding Path=BindingContext.LeaveParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" HorizontalOptions="End" Text="Leave" StyleClass="Danger" FontSize="10" Margin="2" />
-                                </FlexLayout>
+                                <Grid Grid.Column="1" HorizontalOptions="FillAndExpand">
+                                    <Button Grid.Column="0" Command="{Binding Path=BindingContext.ShowParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Show" StyleClass="Primary" FontSize="10" Margin="2" />
+                                    <Button Grid.Column="1" IsVisible="{Binding IsCurrentUserAdmin}" Command="{Binding Path=BindingContext.EditParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Edit" StyleClass="Warning" FontSize="10" Margin="2" />
+                                    <Button Grid.Column="2" Command="{Binding Path=BindingContext.LeaveParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Leave" StyleClass="Danger" FontSize="10" Margin="2" />
+                                </Grid>
                             </Grid>
                         </StackLayout>
                     </ViewCell>
