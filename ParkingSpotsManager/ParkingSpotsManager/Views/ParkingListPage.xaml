@@ -20,23 +20,15 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <StackLayout Padding="5" HorizontalOptions="FillAndExpand">
-                            <Grid HorizontalOptions="FillAndExpand">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="4*" />
-                                    <ColumnDefinition Width="6*" />
-                                </Grid.ColumnDefinitions>
-                                <StackLayout Grid.Column="0">
-                                    <Label Text="{Binding Name}" />
-                                    <Label Text="{Binding Spots, Converter={StaticResource DisplayFreeSpotsNumber}}" Grid.Column="0" FontSize="Small" />
-                                </StackLayout>
-                                <Grid Grid.Column="1" HorizontalOptions="FillAndExpand">
-                                    <Button Grid.Column="0" Command="{Binding Path=BindingContext.ShowParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Show" StyleClass="Primary" FontSize="10" Margin="2" />
-                                    <Button Grid.Column="1" IsVisible="{Binding IsCurrentUserAdmin}" Command="{Binding Path=BindingContext.EditParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Edit" StyleClass="Warning" FontSize="10" Margin="2" />
-                                    <Button Grid.Column="2" Command="{Binding Path=BindingContext.LeaveParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Leave" StyleClass="Danger" FontSize="10" Margin="2" />
-                                </Grid>
-                            </Grid>
-                        </StackLayout>
+                        <FlexLayout Direction="Row">
+                            <Label Text="{Binding Name}" />
+                            <Label Text="{Binding Spots, Converter={StaticResource DisplayFreeSpotsNumber}}" Grid.Column="0" FontSize="Small" />
+                            <FlexLayout AlignContent="End">
+                                <Button Command="{Binding Path=BindingContext.ShowParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Show" StyleClass="Primary" FontSize="10" Margin="2" />
+                                <Button IsVisible="{Binding IsCurrentUserAdmin}" Command="{Binding Path=BindingContext.EditParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Edit" StyleClass="Warning" FontSize="10" Margin="2" />
+                                <Button Command="{Binding Path=BindingContext.LeaveParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Leave" StyleClass="Danger" FontSize="10" Margin="2" />
+                            </FlexLayout>
+                        </FlexLayout>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
