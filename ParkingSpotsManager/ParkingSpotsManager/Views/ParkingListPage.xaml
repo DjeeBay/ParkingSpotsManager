@@ -20,15 +20,21 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <FlexLayout Direction="Row">
-                            <Label Text="{Binding Name}" />
-                            <Label Text="{Binding Spots, Converter={StaticResource DisplayFreeSpotsNumber}}" Grid.Column="0" FontSize="Small" />
-                            <FlexLayout AlignContent="End">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <FlexLayout Grid.Column="0" Direction="Column">
+                                <Label Text="{Binding Name}" />
+                                <Label Text="{Binding Spots, Converter={StaticResource DisplayFreeSpotsNumber}}" Grid.Column="0" FontSize="Small" />
+                            </FlexLayout>
+                            <FlexLayout Grid.Column="1" Direction="Row">
                                 <Button Command="{Binding Path=BindingContext.ShowParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Show" StyleClass="Primary" FontSize="10" Margin="2" />
                                 <Button IsVisible="{Binding IsCurrentUserAdmin}" Command="{Binding Path=BindingContext.EditParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Edit" StyleClass="Warning" FontSize="10" Margin="2" />
                                 <Button Command="{Binding Path=BindingContext.LeaveParkingCommand, Source={x:Reference Name=ParkingList}}" CommandParameter="{Binding .}" Text="Leave" StyleClass="Danger" FontSize="10" Margin="2" />
                             </FlexLayout>
-                        </FlexLayout>
+                        </Grid>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
