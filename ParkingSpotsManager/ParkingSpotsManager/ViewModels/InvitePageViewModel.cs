@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace ParkingSpotsManager.ViewModels
 {
@@ -99,6 +100,7 @@ namespace ParkingSpotsManager.ViewModels
                     var invitationSent = await SendInvitation(SelectedParking, user);
                     if (invitationSent) {
                         await _dialogService.DisplayAlertAsync("Invitation", $"{user.Username} has been invited.", "OK");
+                        await Email.ComposeAsync(user.Email, "Parking Spots Manager : You have been invited", "Hi,\r\n\r\nYou have now access to "+SelectedParking.Name+" !\r\nCheck it, and take a free spot !");
                     } else {
                         await _dialogService.DisplayAlertAsync("Error", $"An error occured, please try later.", "OK");
                     }
