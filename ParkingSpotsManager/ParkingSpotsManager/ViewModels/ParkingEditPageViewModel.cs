@@ -15,11 +15,33 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Xamarin.Essentials;
 
 namespace ParkingSpotsManager.ViewModels
 {
 	public class ParkingEditPageViewModel : ViewModelBase, INavigationAware
 	{
+        private string _address;
+        public string Address
+        {
+            get => _address;
+            set => SetProperty(ref _address, value);
+        }
+
+        private double? _latitude;
+        public double? Latitude
+        {
+            get => _latitude;
+            set => SetProperty(ref _latitude, value);
+        }
+
+        private double? _longitude;
+        public double? Longitude
+        {
+            get => _longitude;
+            set => SetProperty(ref _longitude, value);
+        }
+
         private Parking _currentParking;
         public Parking CurrentParking
         {
@@ -47,6 +69,7 @@ namespace ParkingSpotsManager.ViewModels
         public DelegateCommand<string> DisplayListCommand { get; }
         public DelegateCommand<UserParking> ChangeUserStatusCommand { get; }
         public DelegateCommand<UserParking> RemoveUserCommand { get; }
+        public DelegateCommand<string> GetLocationCommand { get; }
 
         private IPageDialogService _dialogService;
 
@@ -59,12 +82,35 @@ namespace ParkingSpotsManager.ViewModels
             DisplayListCommand = new DelegateCommand<string>(OnDisplayListExecuted, CanDisplayList);
             ChangeUserStatusCommand = new DelegateCommand<UserParking>(OnChangeUserStatusExecuted, CanChangeUserStatus);
             RemoveUserCommand = new DelegateCommand<UserParking>(OnRemoveUserExecuted, CanRemoveUser);
+            GetLocationCommand = new DelegateCommand<string>(OnGetLocationExecuted, CanGetLocation);
         }
 
-        private bool CanRemoveUser(UserParking arg)
+        private bool CanGetLocation(string arg) => true;
+
+        private async void OnGetLocationExecuted(string obj)
         {
-            return true;
+            if (Address != null && Address.Length > 0) {
+                var locations = await Geocoding.GetLocationsAsync(Address);
+                var location = locations.FirstOrDefault();
+                if (location != null) {
+                    Latitude = location.Latitude;
+                    Longitude = location.Longitude;
+                    CurrentParking.Latitude = location.Latitude;
+                    CurrentParking.Longitude = location.Longitude;
+                    CurrentParking.Address = Address;
+                } else {
+                    await _dialogService.DisplayAlertAsync("No address", "Geocoding system couldn't find the coordinates.", "Close");
+                    Address = null;
+                    Latitude = 0;
+                    Longitude = 0;
+                    CurrentParking.Latitude = null;
+                    CurrentParking.Longitude = null;
+                    CurrentParking.Address = null;
+                }
+            }
         }
+
+        private bool CanRemoveUser(UserParking arg) => true;
 
         private async void OnRemoveUserExecuted(UserParking obj)
         {
@@ -161,6 +207,9 @@ namespace ParkingSpotsManager.ViewModels
             if (parking != null) {
                 CurrentParking = await GetParking(parking.Id).ConfigureAwait(false);
                 UserParkings = new ObservableCollection<UserParking>(CurrentParking.UserParkings);
+                Address = CurrentParking.Address;
+                Latitude = CurrentParking.Latitude;
+                Longitude = CurrentParking.Longitude;
             } else {
                 await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
             }
