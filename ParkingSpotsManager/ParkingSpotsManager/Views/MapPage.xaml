@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
+             xmlns:Map="clr-namespace:ParkingSpotsManager.Customs"
+             xmlns:local="clr-namespace:ParkingSpotsManager.Converters"
+             Title="Map"
+             Visual="Material"
+             x:Class="ParkingSpotsManager.Views.MapPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:InverseBoolConverter x:Key="inverseBool" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout VerticalOptions="FillAndExpand">
+        <Map:CustomMap CenterRegion="{Binding CurrentLocation}"
+                    CustomPins="{Binding Locations}"
+                    HorizontalOptions="FillAndExpand"
+                    IsShowingUser="true"
+                    MapType="Street"
+                    VerticalOptions="FillAndExpand">
+        </Map:CustomMap>
+        <StackLayout Padding="5">
+            <Button Text="Refresh" Command="{Binding RefreshMapDataCommand}" IsEnabled="{Binding IsRefreshingData, Converter={StaticResource inverseBool}}" />
+        </StackLayout>
+    </StackLayout>
+</ContentPage>

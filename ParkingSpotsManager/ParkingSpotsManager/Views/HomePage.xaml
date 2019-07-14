@@ -18,6 +18,7 @@
                              RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}" 
                              RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}">
                     <Label TextColor="WhiteSmoke" Text="{Binding CurrentUser.Username, StringFormat='Hello {0} !'}" Margin="10" />
+                    <Button Text="Map" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/MapPage" />
                     <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" />
                     <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/CreateParkingPage" />
                     <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/InvitePage" />
