@@ -6,7 +6,7 @@
 echo " (i) Provided Android Manifest path: $ANDROID_MANIFEST_FILE"
 echo " (i) API KEY: $ANDROID_API_KEY"
 
-ANDROID_MANIFEST_FILE=$APPCENTER_SOURCE_DIRECTORY/Droid/Properties/AndroidManifest.xml
+ANDROID_MANIFEST_FILE=$APPCENTER_SOURCE_DIRECTORY/ParkingSpotsManager/ParkingSpotsManager.Android/Properties/AndroidManifest.xml
 APIKEY=`grep value=\"API_KEY\" $ANDROID_MANIFEST_FILE | sed 's/.*value\s*=\s*\"\([^\"]*\)\".*/\1/g'`
 
 if [ -z "${APIKEY}" ] ; then
