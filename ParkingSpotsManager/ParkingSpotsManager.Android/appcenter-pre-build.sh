@@ -14,6 +14,7 @@ if [ -z "${APIKEY}" ] ; then
   exit 1
 fi
 echo "API key detected: ${APIKEY}"
+echo `grep value=\"API_KEY\" $ANDROID_MANIFEST_FILE`
 
 
 
