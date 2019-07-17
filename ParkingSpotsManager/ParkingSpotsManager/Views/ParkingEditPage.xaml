@@ -19,8 +19,13 @@
     </ContentPage.Resources>
 
     <StackLayout Padding="5">
-        <Entry Text="{Binding CurrentParking.Name}" Placeholder="name" />
-        <Button Text="Save" Command="{Binding SaveParkingCommand}" />
+        <Entry Text="{Binding CurrentParking.Name}" Placeholder="Name" />
+        <Entry Text="{Binding Address}" Placeholder="Address" />
+        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+            <Label Text="{Binding Latitude}" />
+            <Label Text="{Binding Longitude}" />
+        </StackLayout>
+        <Button Text="Geocode" Command="{Binding GetLocationCommand}" CommandParameter="{Binding Address}" BackgroundColor="#6002ee" />
 
         <Grid>
             <Grid.ColumnDefinitions>
@@ -33,7 +38,7 @@
             <Button Text="Spots" Grid.Column="0" Command="{Binding DisplayListCommand}" CommandParameter="spots" StyleClass="Primary" />
             <Button Text="Users" Grid.Column="1" Command="{Binding DisplayListCommand}" CommandParameter="users" StyleClass="Success" />
         </Grid>
-        
+
         <Button Text="Add a spot" Command="{Binding GoToAddSpotCommand}" IsVisible="{Binding IsSpotListVisible}" StyleClass="Primary" />
         <ListView ItemsSource="{Binding CurrentParking.Spots}" IsVisible="{Binding IsSpotListVisible}" VerticalOptions="FillAndExpand">
             <ListView.ItemTemplate>
@@ -57,7 +62,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        
+
         <ListView ItemsSource="{Binding UserParkings}" IsVisible="{Binding IsSpotListVisible, Converter={StaticResource InverseBoolConverter}}" VerticalOptions="FillAndExpand">
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -86,5 +91,8 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <StackLayout VerticalOptions="End">
+            <Button Text="Save" Command="{Binding SaveParkingCommand}" StyleClass="Success" />
+        </StackLayout>
     </StackLayout>
 </ContentPage>

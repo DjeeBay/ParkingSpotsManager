@@ -14,8 +14,9 @@ namespace ParkingSpotsManager.API.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(maxLength: 255, nullable: false),
-                    Columns = table.Column<int>(nullable: true),
-                    Rows = table.Column<int>(nullable: true)
+                    Address = table.Column<string>(nullable: true),
+                    Latitude = table.Column<double>(nullable: true),
+                    Longitude = table.Column<double>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -30,7 +31,7 @@ namespace ParkingSpotsManager.API.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Email = table.Column<string>(nullable: false),
                     Username = table.Column<string>(maxLength: 255, nullable: false),
-                    Password = table.Column<string>(maxLength: 255, nullable: false),
+                    Password = table.Column<string>(maxLength: 255, nullable: true),
                     AuthToken = table.Column<string>(nullable: true),
                     Firstname = table.Column<string>(nullable: true),
                     Lastname = table.Column<string>(nullable: true)
@@ -60,12 +61,6 @@ namespace ParkingSpotsManager.API.Migrations
                     table.ForeignKey(
                         name: "FK_Spots_Users_OccupiedBy",
                         column: x => x.OccupiedBy,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Spots_Users_OccupiedByDefaultBy",
-                        column: x => x.OccupiedByDefaultBy,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -108,11 +103,6 @@ namespace ParkingSpotsManager.API.Migrations
                 name: "IX_Spots_OccupiedBy",
                 table: "Spots",
                 column: "OccupiedBy");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Spots_OccupiedByDefaultBy",
-                table: "Spots",
-                column: "OccupiedByDefaultBy");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Spots_ParkingId",

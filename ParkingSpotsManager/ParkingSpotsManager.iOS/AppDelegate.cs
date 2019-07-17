@@ -27,6 +27,7 @@ namespace ParkingSpotsManager.iOS
             var x = typeof(Xamarin.Forms.Themes.DarkThemeResources);
             x = typeof(Xamarin.Forms.Themes.DarkThemeResources);
             x = typeof(Xamarin.Forms.Themes.iOS.UnderlineEffect);
+            Xamarin.FormsMaps.Init();
 
             return base.FinishedLaunching(app, options);
         }

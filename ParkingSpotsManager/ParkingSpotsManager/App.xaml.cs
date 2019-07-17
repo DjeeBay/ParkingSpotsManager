@@ -47,6 +47,7 @@ namespace ParkingSpotsManager
             containerRegistry.RegisterForNavigation<SpotEditPage, SpotEditPageViewModel>();
             containerRegistry.RegisterForNavigation<InvitePage, InvitePageViewModel>();
             containerRegistry.RegisterForNavigation<AccountPage, AccountPageViewModel>();
+            containerRegistry.RegisterForNavigation<MapPage, MapPageViewModel>();
         }
     }
 }

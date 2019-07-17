@@ -11,7 +11,7 @@
         <Label Text="Select a parking" />
         <Picker ItemsSource="{Binding ParkingList}"
                 ItemDisplayBinding="{Binding Name}"
-                SelectedItem="{Binding SelectedParking}" />
+                SelectedItem="{Binding SelectedParking}" TextColor="LightSlateGray" />
 
         <Label Text="Invite someone" />
         <SearchBar Text="{Binding SearchText}" Placeholder="Search (3 char. min)" />
