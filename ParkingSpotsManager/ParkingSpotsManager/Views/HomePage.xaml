@@ -18,12 +18,12 @@
                              RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}" 
                              RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}">
                     <Label TextColor="WhiteSmoke" Text="{Binding CurrentUser.Username, StringFormat='Hello {0} !'}" Margin="10" />
-                    <Button Text="Map" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/MapPage" />
-                    <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" />
-                    <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/CreateParkingPage" />
-                    <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/InvitePage" />
-                    <Button Text="Account" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/AccountPage" />
-                    <Button Text="Logout" Command="{Binding LogoutCommand}" />
+                    <Button Text="Map" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/MapPage" TextColor="WhiteSmoke" />
+                    <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" TextColor="WhiteSmoke" />
+                    <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/CreateParkingPage" TextColor="WhiteSmoke" />
+                    <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/InvitePage" TextColor="WhiteSmoke" />
+                    <Button Text="Account" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/AccountPage" TextColor="WhiteSmoke" />
+                    <Button Text="Logout" Command="{Binding LogoutCommand}" TextColor="WhiteSmoke" />
                 </StackLayout>
             </RelativeLayout>
         </ContentPage>
