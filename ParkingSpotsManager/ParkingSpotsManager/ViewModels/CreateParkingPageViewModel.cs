@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
-using ParkingSpotsManager.Shared.Constants;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -37,16 +37,15 @@ namespace ParkingSpotsManager.ViewModels
         private async void CreateParkingAsync(object obj)
         {
             if (Name != null && Name.Length > 0) {
-                var url = APIConstants.ParkingREST;
-                var token = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
+                var url = API.ParkingREST();
                 var json = JObject.FromObject(new Parking { Name = Name });
                 using (var httpClient = new HttpClient()) {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", AuthToken);
                     try {
                         var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                         response.EnsureSuccessStatusCode();
                         //TODO notif
-                        await NavigationService.NavigateAsync("ParkingListPage");
+                        await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
                     } catch (Exception e) {
                         Console.WriteLine(e.Message);
                     }

@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ParkingSpotsManager.Shared.Constants;
+using Hangfire;
+using Hangfire.SQLite;
+using ParkingSpotsManager.API.Helpers;
 using ParkingSpotsManager.Shared.Database;
 using ParkingSpotsManager.Shared.Services;
+using System;
+using Hangfire.Dashboard;
 
 namespace ParkingSpotsManager.API
 {
@@ -31,12 +28,12 @@ namespace ParkingSpotsManager.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(options => options.UseSqlite(APIConstants.ConnectionString));
+            services.AddDbContext<DataContext>(options => options.UseSqlite(@Secrets.ConnectionString));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
             options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
-            var key = TokenService.GetKey();
+            var key = TokenService.GetKey(Secrets.TokenSecretKey);
             services.AddAuthentication(x => {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,10 +47,18 @@ namespace ParkingSpotsManager.API
                     ValidateAudience = false
                 };
             });
+
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSQLiteStorage(@Secrets.ConnectionString+";")
+            );
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IBackgroundJobClient backgroundJobs)
         {
             if (env.IsDevelopment()) {
                 app.UseDeveloperExceptionPage();
@@ -63,7 +68,21 @@ namespace ParkingSpotsManager.API
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
+
+            var option = new BackgroundJobServerOptions { WorkerCount = 1 };
+            app.UseHangfireServer(option);
+            app.UseHangfireDashboard("/tasks", new DashboardOptions() { DisplayStorageConnectionString = false, IsReadOnlyFunc = (DashboardContext context) => true }); ;
+
+            RecurringJob.AddOrUpdate(() => RunDailyJobs(), Cron.Daily());
+
             app.UseMvc();
+        }
+
+        public void RunDailyJobs() {
+            var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
+            optionsBuilder.UseSqlite(@Secrets.ConnectionString);
+            Extensions.SpotsExtension.RestoreDefaultOccupiers(new DataContext(optionsBuilder.Options));
+            Extensions.SpotsExtension.ResetOccupiers(new DataContext(optionsBuilder.Options));
         }
     }
 }

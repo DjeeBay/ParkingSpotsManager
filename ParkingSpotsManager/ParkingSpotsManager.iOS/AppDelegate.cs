@@ -2,7 +2,7 @@
 using Prism;
 using Prism.Ioc;
 using UIKit;
-
+using Xamarin.Forms;
 
 namespace ParkingSpotsManager.iOS
 {
@@ -22,7 +22,12 @@ namespace ParkingSpotsManager.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
+            FormsMaterial.Init();
             LoadApplication(new App(new iOSInitializer()));
+            var x = typeof(Xamarin.Forms.Themes.DarkThemeResources);
+            x = typeof(Xamarin.Forms.Themes.DarkThemeResources);
+            x = typeof(Xamarin.Forms.Themes.iOS.UnderlineEffect);
+            Xamarin.FormsMaps.Init();
 
             return base.FinishedLaunching(app, options);
         }

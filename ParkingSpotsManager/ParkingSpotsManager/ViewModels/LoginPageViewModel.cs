@@ -1,10 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ParkingSpotsManager.Shared.Constants;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
 using Prism.Mvvm;
 using Prism.Navigation;
+using Prism.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,8 +33,11 @@ namespace ParkingSpotsManager.ViewModels
 
         public DelegateCommand<object> LogInCommand { get; private set; }
 
-        public LoginPageViewModel(INavigationService navigationService) : base (navigationService)
+        private IPageDialogService _dialogService;
+
+        public LoginPageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base (navigationService)
         {
+            _dialogService = dialogService;
             Title = "Log in";
             LogInCommand = new DelegateCommand<object>(LogIn, CanLogIn);
         }
@@ -46,7 +50,7 @@ namespace ParkingSpotsManager.ViewModels
         private async void LogIn(object parameter)
         {
             if (Username != null && Password != null) {
-                var url = APIConstants.LoginUrl;
+                var url = API.LoginUrl();
                 var json = JObject.FromObject(new {
                     login = Username,
                     password = Password
@@ -65,11 +69,13 @@ namespace ParkingSpotsManager.ViewModels
                                 Prism.PrismApplicationBase.Current.Properties.Add("authToken", authUser.AuthToken);
                             }
                             await Prism.PrismApplicationBase.Current.SavePropertiesAsync();
-                            await NavigationService.NavigateAsync("HomePage");
+                            SetAuthUserProperties(authUser, authUser.AuthToken);
+                            await NavigationService.NavigateAsync("HomePage/NavigationPage/ParkingListPage");
+                        } else {
+                            await _dialogService.DisplayAlertAsync("Whoops !", "Bad credentials", "OK");
                         }
-                        //TODO else notify bad login
-                    } catch (Exception e) {
-                        Console.WriteLine(e.Message);
+                    } catch (Exception) {
+                        await _dialogService.DisplayAlertAsync("Whoops !", "Bad credentials", "OK");
                     }
                 }
             }

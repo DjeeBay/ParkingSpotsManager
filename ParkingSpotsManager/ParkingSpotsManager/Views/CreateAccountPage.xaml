@@ -3,21 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
+             Visual="Material"
+             Title="Sign up"
              x:Class="ParkingSpotsManager.Views.CreateAccountPage">
 
-    <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-        <Label Text="Username" />
+    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center" Padding="15,10">
         <Entry Text="{Binding Username}" Placeholder="username" />
-        
-        <Label Text="Email" />
         <Entry Text="{Binding Email}" Placeholder="email" />
-
-        <Label Text="Password" />
         <Entry Text="{Binding Password}" IsPassword="True" Placeholder="password" />
-        
-        <Label Text="Confirmed Password" />
         <Entry Text="{Binding ConfirmedPassword}" IsPassword="True" Placeholder="password" />
 
-        <Button Text="Create Account" Command="{Binding CreateAccountCommand}" />
+        <Button Text="Create Account" Command="{Binding CreateAccountCommand}" StyleClass="Primary" />
     </StackLayout>
 </ContentPage>

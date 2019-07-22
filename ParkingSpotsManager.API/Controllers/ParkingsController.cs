@@ -53,7 +53,7 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var parkings = await _context.Parkings.Include(p => p.Spots).ToListAsync();
+            var parkings = await _context.Parkings.Include(p => p.Spots).Include(p => p.UserParkings).ThenInclude(up => up.User).ToListAsync();
             var parking = parkings.FirstOrDefault(p => p.Id == id);
 
             if (parking == null) {
@@ -138,6 +138,124 @@ namespace ParkingSpotsManager.API.Controllers
             return Ok(parking);
         }
 
+        [HttpPost]
+        [Route("[action]/{parkingID}")]
+        public async Task<IActionResult> ChangeUserRole([FromRoute] int parkingID, [FromBody] UserParking userParking)
+        {
+            var userID = User.Identity.Name;
+            if (ParkingExists(parkingID) && IsAdmin(parkingID) && int.Parse(userID) != userParking.UserId) {
+                var storedUserParking = _context.UsersParkings.FirstOrDefault(up => up.Id == userParking.Id);
+                if (storedUserParking != null) {
+                    storedUserParking.IsAdmin = userParking.IsAdmin;
+                    await _context.SaveChangesAsync();
+
+                    return Ok(_context.UsersParkings.Include(up => up.User).ToList());
+                }
+            }
+
+            return BadRequest();
+        }
+
+        [HttpGet]
+        [Route("[action]/{parkingID}/{userID}")]
+        public async Task<IActionResult> RemoveUser([FromRoute] int parkingID, [FromRoute] int userID)
+        {
+            var senderID = User.Identity.Name;
+            if (ParkingExists(parkingID) && IsAdmin(parkingID) && int.Parse(senderID) != userID) {
+                var storedUserParking = _context.UsersParkings.FirstOrDefault(up => up.UserId == userID && up.ParkingId == parkingID);
+                if (storedUserParking != null) {
+                    _context.UsersParkings.Remove(storedUserParking);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(_context.UsersParkings.Include(up => up.User).ToList());
+                }
+            }
+
+            return BadRequest();
+        }
+
+        [HttpGet]
+        [Route("[action]/{parkingID}/{userID}")]
+        public async Task<IActionResult> SendInvitation([FromRoute] int parkingID, [FromRoute] int userID)
+        {
+            var parking = _context.Parkings.FirstOrDefault(p => p.Id == parkingID);
+            var user = _context.Users.FirstOrDefault(u => u.Id == userID);
+            if (parking == null || user == null) {
+                return BadRequest();
+            }
+
+            var existingUserParking = _context.UsersParkings.Where(up => up.UserId == userID && up.ParkingId == parkingID).FirstOrDefault();
+            if (existingUserParking != null) {
+                return BadRequest();
+            }
+
+            try {
+                var userParking = new UserParking {
+                    UserId = userID,
+                    ParkingId = parkingID,
+                    IsAdmin = 0
+                };
+                _context.UsersParkings.Add(userParking);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            } catch (DbUpdateConcurrencyException) {
+                throw;
+            }
+        }
+
+        [HttpGet]
+        [Route("[action]/{parkingID}")]
+        public async Task<IActionResult> Leave([FromRoute] int parkingID)
+        {
+            if (IsUserParking(parkingID)) {
+                var userID = int.Parse(User.Identity.Name);
+                var userParking = _context.UsersParkings.Where(up => up.UserId == userID && up.ParkingId == parkingID).FirstOrDefault();
+                _context.UsersParkings.Remove(userParking);
+                await _context.SaveChangesAsync();
+
+                var userParkingsList = _context.UsersParkings.Where(up => up.UserId == userID).ToList();
+                var parkingsList = _context.Parkings.Include(p => p.Spots).Where(p => userParkingsList.Any(up => up.ParkingId == p.Id)).ToList();
+                parkingsList.ForEach(p => {
+                    p.IsCurrentUserAdmin = userParkingsList.Where(up => up.ParkingId == p.Id).SingleOrDefault().IsAdmin == 1;
+                    p.Spots.ForEach(s => s.Occupier = _context.Users.Find(s.OccupiedBy));
+                });
+
+                return Ok(parkingsList);
+            }
+
+            return BadRequest();
+        }
+
+        [HttpGet]
+        [Route("[action]/{parkingID}/{search}")]
+        public async Task<IActionResult> GetUserList([FromRoute] int parkingID, [FromRoute] string search)
+        {
+            if (search != null && search.Length >= 3) {
+                var parking = _context.Parkings.FirstOrDefault(p => p.Id == parkingID);
+                if (parking != null) {
+                    var userList = await _context.Users
+                        .Include(u => u.UserParkings)
+                        .Where(u => u.UserParkings.Where(up => up.ParkingId == parkingID && up.UserId == u.Id).FirstOrDefault() != null
+                            && u.Username.Contains(search, StringComparison.InvariantCultureIgnoreCase))
+                        .ToListAsync();
+                    CleanUsersPassword(ref userList);
+
+                    return Ok(userList);
+                }
+            }
+
+            return BadRequest();
+        }
+
+        private void CleanUsersPassword(ref List<User> users)
+        {
+            var nbUsers = users.Count;
+            for (var i = 0; i < nbUsers; i++) {
+                users[i].Password = null;
+            }
+        }
+
         private bool ParkingExists(int id)
         {
             return _context.Parkings.Any(e => e.Id == id);
@@ -149,6 +267,28 @@ namespace ParkingSpotsManager.API.Controllers
             var userParking = _context.UsersParkings.Where(up => up.ParkingId == parking.Id && up.UserId == int.Parse(userID) && up.IsAdmin == 1).FirstOrDefault();
 
             return userParking != null;
+        }
+
+        private bool IsAdmin(int parkingID)
+        {
+            var userID = User.Identity.Name;
+            var userParking = _context.UsersParkings.AsNoTracking().Where(up => up.ParkingId == parkingID && up.UserId == int.Parse(userID) && up.IsAdmin == 1).FirstOrDefault();
+
+            return userParking != null;
+        }
+
+        private bool IsUserParking(int parkingID)
+        {
+            var parking = _context.Parkings.Where(p => p.Id == parkingID).AsNoTracking().FirstOrDefault();
+            if (parking != null) {
+                var userID = int.Parse(User.Identity.Name);
+                var userParking = _context.UsersParkings.Where(up => up.UserId == userID && up.ParkingId == parking.Id).AsNoTracking().FirstOrDefault();
+                if (userParking != null) {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

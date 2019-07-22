@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ParkingSpotsManager.Shared.Constants;
+using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Models;
 using Prism.Commands;
 using Prism.Mvvm;
@@ -11,6 +11,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ParkingSpotsManager.ViewModels
 {
@@ -45,21 +46,18 @@ namespace ParkingSpotsManager.ViewModels
         private async void OnCreateSpotCommandExecutedAsync(object obj)
         {
             if (Spot.Name != null && Spot.Name.Length > 0) {
-                var url = APIConstants.SpotREST;
-                var token = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
+                var url = API.SpotREST();
                 var json = JObject.FromObject(Spot);
                 using (var httpClient = new HttpClient()) {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
                     try {
                         var response = await httpClient.PostAsync(url, new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                         response.EnsureSuccessStatusCode();
-                        var content = await response.Content.ReadAsStringAsync();
-                        var createdSpot = JsonConvert.DeserializeObject<Spot>(content);
-                        CurrentParking.Spots.Add(createdSpot);
                         //TODO notif
-                        var navParams = new NavigationParameters();
-                        navParams.Add("parking", CurrentParking);
-                        await NavigationService.NavigateAsync("ParkingEditPage", navParams);
+                        var navParams = new NavigationParameters {
+                            { "parking", CurrentParking }
+                        };
+                        await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingEditPage", navParams);
                     } catch (Exception e) {
                         Console.WriteLine(e.Message);
                     }
@@ -67,12 +65,33 @@ namespace ParkingSpotsManager.ViewModels
             }
         }
 
-        public override void OnNavigatedTo(INavigationParameters parameters)
+        public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
             var parking = parameters.GetValue<Parking>("parking");
-            CurrentParking = parking;
-            Spot.ParkingId = parking.Id;
+            CurrentParking = await GetParking(parking.Id).ConfigureAwait(false);
+            Spot.ParkingId = CurrentParking.Id;
+        }
+
+        private async Task<Parking> GetParking(int parkingID)
+        {
+            //TODO service
+            var url = new StringBuilder(API.ParkingREST()).Append("/").Append(parkingID).ToString();
+            using (var httpClient = new HttpClient()) {
+                try {
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", GetToken());
+                    var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var parking = JsonConvert.DeserializeObject<Parking>(content);
+
+                    return parking;
+                } catch (Exception e) {
+                    Console.WriteLine(e.Message);
+                }
+            }
+
+            return null;
         }
     }
 }

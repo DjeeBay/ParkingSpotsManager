@@ -4,12 +4,13 @@
              x:Class="ParkingSpotsManager.Views.MainPage"
              Title="{Binding Title}"
              NavigationPage.HasNavigationBar="False" 
+             Visual="Material"
              NavigationPage.HasBackButton="False">
 
     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
         <Label Text="Please login or create a new account :" />
-        <Button Text="New Account" Command="{Binding GoToCommand}" CommandParameter="CreateAccountPage" />
-        <Button Text="Log In" Command="{Binding GoToCommand}" CommandParameter="LoginPage" />
+        <Button Text="New Account" Command="{Binding GoToCommand}" CommandParameter="CreateAccountPage" StyleClass="Success" />
+        <Button Text="Log In" Command="{Binding GoToCommand}" CommandParameter="LoginPage" StyleClass="Primary" />
     </StackLayout>
 
 </ContentPage>

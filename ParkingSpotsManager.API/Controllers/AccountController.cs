@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ParkingSpotsManager.API.Helpers;
 using ParkingSpotsManager.Shared.Database;
 using ParkingSpotsManager.Shared.Libraries;
 using ParkingSpotsManager.Shared.Models;
@@ -19,6 +20,7 @@ namespace ParkingSpotsManager.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly int _passwordMinLength = 5;
 
         public AccountController(DataContext context)
         {
@@ -31,30 +33,17 @@ namespace ParkingSpotsManager.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet]
-        [Route("[action]")]
-        public async Task<IActionResult> Test() {
-            return new OkObjectResult(_context.Users.ToList());
-        }
-
-        [HttpGet]
-        [Route("[action]")]
-        public IActionResult ValidToken() {
-            return new OkObjectResult(HttpContext.User.Identity.IsAuthenticated);
-        }
-
-        [AllowAnonymous]
         [Route("[action]")]
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] Authenticator authenticator)
         {
             try {
-                var user = await _context.Users.Where(u => u.Username == authenticator.Login).FirstOrDefaultAsync();
+                var user = await _context.Users.Where(u => u.Username.ToLowerInvariant() == authenticator.Login.ToLowerInvariant()).FirstOrDefaultAsync();
                 if (user != null && user.Id != 0) {
                     var passMatched = PasswordService.VerifyHashedPassword(user.Password, authenticator.Password);
                     if (passMatched) {
                         user.Password = null;
-                        user.AuthToken = TokenService.Get(user);
+                        user.AuthToken = TokenService.Get(user, Secrets.TokenSecretKey);
 
                         return user != null && user.Id != 0 ? new OkObjectResult(user) : new OkObjectResult("{\"success\":\"false\",\"reason\":\"Auth failed, try later.\"}");
                     }
@@ -69,28 +58,62 @@ namespace ParkingSpotsManager.API.Controllers
         [AllowAnonymous]
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] User user)
+        public async Task<IActionResult> CreateUser([FromBody] UserAccount user)
         {
             try {
-                if (user.Password == null || user.Password.Length < 5) {
-                    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Password is too small, 5 caracters min.\"}");
-                } else if (_context.Users.Where(u => u.Username == user.Username).FirstOrDefault() != null) {
-                    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Username already exists.\"}");
+                if (_context.Users.Where(u => u.Username.ToLowerInvariant() == user.Username.ToLowerInvariant()).FirstOrDefault() != null) {
+                    return BadRequest(new { Username = new string[] { "Username already exists." } });
                 } else if (_context.Users.Where(u => u.Email == user.Email).FirstOrDefault() != null) {
-                    return new OkObjectResult("{\"success\":\"false\",\"reason\":\"Email already used.\"}");
+                    return BadRequest(new { Email = new string[] { "Email already used." } });
                 }
 
                 user.Password = PasswordService.HashPassword(user.Password);
-                var entityEntry = await _context.Users.AddAsync(user);
+                var userToAdd = new User() {
+                    Email = user.Email,
+                    Username = user.Username,
+                    Password = user.Password,
+                    Firstname = user.Firstname,
+                    Lastname = user.Lastname
+                };
+                var entityEntry = await _context.Users.AddAsync(userToAdd);
                 await _context.SaveChangesAsync();
                 var createdUser = entityEntry.Entity;
                 createdUser.Password = null;
-                createdUser.AuthToken = TokenService.Get(createdUser);
+                createdUser.AuthToken = TokenService.Get(createdUser, Secrets.TokenSecretKey);
 
                 return new OkObjectResult(createdUser);
             } catch (Exception e) {
-                return new OkObjectResult(e.InnerException.Message);
+                return NotFound(e.InnerException != null ? e.InnerException.Message : e.Message);
             }
+        }
+
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserAccount user)
+        {
+            if (int.Parse(User.Identity.Name) == user.Id) {
+                if (_context.Users.Where(u => u.Email == user.Email && u.Id != user.Id).FirstOrDefault() != null) {
+                    return BadRequest(new { Email = new string[] { "Email already used." } });
+                }
+                if (user.IsPasswordSet && (string.IsNullOrEmpty(user.Password) || user.Password.Length < _passwordMinLength)) {
+                    return BadRequest(new { Password = new string[] { "Password length must be 5 min." } });
+                }
+                var storedUser = _context.Users.Where(u => u.Id == user.Id).FirstOrDefault();
+                storedUser.Firstname = user.Firstname;
+                storedUser.Lastname = user.Lastname;
+                storedUser.Email = user.Email;
+                if (!string.IsNullOrEmpty(user.Password)) {
+                    storedUser.Password = PasswordService.HashPassword(user.Password);
+                } else {
+                    storedUser.Password = storedUser.Password;
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+
+            return NotFound();
         }
     }
 }

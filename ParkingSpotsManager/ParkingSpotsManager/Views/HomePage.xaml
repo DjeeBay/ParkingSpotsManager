@@ -4,17 +4,28 @@
                   xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
                   prism:ViewModelLocator.AutowireViewModel="True"
                   xmlns:local="clr-namespace:ParkingSpotsManager.Views"
+                  NavigationPage.HasNavigationBar="False"
                   x:Class="ParkingSpotsManager.Views.HomePage">
 
     <MasterDetailPage.Master>
-        <ContentPage Title="Menu">
-            <StackLayout Padding="40">
-                <Label Text="{Binding UserName,StringFormat='Hello, {0}'}" />
-                <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" />
-                <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/CreateParkingPage" />
-                <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="Navigation/ViewB?message=Told%20you%20Prism%20Rocks%21%21%21" />
-                <Button Text="Logout" Command="{Binding LogoutCommand}" />
-            </StackLayout>
+        <ContentPage Title="Menu" >
+            <RelativeLayout Padding="0">
+                <Image Source="menu_bg.jpg"
+                       Aspect="AspectFill"
+                       RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                       RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}" />
+                <StackLayout Padding="40"
+                             RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}" 
+                             RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}">
+                    <Label TextColor="WhiteSmoke" Text="{Binding CurrentUser.Username, StringFormat='Hello {0} !'}" Margin="10" />
+                    <Button Text="Map" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/MapPage" />
+                    <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" />
+                    <Button Text="Create a new parking" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/CreateParkingPage" />
+                    <Button Text="Invite" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/InvitePage" />
+                    <Button Text="Account" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/AccountPage" />
+                    <Button Text="Logout" Command="{Binding LogoutCommand}" />
+                </StackLayout>
+            </RelativeLayout>
         </ContentPage>
     </MasterDetailPage.Master>
 

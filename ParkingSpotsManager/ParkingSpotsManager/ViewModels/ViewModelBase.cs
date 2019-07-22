@@ -1,11 +1,12 @@
-﻿using Prism.Commands;
+﻿using Newtonsoft.Json;
+using ParkingSpotsManager.Services;
+using ParkingSpotsManager.Shared.Models;
 using Prism.Mvvm;
 using Prism.Navigation;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Text;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace ParkingSpotsManager.ViewModels
 {
@@ -20,11 +21,11 @@ namespace ParkingSpotsManager.ViewModels
             set { SetProperty(ref _authToken, value); }
         }
 
-        private int? _currentUserID;
-        public int? CurrentUserID
+        private User _currentUser;
+        public User CurrentUser
         {
-            get => _currentUserID;
-            set { SetProperty(ref _currentUserID, value); }
+            get => _currentUser;
+            set { SetProperty(ref _currentUser, value); }
         }
 
         private bool _isAuth = false;
@@ -44,16 +45,65 @@ namespace ParkingSpotsManager.ViewModels
         public ViewModelBase(INavigationService navigationService)
         {
             NavigationService = navigationService;
-            AuthToken = Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(AuthToken) as JwtSecurityToken;
-            var userIDFromToken = jsonToken.Claims.First(claim => claim.Type == "unique_name")?.Value;
-            var isUserIDParsed = int.TryParse(userIDFromToken, out int userID);
-            if (isUserIDParsed) {
-                CurrentUserID = userID;
+            AuthToken = GetToken();
+        }
+
+        protected async Task<User> GetCurrentUserAsync()
+        {
+            var token = GetToken();
+            var currentVM = GetType().Name;
+            if (token != null && currentVM != "MainPageViewModel" && currentVM != "LoginPageViewModel") {
+                using (var httpClient = new HttpClient()) {
+                    try {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                        var response = await httpClient.GetAsync(API.GetCurrentUser()).ConfigureAwait(false);
+                        response.EnsureSuccessStatusCode();
+                        var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        var user = JsonConvert.DeserializeObject<User>(content);
+
+                        if (user == null) {
+                            await LogoutAsync();
+                        } else {
+                            SetAuthUserProperties(user, token);
+
+                            return user;
+                        }
+                    } catch (Exception ex) {
+                        Console.WriteLine(ex.Message);
+                        await LogoutAsync();
+                    }
+                }
             }
 
-            IsAuth = AuthToken != null;
+            return null;
+        }
+
+        protected async Task LogoutAsync()
+        {
+            IsAuth = false;
+            AuthToken = null;
+            CurrentUser = null;
+            if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken")) {
+                Prism.PrismApplicationBase.Current.Properties["authToken"] = null;
+                await Prism.PrismApplicationBase.Current.SavePropertiesAsync();
+            }
+            await NavigationService.NavigateAsync("/NavigationPage/MainPage");
+        }
+
+        protected void SetAuthUserProperties(User user, string token)
+        {
+            IsAuth = user != null && token != null;
+            AuthToken = token;
+            CurrentUser = user;
+        }
+
+        protected string GetToken()
+        {
+            if (Prism.PrismApplicationBase.Current.Properties.ContainsKey("authToken") && Prism.PrismApplicationBase.Current.Properties["authToken"] != null) {
+                return Prism.PrismApplicationBase.Current.Properties["authToken"].ToString();
+            }
+
+            return null;
         }
 
         public virtual void OnNavigatedFrom(INavigationParameters parameters)
@@ -66,9 +116,9 @@ namespace ParkingSpotsManager.ViewModels
 
         }
 
-        public virtual void OnNavigatingTo(INavigationParameters parameters)
+        public virtual async void OnNavigatingTo(INavigationParameters parameters)
         {
-
+            await GetCurrentUserAsync().ConfigureAwait(false);
         }
 
         public virtual void Destroy()

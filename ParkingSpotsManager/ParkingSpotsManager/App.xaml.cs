@@ -26,7 +26,7 @@ namespace ParkingSpotsManager
             InitializeComponent();
 
             if (PrismApplicationBase.Current.Properties.ContainsKey("authToken") && PrismApplicationBase.Current.Properties["authToken"] != null) {
-                await NavigationService.NavigateAsync("HomePage");
+                await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");
             } else {
                 await NavigationService.NavigateAsync("NavigationPage/MainPage");
             }
@@ -45,6 +45,9 @@ namespace ParkingSpotsManager
             containerRegistry.RegisterForNavigation<ParkingEditPage, ParkingEditPageViewModel>();
             containerRegistry.RegisterForNavigation<CreateSpotPage, CreateSpotPageViewModel>();
             containerRegistry.RegisterForNavigation<SpotEditPage, SpotEditPageViewModel>();
+            containerRegistry.RegisterForNavigation<InvitePage, InvitePageViewModel>();
+            containerRegistry.RegisterForNavigation<AccountPage, AccountPageViewModel>();
+            containerRegistry.RegisterForNavigation<MapPage, MapPageViewModel>();
         }
     }
 }
