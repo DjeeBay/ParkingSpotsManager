@@ -8,15 +8,15 @@
                   x:Class="ParkingSpotsManager.Views.HomePage">
 
     <MasterDetailPage.Master>
-        <ContentPage Title="Menu" >
+        <ContentPage Title="Menu">
             <RelativeLayout Padding="0">
                 <Image Source="menu_bg.jpg"
-                       Aspect="AspectFill"
-                       RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
-                       RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}" />
+                Aspect="AspectFill"
+                RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}" />
                 <StackLayout Padding="40"
-                             RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}" 
-                             RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}">
+                    RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}" 
+                    RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}">
                     <Label TextColor="WhiteSmoke" Text="{Binding CurrentUser.Username, StringFormat='Hello {0} !'}" Margin="10" />
                     <Button Text="Map" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/MapPage" />
                     <Button Text="Parkings" Command="{Binding NavigateCommand}" CommandParameter="NavigationPage/ParkingListPage" />
