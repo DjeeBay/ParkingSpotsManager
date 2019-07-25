@@ -104,7 +104,7 @@ namespace ParkingSpotsManager.ViewModels
             var navParams = new NavigationParameters {
                 {"parking", parking }
             };
-            await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingManagementPage", navParams);
+            await NavigationService.NavigateAsync("ParkingManagementPage", navParams);
         }
 
         private async Task<ObservableCollection<Parking>> GetParkingList()

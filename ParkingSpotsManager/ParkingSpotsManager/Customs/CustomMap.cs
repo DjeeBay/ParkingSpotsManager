@@ -28,7 +28,7 @@ namespace ParkingSpotsManager.Customs
                if (newValue is Location location) {
                    map.MoveToRegion(MapSpan.FromCenterAndRadius(new
                    Position(location.Latitude, location.Longitude),
-                   Distance.FromMiles(3)));
+                   Distance.FromMiles(20)));
                }
            });
 

@@ -4,6 +4,7 @@
              xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
              Visual="Material"
+             Title="Account"
              x:Class="ParkingSpotsManager.Views.AccountPage">
 
     <StackLayout Padding="5">
