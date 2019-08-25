@@ -56,15 +56,13 @@ namespace ParkingSpotsManager.API.Controllers
         public async Task<IActionResult> GetSpot([FromRoute] int id)
         {
             //TODO if user is linked
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
             var spot = _context.Spots.Where(s => s.Id == id).FirstOrDefault();
 
-            if (spot == null)
-            {
+            if (spot == null) {
                 return NotFound();
             }
 
@@ -115,34 +113,23 @@ namespace ParkingSpotsManager.API.Controllers
             if (!IsParkingAdmin(spot)) {
                 return BadRequest();
             }
-
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
-
-            if (id != spot.Id)
-            {
+            if (id != spot.Id) {
                 return BadRequest();
             }
-
             _context.Entry(spot).State = EntityState.Modified;
 
-            try
-            {
+            try {
                 if (!spot.IsOccupiedByDefault) {
                     spot.OccupiedByDefaultBy = null;
                 }
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!SpotExists(id))
-                {
+            } catch (DbUpdateConcurrencyException) {
+                if (!SpotExists(id)) {
                     return NotFound();
-                }
-                else
-                {
+                } else {
                     throw;
                 }
             }
@@ -158,8 +145,7 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest();
             }
 
-            if (!ModelState.IsValid)
-            {
+            if (!ModelState.IsValid) {
                 return BadRequest(ModelState);
             }
 
@@ -188,10 +174,13 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest();
             }
 
-            _context.Spots.Remove(spot);
+            var storedSpot = _context.Spots.Where(s => s.Id == spot.Id).FirstOrDefault();
+
+            storedSpot.IsDeleted = true;
+            storedSpot.DeletedBy = _context.UserId;
             await _context.SaveChangesAsync();
 
-            return Ok(spot);
+            return Ok(storedSpot);
         }
 
         // PUT: api/Spots/5/ChangeStatus

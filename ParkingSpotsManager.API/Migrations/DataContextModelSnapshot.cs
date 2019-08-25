@@ -41,6 +41,14 @@ namespace ParkingSpotsManager.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime?>("CreatedAt");
+
+                    b.Property<int?>("CreatedBy");
+
+                    b.Property<int?>("DeletedBy");
+
+                    b.Property<bool>("IsDeleted");
+
                     b.Property<bool>("IsOccupiedByDefault");
 
                     b.Property<string>("Name")
@@ -56,6 +64,10 @@ namespace ParkingSpotsManager.API.Migrations
                     b.Property<int>("ParkingId");
 
                     b.Property<DateTime?>("ReleasedAt");
+
+                    b.Property<DateTime?>("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy");
 
                     b.HasKey("Id");
 
