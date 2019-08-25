@@ -13,6 +13,7 @@ using ParkingSpotsManager.Shared.Database;
 using ParkingSpotsManager.Shared.Services;
 using System;
 using Hangfire.Dashboard;
+using ParkingSpotsManager.API.Filters;
 
 namespace ParkingSpotsManager.API
 {
@@ -30,7 +31,9 @@ namespace ParkingSpotsManager.API
         {
             services.AddDbContext<DataContext>(options => options.UseSqlite(@Secrets.ConnectionString));
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
+            services.AddMvc(options => {
+                options.Filters.Add(typeof(AuthoringFilter));
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddJsonOptions(
             options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             var key = TokenService.GetKey(Secrets.TokenSecretKey);
@@ -81,8 +84,8 @@ namespace ParkingSpotsManager.API
         public void RunDailyJobs() {
             var optionsBuilder = new DbContextOptionsBuilder<DataContext>();
             optionsBuilder.UseSqlite(@Secrets.ConnectionString);
-            Extensions.SpotsExtension.RestoreDefaultOccupiers(new DataContext(optionsBuilder.Options));
-            Extensions.SpotsExtension.ResetOccupiers(new DataContext(optionsBuilder.Options));
+            _ = Extensions.SpotsExtension.RestoreDefaultOccupiers(new DataContext(optionsBuilder.Options));
+            _ = Extensions.SpotsExtension.ResetOccupiers(new DataContext(optionsBuilder.Options));
         }
     }
 }

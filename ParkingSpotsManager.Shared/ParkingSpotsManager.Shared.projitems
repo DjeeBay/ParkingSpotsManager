@@ -10,6 +10,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Database\DataContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\ISoftDeletable.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Interfaces\IWithTimestamps.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Libraries\Authenticator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Libraries\UserAccount.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\Parking.cs" />
@@ -18,8 +20,5 @@
     <Compile Include="$(MSBuildThisFileDirectory)Models\UserParking.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PasswordService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\TokenService.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Constants\" />
   </ItemGroup>
 </Project>

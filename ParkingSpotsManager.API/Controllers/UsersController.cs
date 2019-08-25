@@ -131,7 +131,7 @@ namespace ParkingSpotsManager.API.Controllers
                 if (parking != null) {
                     var userList = await _context.Users
                         .Include(u => u.UserParkings)
-                        .Where(u => u.Id != int.Parse(User.Identity.Name) 
+                        .Where(u => u.Id != _context.UserId 
                             && u.UserParkings.Where(up => up.ParkingId == parkingID && up.UserId == u.Id).FirstOrDefault() == null
                             && u.Username.Contains(search, StringComparison.InvariantCultureIgnoreCase))
                         .ToListAsync();
@@ -152,7 +152,7 @@ namespace ParkingSpotsManager.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user = await _context.Users.FindAsync(int.Parse(User.Identity.Name));
+            var user = await _context.Users.FindAsync(_context.UserId);
 
             if (user == null) {
                 return NotFound();

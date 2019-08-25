@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ParkingSpotsManager.Shared.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace ParkingSpotsManager.Shared.Models
 {
-    public class Spot
+    public class Spot : ISoftDeletable, IWithTimestamps
     {
         public int Id { get; set; }
 
@@ -29,8 +30,14 @@ namespace ParkingSpotsManager.Shared.Models
 
         public DateTime? OccupiedAt { get; set; }
         public DateTime? ReleasedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public bool IsDeleted { get; set; }
 
         [NotMapped]
         public bool IsCurrentUserAdmin { get; set; }
+        public int? DeletedBy { get; set; }
+        public int? CreatedBy { get; set; }
+        public int? UpdatedBy { get; set; }
     }
 }
