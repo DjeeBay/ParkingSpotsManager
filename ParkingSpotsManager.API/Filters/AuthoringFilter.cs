@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ParkingSpotsManager.API.Filters
 {
-    public class AuthoringFilter : IActionFilter, IAsyncActionFilter
+    public class AuthoringFilter : IAsyncActionFilter
     {
         private DataContext _dbContext;
 
@@ -17,20 +17,10 @@ namespace ParkingSpotsManager.API.Filters
             _dbContext = dataContext;
         }
 
-        public void OnActionExecuted(ActionExecutedContext context)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnActionExecuting(ActionExecutingContext context)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             var claimsIdentity = (ClaimsIdentity)context.HttpContext.User.Identity;
-            if (claimsIdentity != null) {
+            if (claimsIdentity != null && claimsIdentity.Name != null) {
                 _dbContext.UserId = int.Parse(claimsIdentity.Name);
             }
 

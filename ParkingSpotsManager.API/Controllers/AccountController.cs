@@ -91,7 +91,7 @@ namespace ParkingSpotsManager.API.Controllers
         [Route("[action]")]
         public async Task<IActionResult> UpdateUser([FromBody] UserAccount user)
         {
-            if (int.Parse(User.Identity.Name) == user.Id) {
+            if (_context.UserId == user.Id) {
                 if (_context.Users.Where(u => u.Email == user.Email && u.Id != user.Id).FirstOrDefault() != null) {
                     return BadRequest(new { Email = new string[] { "Email already used." } });
                 }

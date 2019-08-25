@@ -23,6 +23,14 @@ namespace ParkingSpotsManager.API.Migrations
 
                     b.Property<string>("Address");
 
+                    b.Property<DateTime?>("CreatedAt");
+
+                    b.Property<int?>("CreatedBy");
+
+                    b.Property<int?>("DeletedBy");
+
+                    b.Property<bool>("IsDeleted");
+
                     b.Property<double?>("Latitude");
 
                     b.Property<double?>("Longitude");
@@ -30,6 +38,10 @@ namespace ParkingSpotsManager.API.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(255);
+
+                    b.Property<DateTime?>("UpdatedAt");
+
+                    b.Property<int?>("UpdatedBy");
 
                     b.HasKey("Id");
 

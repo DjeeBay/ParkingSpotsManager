@@ -16,7 +16,13 @@ namespace ParkingSpotsManager.API.Migrations
                     Name = table.Column<string>(maxLength: 255, nullable: false),
                     Address = table.Column<string>(nullable: true),
                     Latitude = table.Column<double>(nullable: true),
-                    Longitude = table.Column<double>(nullable: true)
+                    Longitude = table.Column<double>(nullable: true),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    DeletedBy = table.Column<int>(nullable: true),
+                    CreatedAt = table.Column<DateTime>(nullable: true),
+                    CreatedBy = table.Column<int>(nullable: true),
+                    UpdatedAt = table.Column<DateTime>(nullable: true),
+                    UpdatedBy = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {

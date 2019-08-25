@@ -21,7 +21,4 @@
     <Compile Include="$(MSBuildThisFileDirectory)Services\PasswordService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\TokenService.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Constants\" />
-  </ItemGroup>
 </Project>
