@@ -1291,6 +1291,7 @@ namespace ParkingSpotsManager.Droid
 			global::Xamarin.Forms.Material.Android.Resource.Id.main_appbar = global::ParkingSpotsManager.Droid.Resource.Id.main_appbar;
 			global::Xamarin.Forms.Material.Android.Resource.Id.main_tablayout = global::ParkingSpotsManager.Droid.Resource.Id.main_tablayout;
 			global::Xamarin.Forms.Material.Android.Resource.Id.main_toolbar = global::ParkingSpotsManager.Droid.Resource.Id.main_toolbar;
+			global::Xamarin.Forms.Material.Android.Resource.Id.main_viewpager = global::ParkingSpotsManager.Droid.Resource.Id.main_viewpager;
 			global::Xamarin.Forms.Material.Android.Resource.Id.masked = global::ParkingSpotsManager.Droid.Resource.Id.masked;
 			global::Xamarin.Forms.Material.Android.Resource.Id.materialformsedittext = global::ParkingSpotsManager.Droid.Resource.Id.materialformsedittext;
 			global::Xamarin.Forms.Material.Android.Resource.Id.media_actions = global::ParkingSpotsManager.Droid.Resource.Id.media_actions;
@@ -2044,6 +2045,7 @@ namespace ParkingSpotsManager.Droid
 			global::Xamarin.Forms.Material.Android.Resource.Style.XamarinFormsMaterialProgressBarHorizontal = global::ParkingSpotsManager.Droid.Resource.Style.XamarinFormsMaterialProgressBarHorizontal;
 			global::Xamarin.Forms.Material.Android.Resource.Style.XamarinFormsMaterialSlider = global::ParkingSpotsManager.Droid.Resource.Style.XamarinFormsMaterialSlider;
 			global::Xamarin.Forms.Material.Android.Resource.Style.XamarinFormsMaterialTheme = global::ParkingSpotsManager.Droid.Resource.Style.XamarinFormsMaterialTheme;
+			global::Xamarin.Forms.Material.Android.Resource.Style.collectionViewStyle = global::ParkingSpotsManager.Droid.Resource.Style.collectionViewStyle;
 			global::Xamarin.Forms.Material.Android.Resource.Styleable.ActionBar = global::ParkingSpotsManager.Droid.Resource.Styleable.ActionBar;
 			global::Xamarin.Forms.Material.Android.Resource.Styleable.ActionBar_background = global::ParkingSpotsManager.Droid.Resource.Styleable.ActionBar_background;
 			global::Xamarin.Forms.Material.Android.Resource.Styleable.ActionBar_backgroundSplit = global::ParkingSpotsManager.Droid.Resource.Styleable.ActionBar_backgroundSplit;
