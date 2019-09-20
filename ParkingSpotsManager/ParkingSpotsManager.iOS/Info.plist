@@ -22,8 +22,6 @@
 	<string>ParkingSpotsManager</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.companyname.appname</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>Icon-60@2x</string>
@@ -54,5 +52,7 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>XSLaunchImageAssets</key>
 	<string>Assets.xcassets/LaunchImages.launchimage</string>
+	<key>MinimumOSVersion</key>
+	<string>11.0</string>
 </dict>
 </plist>
