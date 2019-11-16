@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="X5k-f2-b5h">
-    <device id="retina5_5" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="X5k-f2-b5h">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -19,19 +16,19 @@
                     <view key="view" contentMode="scaleToFill" id="yd7-JS-zBw">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="0.20392156862745098" green="0.59607843137254901" blue="0.85882352941176465" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="267" translatesAutoresizingMaskIntoConstraints="NO" image="xamarin-logo.png">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xamarin-logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="267">
                                 <rect key="frame" x="107" y="268" width="200" height="200"/>
                                 <constraints>
-                                    <constraint id="660" firstAttribute="width" constant="200"/>
-                                    <constraint id="661" firstAttribute="height" constant="200"/>
+                                    <constraint firstAttribute="width" constant="200" id="660"/>
+                                    <constraint firstAttribute="height" constant="200" id="661"/>
                                 </constraints>
                             </imageView>
                         </subviews>
+                        <color key="backgroundColor" red="0.20392156862745098" green="0.59607843137254901" blue="0.85882352941176465" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint id="672" firstItem="yd7-JS-zBw" firstAttribute="centerY" secondItem="267" secondAttribute="centerY"/>
-                            <constraint id="673" firstItem="yd7-JS-zBw" firstAttribute="centerX" secondItem="267" secondAttribute="centerX"/>
+                            <constraint firstAttribute="centerY" secondItem="267" secondAttribute="centerY" id="672"/>
+                            <constraint firstAttribute="centerX" secondItem="267" secondAttribute="centerX" id="673"/>
                         </constraints>
                     </view>
                 </viewController>

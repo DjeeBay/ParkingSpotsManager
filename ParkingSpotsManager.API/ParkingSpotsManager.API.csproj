@@ -17,7 +17,10 @@
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.4" />
     <PackageReference Include="Hangfire.Core" Version="1.7.4" />
     <PackageReference Include="Hangfire.SQLite" Version="1.4.2" />
-    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.App">
+      <PrivateAssets Condition="'%(PackageReference.Version)' == ''">all</PrivateAssets>
+      <Publish Condition="'%(PackageReference.Version)' == ''">true</Publish>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SQLite" Version="2.1.4" />
