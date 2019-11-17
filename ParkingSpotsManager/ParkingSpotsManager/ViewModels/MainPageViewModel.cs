@@ -25,9 +25,9 @@ namespace ParkingSpotsManager.ViewModels
             return true;
         }
 
-        private void GoToPage(string param)
+        private async void GoToPage(string param)
         {
-            NavigationService.NavigateAsync(param);
+            await NavigationService.NavigateAsync(param);
         }
     }
 }

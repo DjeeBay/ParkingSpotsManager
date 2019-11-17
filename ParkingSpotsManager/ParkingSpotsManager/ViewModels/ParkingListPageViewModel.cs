@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ParkingSpotsManager.Interfaces;
 using ParkingSpotsManager.Services;
 using ParkingSpotsManager.Shared.Models;
 using Prism.AppModel;
@@ -18,6 +19,8 @@ namespace ParkingSpotsManager.ViewModels
 {
 	public class ParkingListPageViewModel : ViewModelBase, INavigationAware, IPageLifecycleAware
     {
+        INotificationManager notificationManager;
+
         private ObservableCollection<Parking> _parkingList;
         public ObservableCollection<Parking> ParkingList
         {
@@ -43,16 +46,19 @@ namespace ParkingSpotsManager.ViewModels
         public DelegateCommand<Parking> EditParkingCommand { get; }
         public DelegateCommand<object> RefreshParkingListCommand { get; }
         public DelegateCommand<Parking> LeaveParkingCommand { get; }
+        public DelegateCommand<object> NotifCommand { get; }
 
         private IPageDialogService _dialogService;
 
         public ParkingListPageViewModel(INavigationService navigationService, IPageDialogService dialogService) : base (navigationService)
         {
             _dialogService = dialogService;
+            notificationManager = new DependencyService().Get<INotificationManager>();
             ShowParkingCommand = new DelegateCommand<Parking>(OnShowParkingClicked, CanShowParking);
             EditParkingCommand = new DelegateCommand<Parking>(OnEditParkingClicked, CanEditParking);
             RefreshParkingListCommand = new DelegateCommand<object>(OnRefreshParkingList, CanRefreshParkingList);
             LeaveParkingCommand = new DelegateCommand<Parking>(OnLeaveParkingClicked, CanLeaveParking);
+            NotifCommand = new DelegateCommand<object>((object o) => { notificationManager.ScheduleNotification("title", "msg"); });
         }
 
         private bool CanLeaveParking(object arg)
