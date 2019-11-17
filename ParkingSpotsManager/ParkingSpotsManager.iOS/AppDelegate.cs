@@ -24,10 +24,6 @@ namespace ParkingSpotsManager.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             FormsMaterial.Init();
-           
-            UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert, (approved, err) => {
-                // Handle approval
-            });
             UNUserNotificationCenter.Current.Delegate = new iOSNotificationReceiver();
             LoadApplication(new App(new iOSInitializer()));
             var x = typeof(Xamarin.Forms.Themes.DarkThemeResources);

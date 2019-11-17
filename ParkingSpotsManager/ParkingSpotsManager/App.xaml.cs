@@ -4,6 +4,7 @@ using ParkingSpotsManager.ViewModels;
 using ParkingSpotsManager.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using ParkingSpotsManager.Interfaces;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace ParkingSpotsManager
@@ -24,6 +25,7 @@ namespace ParkingSpotsManager
         protected override async void OnInitialized()
         {
             InitializeComponent();
+            DependencyService.Get<INotificationManager>().Initialize();
 
             if (PrismApplicationBase.Current.Properties.ContainsKey("authToken") && PrismApplicationBase.Current.Properties["authToken"] != null) {
                 await NavigationService.NavigateAsync("/HomePage/NavigationPage/ParkingListPage");

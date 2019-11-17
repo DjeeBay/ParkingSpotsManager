@@ -24,7 +24,8 @@ namespace ParkingSpotsManager.iOS
         public void Initialize()
         {
             // request the permission to use local notifications
-            UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert, (approved, err) => {
+            UNUserNotificationCenter.Current.RequestAuthorization(UNAuthorizationOptions.Alert, (approved, err) =>
+            {
                 hasNotificationsPermission = approved;
             });
         }
@@ -32,13 +33,15 @@ namespace ParkingSpotsManager.iOS
         public int ScheduleNotification(string title, string message)
         {
             // EARLY OUT: app doesn't have permissions
-            if (!hasNotificationsPermission) {
-                return -1;
+            if (!hasNotificationsPermission)
+            {
+                //return -1;
             }
 
             messageId++;
 
-            var content = new UNMutableNotificationContent() {
+            var content = new UNMutableNotificationContent()
+            {
                 Title = title,
                 Subtitle = "",
                 Body = message,
@@ -50,8 +53,10 @@ namespace ParkingSpotsManager.iOS
             var trigger = UNTimeIntervalNotificationTrigger.CreateTrigger(0.25, false);
 
             var request = UNNotificationRequest.FromIdentifier(messageId.ToString(), content, trigger);
-            UNUserNotificationCenter.Current.AddNotificationRequest(request, (err) => {
-                if (err != null) {
+            UNUserNotificationCenter.Current.AddNotificationRequest(request, (err) =>
+            {
+                if (err != null)
+                {
                     throw new Exception($"Failed to schedule notification: {err}");
                 }
             });
@@ -61,7 +66,8 @@ namespace ParkingSpotsManager.iOS
 
         public void ReceiveNotification(string title, string message)
         {
-            var args = new NotificationEventArgs() {
+            var args = new NotificationEventArgs()
+            {
                 Title = title,
                 Message = message
             };
